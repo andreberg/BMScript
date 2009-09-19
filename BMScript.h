@@ -9,26 +9,74 @@
 #import <Cocoa/Cocoa.h>
 #include <AvailabilityMacros.h>
 
-#define BMS_THREAD_SAFE 1  /* if 1 will wrap locations where shared variables are mutated with @synchronized(self)
-                               Important! This does not guarantee thread safety!
-                               The only way to ensure thread safety is by testing within YOUR app */
+#define THREAD_SAFE 1
+#define TRUNCATE_LENGTH 20
+#define REPLACEMENT_TOKEN @"%@"  /* used by templates to mark locations where a replacement should occurr */
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
-#if __LP64__ || NS_BUILD_32_LIKE_64
-typedef long NSInteger;
-typedef unsigned long NSUInteger;
-#else
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
+#define SynthesizeOptions(_PATH_, ...) \
+NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
+(_PATH_), BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
+
+// To simplify support for 64bit (and Leopard in general), 
+// provide the type defines for non Leopard SDKs
+#if !(MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+// NSInteger/NSUInteger and Max/Mins
+#ifndef NSINTEGER_DEFINED
+    #if __LP64__ || NS_BUILD_32_LIKE_64
+        typedef long NSInteger;
+        typedef unsigned long NSUInteger;
+    #else
+        typedef int NSInteger;
+        typedef unsigned int NSUInteger;
+    #endif
+    #define NSIntegerMax    LONG_MAX
+    #define NSIntegerMin    LONG_MIN
+    #define NSUIntegerMax   ULONG_MAX
+    #define NSINTEGER_DEFINED 1
+#endif  // NSINTEGER_DEFINED
+// CGFloat
+    #ifndef CGFLOAT_DEFINED
+        #if defined(__LP64__) && __LP64__
+            // This really is an untested path (64bit on Tiger?)
+            typedef double CGFloat;
+            #define CGFLOAT_MIN DBL_MIN
+            #define CGFLOAT_MAX DBL_MAX
+            #define CGFLOAT_IS_DOUBLE 1
+        #else /* !defined(__LP64__) || !__LP64__ */
+            typedef float CGFloat;
+            #define CGFLOAT_MIN FLT_MIN
+            #define CGFLOAT_MAX FLT_MAX
+            #define CGFLOAT_IS_DOUBLE 0
+        #endif /* !defined(__LP64__) || !__LP64__ */
+        #define CGFLOAT_DEFINED 1
+    #endif // CGFLOAT_DEFINED
+
+#if !defined(NS_INLINE)
+    #if defined(__GNUC__)
+        #define NS_INLINE static __inline__ __attribute__((always_inline))
+    #elif defined(__MWERKS__) || defined(__cplusplus)
+        #define NS_INLINE static inline
+    #elif defined(_MSC_VER)
+        #define NS_INLINE static __inline
+    #elif defined(__WIN32__)
+        #define NS_INLINE static __inline__
+    #endif
 #endif
-#define NSIntegerMax    LONG_MAX
-#define NSIntegerMin    LONG_MIN
-#define NSUIntegerMax   ULONG_MAX
-#endif
+
+#endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+
 
 typedef NSInteger TerminationStatus;
 
+enum {
+    BMScriptNotExecutedTerminationStatus = -1,
+    BMScriptFinishedSuccessfullyTerminationStatus = 0
+    /* all else indicates erroneous termination status as returned by the task */
+};
+
 OBJC_EXPORT NSString * const BMScriptTaskDidEndNotification;
+OBJC_EXPORT NSString * const BMScriptNotificationInfoTaskResultsKey;
+OBJC_EXPORT NSString * const BMScriptNotificationInfoTaskTerminationStatusKey;
 
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
 OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
@@ -39,37 +87,36 @@ OBJC_EXPORT NSString * const BMScriptTemplateArgumentsMissingException;
 
 OBJC_EXPORT NSString * const BMScriptLanguageProtocolDoesNotConformException;
 OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
+OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 
 /* the ScriptLanguage protocol must be implemented by language-specific subclasses 
    in order to provide sensible defaults for language-specific values. */
 @protocol BMScriptLanguageProtocol
-- (NSString *) defaultScriptSourceForLanguage;
 - (NSDictionary *) defaultOptionsForLanguage;
 @optional
-- (SEL) taskFinishedCallback; /* must be implemented in order to use -[executeInBackgroundAndNotify].
-                                 should return a selector (SEL) which should be called once 
-                                 NSTaskWillExitNotification is about to arrive. 
- 
-                                 IMPORTANT: if you use -[executeInBackgroundAndNotify] and this method 
-                                 is not implemented an exception of type BMScriptLanguageProtocolMethodMissingException 
-                                 will be raised. */
+- (NSString *) defaultScriptSourceForLanguage;  /* implement this to supply a default script for [[self alloc] init].
+                                                   if unimplemented, an empty script will be set as initial value for self.defaultScript */
+
+- (SEL) taskFinishedCallback:(id)obj;           /* can be implemented in order to have -[self executeInBackgroundAndNotify] issue a callback
+                                                   once the task has completed. passes self as obj. */
 @end
 
 @interface BMScript : NSObject <NSCopying, NSCoding, BMScriptLanguageProtocol> {
     NSString * script;
-    NSMutableArray * history;
-    NSDictionary * options;
     NSString * lastResult;
 @protected
-    NSTask * rubyTask;
-//     NSArray * taskArgs;
-    NSPipe * outPipe;
+    id __weak delegate;
+    NSDictionary * options;
+    NSMutableArray * history;
+    NSTask * task;
+    NSPipe * pipe;
 @private
     NSString * defaultScript;
     NSDictionary * defaultOptions;
-    NSConditionLock * conditionLock;
-    NSThread * bgThread;
+    NSTask * bgTask;
+    NSPipe * bgPipe;
+    NSString * partialResult;
 }
 
 // MARK: Initializer Methods
@@ -87,8 +134,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 + (id) scriptWithSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions;
 + (id) scriptWithContentsOfFile:(NSString *)path;
 + (id) scriptWithContentsOfFile:(NSString *)path options:(NSDictionary *)scriptOptions;
-// + (id) scriptWithContentsOfURL:(NSURL *)url;
-// + (id) scriptWithContentsOfURL:(NSURL *)url options:(NSDictionary *)scriptOptions;
 + (id) scriptWithContentsOfTemplateFile:(NSString *)path;
 + (id) scriptWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions;
 
@@ -105,8 +150,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 - (BOOL) executeAndReturnError:(NSError **)error;
 - (BOOL) executeAndReturnResult:(NSString **)result error:(NSError **)error;
 - (void) executeInBackgroundAndNotify AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER; 
-- (void) taskFinished;
-
 
 // MARK: History
 
@@ -115,41 +158,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 - (NSString *) lastScriptSourceFromHistory;
 - (NSString *) lastResultFromHistory;
 
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-#define BMRS_ACCESSORS @"synthesized properties"
-
-// MARK: Properties (10.5+)
-#if BMS_THREAD_SAFE
-@property (copy)    NSString * script;
-@property (retain)  NSMutableArray * history;
-@property (retain)  NSDictionary * options;
-@property (retain)  NSTask * rubyTask;
-// @property (retain)  NSArray * taskArgs;
-@property (copy)    NSString * lastResult;
-@property (retain)  NSPipe * outPipe;
-@property (copy)    NSString * defaultScript;
-@property (retain)  NSDictionary * defaultOptions;
-@property (retain)  NSConditionLock * conditionLock;
-@property (retain)  NSThread * bgThread;
-#else
-@property (nonatomic, copy)    NSString * script;
-@property (nonatomic, retain)  NSMutableArray * history;
-@property (nonatomic, retain)  NSDictionary * options;
-@property (nonatomic, retain)  NSTask * rubyTask;
-// @property (nonatomic, retain)  NSArray * taskArgs;
-@property (nonatomic, copy)    NSString * lastResult;
-@property (nonatomic, retain)  NSPipe * outPipe;
-@property (nonatomic, copy)    NSString * defaultScript;
-@property (nonatomic, retain)  NSDictionary * defaultOptions;
-@property (nonatomic, retain)  NSConditionLock * conditionLock;
-@property (nonatomic, retain)  NSThread * bgThread;
-#endif
-
-#else
-#define BMRS_ACCESSORS @"conventional accessors"
-
-// MARK: Accessors (10.4)
+// MARK: Accessors
 
 /*!
  * @method script
@@ -163,35 +172,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
  * @discussion 
  * @param newScript 
  */
+
 - (void)setScript:(NSString *)newScript;
-
-/*!
- * @method history
- * @abstract the getter corresponding to setHistory:
- * @result returns value for history
- */
-- (NSMutableArray *)history;
-/*!
- * @method setHistory
- * @abstract sets history to the param
- * @discussion 
- * @param newHistory 
- */
-- (void)setHistory:(NSMutableArray *)newHistory;
-
-/*!
- * @method options
- * @abstract the getter corresponding to setOptions:
- * @result returns value for options
- */
-- (NSDictionary *)options;
-/*!
- * @method setOptions
- * @abstract sets options to the param
- * @discussion 
- * @param newOptions 
- */
-- (void)setOptions:(NSDictionary *)newOptions;
 
 /*!
  * @method lastResult
@@ -199,119 +181,40 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
  * @result returns value for lastResult
  */
 - (NSString *)lastResult;
-/*!
- * @method setLastResult
- * @abstract sets lastResult to the param
- * @discussion 
- * @param newLastResult 
- */
 - (void)setLastResult:(NSString *)newLastResult;
 
-/*!
- * @method rubyTask
- * @abstract the getter corresponding to setRubyTask:
- * @result returns value for rubyTask
- */
-- (NSTask *)rubyTask;
-/*!
- * @method setRubyTask
- * @abstract sets rubyTask to the param
- * @discussion 
- * @param newRubyTask 
- */
-- (void)setRubyTask:(NSTask *)newRubyTask;
+// MARK: Protected Accessors
 
-// /*!
-//  * @method taskArgs
-//  * @abstract the getter corresponding to setTaskArgs:
-//  * @result returns value for taskArgs
-//  */
-// - (NSArray *)taskArgs;
-// /*!
-//  * @method setTaskArgs
-//  * @abstract sets taskArgs to the param
-//  * @discussion 
-//  * @param newTaskArgs 
-//  */
-// - (void)setTaskArgs:(NSArray *)newTaskArgs;
+- (NSMutableArray *)history;
+- (void)setHistory:(NSMutableArray *)newHistory;
+- (NSDictionary *)options;
+- (void)setOptions:(NSDictionary *)newOptions;
+- (id)delegate;
+- (void)setDelegate:(id)newDelegate;
 
+// MARK: Delegate Methods
 
-/*!
- * @method outPipe
- * @abstract the getter corresponding to setOutPipe:
- * @result returns value for outPipe
- */
-- (NSPipe *)outPipe;
-/*!
- * @method setOutPipe
- * @abstract sets outPipe to the param
- * @discussion 
- * @param newOutPipe 
- */
-- (void)setOutPipe:(NSPipe *)newOutPipe;
+- (BOOL) shouldAddItemToHistory:(id)anItem;
+- (BOOL) shouldReturnItemFromHistory:(id)anItem;
+- (BOOL) shouldSetLastResult:(NSString *)aString;
+- (BOOL) shouldAppendPartialResult:(NSString *)string;
+- (BOOL) shouldSetScript:(NSString *)aScript;
+- (BOOL) shouldSetOptions:(NSDictionary *)opts;
 
-/*!
- * @method defaultScript
- * @abstract the getter corresponding to setDefaultScript:
- * @result returns value for defaultScript
- */
-- (NSString *) defaultScript;
+@end
 
-/*!
- * @method setDefaultScript
- * @abstract sets defaultScript to the param
- * @discussion 
- * @param newDefaultScript 
- */
-- (void) setDefaultScript: (NSString *) newDefaultScript;
+@interface BMScript (CommonScriptLanguagesFactories)
++ (id) rubyScriptWithSource:(NSString *)scriptSource;
++ (id) rubyScriptWithContentsOfFile:(NSString *)path;
++ (id) rubyScriptWithContentsOfTemplateFile:(NSString *)path;
 
++ (id) pythonScriptWithSource:(NSString *)scriptSource;
++ (id) pythonScriptWithContentsOfFile:(NSString *)path;
++ (id) pythonScriptWithContentsOfTemplateFile:(NSString *)path;
 
-/*!
- * @method defaultOptions
- * @abstract the getter corresponding to setDefaultOptions:
- * @result returns value for defaultOptions
- */
-- (NSDictionary *) defaultOptions;
-/*!
- * @method setDefaultOptions
- * @abstract sets defaultOptions to the param
- * @discussion 
- * @param newDefaultOptions 
- */
-- (void) setDefaultOptions: (NSDictionary *) newDefaultOptions;
-
-
-/*!
- * @method conditionLock
- * @abstract the getter corresponding to setConditionLock:
- * @result returns value for conditionLock
- */
-- (NSConditionLock *) conditionLock;
-/*!
- * @method setConditionLock
- * @abstract sets conditionLock to the param
- * @discussion 
- * @param newConditionLock 
- */
-- (void) setConditionLock: (NSConditionLock *) newConditionLock;
-
-
-/*!
- * @method bgThread
- * @abstract the getter corresponding to setBgThread:
- * @result returns value for bgThread
- */
-- (NSThread *) bgThread;
-/*!
- * @method setBgThread
- * @abstract sets bgThread to the param
- * @discussion 
- * @param newBgThread 
- */
-- (void) setBgThread: (NSThread *) newBgThread;
-
-#endif
-
++ (id) perlScriptWithSource:(NSString *)scriptSource;
++ (id) perlScriptWithContentsOfFile:(NSString *)path;
++ (id) perlScriptWithContentsOfTemplateFile:(NSString *)path;
 @end
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4

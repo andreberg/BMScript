@@ -50,7 +50,7 @@
 		654295A3105FE22B0037E0C8 /* BMScriptUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BMScriptUnitTests-Info.plist"; sourceTree = "<group>"; };
 		654295A8105FE2410037E0C8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
-		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; };
+		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BMScriptTest.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -216,7 +216,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
+				BuildIndependentTargetsInParallel = NO;
 			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "BMScriptTest" */;
 			compatibilityVersion = "Xcode 3.1";
@@ -394,6 +394,66 @@
 			};
 			name = Release;
 		};
+		6542ED5D1061DDBC009DF7DF /* Debug w Profiling Code */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.4;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = "Debug w Profiling Code";
+		};
+		6542ED5E1061DDBC009DF7DF /* Debug w Profiling Code */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug w Profiling Code";
+		};
+		6542ED5F1061DDBC009DF7DF /* Debug w Profiling Code */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = "Debug w Profiling Code";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -401,6 +461,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB927508733DD40010E9CD /* Debug */,
+				6542ED5E1061DDBC009DF7DF /* Debug w Profiling Code */,
 				1DEB927608733DD40010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -410,6 +471,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
+				6542ED5D1061DDBC009DF7DF /* Debug w Profiling Code */,
 				1DEB927A08733DD40010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -419,6 +481,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				654295A4105FE22C0037E0C8 /* Debug */,
+				6542ED5F1061DDBC009DF7DF /* Debug w Profiling Code */,
 				654295A5105FE22C0037E0C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

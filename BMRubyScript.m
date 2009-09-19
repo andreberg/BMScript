@@ -17,11 +17,11 @@
 
 - (NSDictionary *) defaultOptionsForLanguage {
     NSArray * newArgs = [NSArray arrayWithObjects:@"-Ku", @"-e", nil];
-    NSDictionary * defaultOptions = [NSDictionary dictionaryWithObjectsAndKeys:
+    NSDictionary * defaultOpts = [NSDictionary dictionaryWithObjectsAndKeys:
                                         @"/usr/bin/ruby", BMScriptOptionsTaskLaunchPathKey, 
                                                  newArgs, BMScriptOptionsTaskArgumentsKey, nil];
     
-    return defaultOptions;
+    return defaultOpts;
 }
 
 @end
