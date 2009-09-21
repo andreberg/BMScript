@@ -65,6 +65,7 @@
 		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
+		657323421067B7AF001E9123 /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65BA2B5A10676ABB000B5D3B /* TaskObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskObserver.h; sourceTree = "<group>"; };
 		65BA2B5B10676ABB000B5D3B /* TaskObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskObserver.m; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
@@ -129,6 +130,7 @@
 			children = (
 				8DD76FA10486AA7600D96B5E /* BMScriptTest */,
 				654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */,
+				657323421067B7AF001E9123 /* BMScriptTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -230,6 +232,22 @@
 			productReference = 654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
+		657323321067B7AF001E9123 /* Doxygen Documenation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6573233C1067B7AF001E9123 /* Build configuration list for PBXNativeTarget "Doxygen Documenation" */;
+			buildPhases = (
+				657323451067B7D6001E9123 /* Run Doxygen Script */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Doxygen Documenation";
+			productInstallPath = "$(HOME)/bin";
+			productName = BMScriptTest;
+			productReference = 657323421067B7AF001E9123 /* BMScriptTest */;
+			productType = "com.apple.product-type.tool";
+		};
 		8DD76F960486AA7600D96B5E /* BMScriptTest */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "BMScriptTest" */;
@@ -265,6 +283,7 @@
 			targets = (
 				8DD76F960486AA7600D96B5E /* BMScriptTest */,
 				654295A1105FE22B0037E0C8 /* BMScriptUnitTests */,
+				657323321067B7AF001E9123 /* Doxygen Documenation */,
 			);
 		};
 /* End PBXProject section */
@@ -297,6 +316,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		657323451067B7D6001E9123 /* Run Doxygen Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Doxygen Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#  Build the doxygen documentation for the project and load the docset into Xcode.\n\n#  Use the following to adjust the value of the $DOXYGEN_PATH User-Defined Setting:\n#    Binary install location: /Applications/Doxygen.app/Contents/Resources/doxygen\n#    Source build install location: /usr/local/bin/doxygen\n\n#  If the config file doesn't exist, run 'doxygen -g $SOURCE_ROOT/doxygen.config' to \n#   a get default file.\n\n#DOXYGEN_PATH=\"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen\"\n\nDOXYFILE=\"Doxyfile\"\n\nif [[ ! -f \"$SOURCE_ROOT/$DOXYFILE\" ]]; then\n\techo \"Doxyfile file does not exist. Trying to locate doxygen.config...\"\n\tif ! [ -f \"$SOURCE_ROOT/doxygen.config\" ]; then \n  \t\techo \"doxygen.config file does not exist. Creating doxygen.config with minimum default settings...\"\n  \t\t\"$DOXYGEN_PATH\" -g \"$SOURCE_ROOT/doxygen.config\"\n\t\tDOXYFILE=\"doxygen.config\"\n\tfi\nfi\n\n\n\n#  Append the proper input/output directories and docset info to the config file.\n#  This works even though values are assigned higher up in the file. Easier than sed.\n\ncp \"$SOURCE_ROOT/$DOXYFILE\" \"$TEMP_DIR/$DOXYFILE\"\n\necho \"INPUT = $SOURCE_ROOT\" >> \"$TEMP_DIR/$DOXYFILE\"\necho \"OUTPUT_DIRECTORY       = $SOURCE_ROOT/DoxygenDocs.docset\" >> \"$TEMP_DIR/$DOXYFILE\"\necho \"GENERATE_DOCSET        = YES\" >> \"$TEMP_DIR/$DOXYFILE\"\necho \"DOCSET_BUNDLE_ID       = com.mycompany.DoxygenExample\" >> \"$TEMP_DIR/$DOXYFILE\"\n\n#  Run doxygen on the updated config file.\n#  Note: doxygen creates a Makefile that does most of the heavy lifting.\n\n\"$DOXYGEN_PATH\" \"$TEMP_DIR/$DOXYFILE\"\n\n#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/DoxygenDocs.docset/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"load documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" \n     >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\nosascript \"$TEMP_DIR/loadDocSet.scpt\"\n\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -510,6 +543,83 @@
 			};
 			name = "Debug w Profiling Code";
 		};
+		6573233D1067B7AF001E9123 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = Debug;
+		};
+		6573233E1067B7AF001E9123 /* Debug w Profiling Code */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug w Profiling Code";
+		};
+		6573233F1067B7AF001E9123 /* Debug w Profiling Code (LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug w Profiling Code (LLVM)";
+		};
+		657323401067B7AF001E9123 /* Debug w Profiling Code (GC LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug w Profiling Code (GC LLVM)";
+		};
+		657323411067B7AF001E9123 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = Release;
+		};
 		65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -674,6 +784,18 @@
 				65C57D1A106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
 				65C57EF110673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
 				654295A5105FE22C0037E0C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6573233C1067B7AF001E9123 /* Build configuration list for PBXNativeTarget "Doxygen Documenation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6573233D1067B7AF001E9123 /* Debug */,
+				6573233E1067B7AF001E9123 /* Debug w Profiling Code */,
+				6573233F1067B7AF001E9123 /* Debug w Profiling Code (LLVM) */,
+				657323401067B7AF001E9123 /* Debug w Profiling Code (GC LLVM) */,
+				657323411067B7AF001E9123 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
