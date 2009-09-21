@@ -5,6 +5,7 @@
 //  Created by Andre Berg on 21.09.09.
 //  Copyright 2009 Berg Media. All rights reserved.
 //
+/// @cond
 
 #import <Cocoa/Cocoa.h>
 #import "BMScript.h"
@@ -35,4 +36,4 @@
 
 @end
 
-
+/// @endcond

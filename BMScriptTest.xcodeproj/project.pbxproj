@@ -6,6 +6,20 @@
 	objectVersion = 45;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		657323E81067BF6A001E9123 /* Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 657323F21067BFA4001E9123 /* Build configuration list for PBXAggregateTarget "Documentation" */;
+			buildPhases = (
+				657323E71067BF6A001E9123 /* Run Doxygen Build Script */,
+			);
+			dependencies = (
+			);
+			name = Documentation;
+			productName = Documentation;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295AB105FE24F0037E0C8 /* Convert To Oct.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958B105FE1B80037E0C8 /* Convert To Oct.rb */; };
@@ -52,6 +66,18 @@
 		08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
+		653A09A41067C5CC0027DF98 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
+		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
+		653A0A021067CECA0027DF98 /* bmScriptOptionsDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptOptionsDictionary.m; sourceTree = "<group>"; };
+		653A0A031067CF7C0027DF98 /* bmScriptSynthesizeOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptSynthesizeOptions.m; sourceTree = "<group>"; };
+		653A0A2E1067D4E40027DF98 /* bmScriptCreationMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptCreationMethods.m; sourceTree = "<group>"; };
+		653A0A2F1067D6B20027DF98 /* bmScriptConvenienceMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptConvenienceMethods.m; sourceTree = "<group>"; };
+		653A0A301067D8C10027DF98 /* bmScriptSaturateTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptSaturateTemplate.m; sourceTree = "<group>"; };
+		653A0B4C1067E2930027DF98 /* bmScriptExecution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptExecution.m; sourceTree = "<group>"; };
+		653A0B691067E5860027DF98 /* bmScriptNotificationExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptNotificationExample.m; sourceTree = "<group>"; };
+		653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptDelegateMethods.m; sourceTree = "<group>"; };
+		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
+		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
 		6542958B105FE1B80037E0C8 /* Convert To Oct.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Oct.rb"; sourceTree = "<group>"; };
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
@@ -62,10 +88,9 @@
 		654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BMScriptUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		654295A3105FE22B0037E0C8 /* BMScriptUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BMScriptUnitTests-Info.plist"; sourceTree = "<group>"; };
 		654295A8105FE2410037E0C8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
+		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 1; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
-		657323421067B7AF001E9123 /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65BA2B5A10676ABB000B5D3B /* TaskObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskObserver.h; sourceTree = "<group>"; };
 		65BA2B5B10676ABB000B5D3B /* TaskObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskObserver.m; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
@@ -130,7 +155,6 @@
 			children = (
 				8DD76FA10486AA7600D96B5E /* BMScriptTest */,
 				654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */,
-				657323421067B7AF001E9123 /* BMScriptTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -205,7 +229,19 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				653A09A41067C5CC0027DF98 /* Doxyfile */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
+				653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */,
+				653A0A021067CECA0027DF98 /* bmScriptOptionsDictionary.m */,
+				653A0A031067CF7C0027DF98 /* bmScriptSynthesizeOptions.m */,
+				653A0A2E1067D4E40027DF98 /* bmScriptCreationMethods.m */,
+				653A0A2F1067D6B20027DF98 /* bmScriptConvenienceMethods.m */,
+				653A0A301067D8C10027DF98 /* bmScriptSaturateTemplate.m */,
+				653A0B4C1067E2930027DF98 /* bmScriptExecution.m */,
+				653A0B691067E5860027DF98 /* bmScriptNotificationExample.m */,
+				653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */,
+				653A0B6B1067E9440027DF98 /* bmScriptHistory.m */,
+				653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */,
 			);
 			name = Documentation;
 			sourceTree = "<group>";
@@ -231,22 +267,6 @@
 			productName = BMScriptUnitTests;
 			productReference = 654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */;
 			productType = "com.apple.product-type.bundle";
-		};
-		657323321067B7AF001E9123 /* Doxygen Documenation */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6573233C1067B7AF001E9123 /* Build configuration list for PBXNativeTarget "Doxygen Documenation" */;
-			buildPhases = (
-				657323451067B7D6001E9123 /* Run Doxygen Script */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Doxygen Documenation";
-			productInstallPath = "$(HOME)/bin";
-			productName = BMScriptTest;
-			productReference = 657323421067B7AF001E9123 /* BMScriptTest */;
-			productType = "com.apple.product-type.tool";
 		};
 		8DD76F960486AA7600D96B5E /* BMScriptTest */ = {
 			isa = PBXNativeTarget;
@@ -283,7 +303,7 @@
 			targets = (
 				8DD76F960486AA7600D96B5E /* BMScriptTest */,
 				654295A1105FE22B0037E0C8 /* BMScriptUnitTests */,
-				657323321067B7AF001E9123 /* Doxygen Documenation */,
+				657323E81067BF6A001E9123 /* Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -317,19 +337,19 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
-		657323451067B7D6001E9123 /* Run Doxygen Script */ = {
+		657323E71067BF6A001E9123 /* Run Doxygen Build Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Run Doxygen Script";
+			name = "Run Doxygen Build Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#  Build the doxygen documentation for the project and load the docset into Xcode.\n\n#  Use the following to adjust the value of the $DOXYGEN_PATH User-Defined Setting:\n#    Binary install location: /Applications/Doxygen.app/Contents/Resources/doxygen\n#    Source build install location: /usr/local/bin/doxygen\n\n#  If the config file doesn't exist, run 'doxygen -g $SOURCE_ROOT/doxygen.config' to \n#   a get default file.\n\n#DOXYGEN_PATH=\"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen\"\n\nDOXYFILE=\"Doxyfile\"\n\nif [[ ! -f \"$SOURCE_ROOT/$DOXYFILE\" ]]; then\n\techo \"Doxyfile file does not exist. Trying to locate doxygen.config...\"\n\tif ! [ -f \"$SOURCE_ROOT/doxygen.config\" ]; then \n  \t\techo \"doxygen.config file does not exist. Creating doxygen.config with minimum default settings...\"\n  \t\t\"$DOXYGEN_PATH\" -g \"$SOURCE_ROOT/doxygen.config\"\n\t\tDOXYFILE=\"doxygen.config\"\n\tfi\nfi\n\n\n\n#  Append the proper input/output directories and docset info to the config file.\n#  This works even though values are assigned higher up in the file. Easier than sed.\n\ncp \"$SOURCE_ROOT/$DOXYFILE\" \"$TEMP_DIR/$DOXYFILE\"\n\necho \"INPUT = $SOURCE_ROOT\" >> \"$TEMP_DIR/$DOXYFILE\"\necho \"OUTPUT_DIRECTORY       = $SOURCE_ROOT/DoxygenDocs.docset\" >> \"$TEMP_DIR/$DOXYFILE\"\necho \"GENERATE_DOCSET        = YES\" >> \"$TEMP_DIR/$DOXYFILE\"\necho \"DOCSET_BUNDLE_ID       = com.mycompany.DoxygenExample\" >> \"$TEMP_DIR/$DOXYFILE\"\n\n#  Run doxygen on the updated config file.\n#  Note: doxygen creates a Makefile that does most of the heavy lifting.\n\n\"$DOXYGEN_PATH\" \"$TEMP_DIR/$DOXYFILE\"\n\n#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/DoxygenDocs.docset/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"load documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" \n     >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\nosascript \"$TEMP_DIR/loadDocSet.scpt\"\n\nexit 0";
+			shellScript = "#  Build the doxygen documentation for the project and load the docset into Xcode.\n\n#  Use the following to adjust the value of the $DOXYGEN_PATH User-Defined Setting:\n#    Binary install location: /Applications/Doxygen.app/Contents/Resources/doxygen\n#    Source build install location: /usr/local/bin/doxygen\n\n#  If the config file doesn't exist, run 'doxygen -g $SOURCE_ROOT/doxygen.config' to \n#   a get default file.\n\n#DOXYGEN_PATH=\"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen\"\n\nDOXYFILE=\"Doxyfile\"\nDOCSETFULLNAME=\"BMScript.docset\"\n\n# run doxygen to generate the makefile based on our DOXYFILE\n\n\"$DOXYGEN_PATH\" \"$SOURCE_ROOT/$DOXYFILE\"\n\n#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSETFULLNAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"load documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" \n     >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\nosascript \"$TEMP_DIR/loadDocSet.scpt\"\n\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -543,80 +563,45 @@
 			};
 			name = "Debug w Profiling Code";
 		};
-		6573233D1067B7AF001E9123 /* Debug */ = {
+		657323E91067BF6A001E9123 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = BMScriptTest;
+				PRODUCT_NAME = Documentation;
 			};
 			name = Debug;
 		};
-		6573233E1067B7AF001E9123 /* Debug w Profiling Code */ = {
+		657323EA1067BF6A001E9123 /* Debug w Profiling Code */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = BMScriptTest;
+				PRODUCT_NAME = Documentation;
 			};
 			name = "Debug w Profiling Code";
 		};
-		6573233F1067B7AF001E9123 /* Debug w Profiling Code (LLVM) */ = {
+		657323EB1067BF6A001E9123 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = BMScriptTest;
+				PRODUCT_NAME = Documentation;
 			};
 			name = "Debug w Profiling Code (LLVM)";
 		};
-		657323401067B7AF001E9123 /* Debug w Profiling Code (GC LLVM) */ = {
+		657323EC1067BF6A001E9123 /* Debug w Profiling Code (GC LLVM) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = BMScriptTest;
+				PRODUCT_NAME = Documentation;
 			};
 			name = "Debug w Profiling Code (GC LLVM)";
 		};
-		657323411067B7AF001E9123 /* Release */ = {
+		657323ED1067BF6A001E9123 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = BMScriptTest;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Documentation;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -788,14 +773,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6573233C1067B7AF001E9123 /* Build configuration list for PBXNativeTarget "Doxygen Documenation" */ = {
+		657323F21067BFA4001E9123 /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6573233D1067B7AF001E9123 /* Debug */,
-				6573233E1067B7AF001E9123 /* Debug w Profiling Code */,
-				6573233F1067B7AF001E9123 /* Debug w Profiling Code (LLVM) */,
-				657323401067B7AF001E9123 /* Debug w Profiling Code (GC LLVM) */,
-				657323411067B7AF001E9123 /* Release */,
+				657323E91067BF6A001E9123 /* Debug */,
+				657323EA1067BF6A001E9123 /* Debug w Profiling Code */,
+				657323EB1067BF6A001E9123 /* Debug w Profiling Code (LLVM) */,
+				657323EC1067BF6A001E9123 /* Debug w Profiling Code (GC LLVM) */,
+				657323ED1067BF6A001E9123 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

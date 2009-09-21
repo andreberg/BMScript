@@ -16,6 +16,9 @@
 #define BMSCRIPT_DEBUG_HISTORY 0
 #define BMSCRIPT_DEBUG_MEMORY 0
 
+#define BMSCRIPT_INSERTION_TOKEN @"%@"          /* used by templates to mark locations where a replacement insertions should occur */
+#define NSSTRING_TRUNCATE_LENGTH 20             /* used by -truncate, defined in NSString (BMScriptUtilities) */
+
 // #define INCONSISTENCY_REASON(_X_) ([NSString stringWithFormat:@"Decendants of BMScript must not call %s directly. "\
 //                                                               @"It is called as needed by the execution methods of BMScript. "\
 //                                                               @"Trying to set %@ directly causes internal inconsistencies.",\
@@ -477,7 +480,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         s_isTemplate = YES;
         pthread_unlock
         scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-        scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%%{}" withString:@"%%{%@}"];
+        scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%%{}" withString:@"%{"BMSCRIPT_INSERTION_TOKEN"}"];
         return [self initWithScriptSource:scriptSource options:scriptOptions];
     } else {
         NSLog(@"Error reading file at %@\n%@", path, [err localizedFailureReason]);
@@ -814,7 +817,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     if (s_isTemplate) {
         // determine how many replacements we need to make
-        NSInteger numTokens = [script countOccurrencesOfString:BMSCRIPT_REPLACEMENT_TOKEN];
+        NSInteger numTokens = [script countOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN];
         if (numTokens == NSNotFound) {
             return NO;
         }
@@ -825,17 +828,17 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         va_list arglist;
         va_start(arglist, firstArg);
         
-        NSRange searchRange = NSMakeRange(0, [accumulator rangeOfString:BMSCRIPT_REPLACEMENT_TOKEN].location + [BMSCRIPT_REPLACEMENT_TOKEN length]);
+        NSRange searchRange = NSMakeRange(0, [accumulator rangeOfString:BMSCRIPT_INSERTION_TOKEN].location + [BMSCRIPT_INSERTION_TOKEN length]);
         
-        accumulator = [accumulator stringByReplacingOccurrencesOfString:BMSCRIPT_REPLACEMENT_TOKEN
+        accumulator = [accumulator stringByReplacingOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN
                                                              withString:firstArg 
                                                                 options:NSLiteralSearch 
                                                                   range:searchRange];
         
         while (--numTokens > 0) {
             arg = va_arg(arglist, NSString *);
-            searchRange = NSMakeRange(0, [accumulator rangeOfString:BMSCRIPT_REPLACEMENT_TOKEN].location + [BMSCRIPT_REPLACEMENT_TOKEN length]);
-            accumulator = [accumulator stringByReplacingOccurrencesOfString:BMSCRIPT_REPLACEMENT_TOKEN
+            searchRange = NSMakeRange(0, [accumulator rangeOfString:BMSCRIPT_INSERTION_TOKEN].location + [BMSCRIPT_INSERTION_TOKEN length]);
+            accumulator = [accumulator stringByReplacingOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN
                                                                  withString:arg 
                                                                     options:NSLiteralSearch 
                                                                       range:searchRange];
@@ -864,7 +867,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         
         NSInteger i = 0;
         for (NSString * key in keys) {
-            accumulator = [accumulator stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%{%@}", key] 
+            accumulator = [accumulator stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%%{"BMSCRIPT_INSERTION_TOKEN"}", key] 
                                                                  withString:[values objectAtIndex:i]];
             i++;
         }

@@ -19,6 +19,8 @@
     #endif
 #define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
+#define DEBUG 0
+
 // ---------------------------------------------------------------------------------------- 
 // MARK: MAIN
 // ---------------------------------------------------------------------------------------- 
@@ -35,7 +37,7 @@ int main (int argc, const char * argv[]) {
     BOOL success = NO;
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     TaskObserver * to = [[TaskObserver alloc] init];
     
@@ -50,7 +52,7 @@ sleep(2);
     [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.025];
 
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
 
     BMScript * script1 = [[BMScript alloc] init];
     [script1 execute];
@@ -58,7 +60,7 @@ sleep(2);
     NSLog(@"script1 result = %@", result1);
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:@"puts 1+2"];
     NSString * result2;
@@ -85,9 +87,9 @@ sleep(2);
     }
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
-    NSString * path = @"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTest/Convert To Oct.rb";
+    NSString * path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTest/Convert To Oct.rb";
     
     BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
     [script3 saturateTemplateWithArgument:@"100"];
@@ -96,11 +98,11 @@ sleep(2);
     NSLog(@"script3 result = %@", [script3 lastResult]);
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     NSString * result4;
     
-    path = @"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTest/Multiple Tokens Template.rb";
+    path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTest/Multiple Tokens Template.rb";
     
     BMRubyScript * script4 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
     [script4 saturateTemplateWithArguments:@"template", @"1", @"tokens"];
@@ -110,7 +112,7 @@ sleep(2);
     NSLog(@"script4 result = %@", result4);
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     NSString * result5;
     NSString * result6;
@@ -122,7 +124,7 @@ sleep(2);
                                                     alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
     [script5 executeAndReturnResult:&result5];
@@ -140,9 +142,9 @@ sleep(2);
     }
 
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
-    BMScript * script7 = [BMScript rubyScriptWithContentsOfTemplateFile:@"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTestSVN/trunk/Multiple Defined Tokens Template.rb"];
+    BMScript * script7 = [BMScript rubyScriptWithContentsOfTemplateFile:@"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/Multiple Defined Tokens Template.rb"];
     NSDictionary * templateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"template", @"TEMPLATE", @"1", @"NUM", @"tokens", @"TOKENS", nil];
     [script7 saturateTemplateWithDictionary:templateDict];
     [script7 execute];
@@ -153,13 +155,13 @@ sleep(2);
     NSLog(@"script7 result = %@", result7);
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     BMAssertLog([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]);
     [to release];
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     NSString * result8;
     
@@ -169,7 +171,7 @@ sleep(2);
     NSLog(@"result8 = %@", result8);
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     NSLog(@"[script4 isEqual:script7]? %@", BMStringFromBOOL([script4 isEqual:script7]));
     NSLog(@"[script4 isEqual:script4]? %@", BMStringFromBOOL([script4 isEqual:script4]));
@@ -177,7 +179,7 @@ sleep(2);
     NSLog(@"[script4 isEqualToScript:script4]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
     
     // ---------------------------------------------------------------------------------------- 
-sleep(2);
+    if (DEBUG) sleep(2);
     
     
     [script1 release];
@@ -185,7 +187,7 @@ sleep(2);
         
     [pool drain];
 
-    sleep(2);
+        if (DEBUG) sleep(2);
 
     return 0;
 }

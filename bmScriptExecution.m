@@ -1,0 +1,5 @@
+- (BOOL) execute;  // blocking. call lastResult after completion to obtain the result.
+- (BOOL) executeAndReturnResult:(NSString **)result;
+- (BOOL) executeAndReturnError:(NSError **)error;
+- (BOOL) executeAndReturnResult:(NSString **)result error:(NSError **)error;
+- (void) executeInBackgroundAndNotify AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER;

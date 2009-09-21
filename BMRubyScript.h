@@ -6,6 +6,8 @@
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 
+/// @cond
+ 
 #import <Cocoa/Cocoa.h>
 #import "BMScript.h"
 
@@ -15,3 +17,5 @@
 - (NSString *) defaultScriptSourceForLanguage;
 - (NSDictionary *) defaultOptionsForLanguage;
 @end
+
+/// @endcond
