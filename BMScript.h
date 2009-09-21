@@ -13,7 +13,7 @@
 #define BMSCRIPT_REPLACEMENT_TOKEN @"%@"        /* used by templates to mark locations where a replacement should occurr */
 #define NSSTRING_TRUNCATE_LENGTH 20    /* used by -truncate, defined in NSString (BMScriptUtilities) */
 
-#define BMScriptSynthesizeOptions(_PATH_, ...) \
+#define BMSynthesizeOptions(_PATH_, ...) \
 NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
 (_PATH_), BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
 
@@ -68,8 +68,6 @@ NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
 
 #endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
-NS_INLINE NSString * BMStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
-
 typedef NSInteger TerminationStatus;
 
 enum {
@@ -78,6 +76,21 @@ enum {
     BMScriptTaskFailedTerminationStatus
     /* all else indicates erroneous termination status as returned by the task */
 };
+
+NS_INLINE NSString * BMStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
+NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
+    switch (status) {
+        case BMScriptNotExecutedTerminationStatus:
+            return @"task not executed";
+            break;
+        case BMScriptFinishedSuccessfullyTerminationStatus:
+            return @"task finished (successfully)";
+            break;
+        default:
+            return @"task failed";
+            break;
+    }
+}
 
 OBJC_EXPORT NSString * const BMScriptTaskDidEndNotification;
 OBJC_EXPORT NSString * const BMScriptNotificationInfoTaskResultsKey;
@@ -160,6 +173,16 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (NSString *) lastScriptSourceFromHistory;
 - (NSString *) lastResultFromHistory;
 
+// MARK: Equality
+
+/**
+ * @fn
+ * @brief   ￼
+ * @details ￼￼
+ */
+- (BOOL) isEqual:(BMScript *)other;
+- (BOOL) isEqualToScript:(BMScript *)other;
+
 // MARK: Accessors
 
 /*!
@@ -206,6 +229,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @end
 
 @interface BMScript (CommonScriptLanguagesFactories)
+// these use default paths for 10.5 and 10.6 for the task launch path 
 + (id) rubyScriptWithSource:(NSString *)scriptSource;
 + (id) rubyScriptWithContentsOfFile:(NSString *)path;
 + (id) rubyScriptWithContentsOfTemplateFile:(NSString *)path;

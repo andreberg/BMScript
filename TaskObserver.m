@@ -58,8 +58,8 @@
 }
 
 - (NSString *) debugDescription {
-    return [NSString stringWithFormat:@"%@: bgResults = '%@', bgStatus = %d, taskHasEnded? %@, shouldSetLastResultCalled? %@, shouldSetScriptCalled? %@", 
-            [self description], [bgResults quote], bgStatus, BMStringFromBOOL(taskHasEnded), BMStringFromBOOL(shouldSetLastResultCalled), BMStringFromBOOL(shouldSetScriptCalled) ];
+    return [NSString stringWithFormat:@"%@: bgResults = '%@', bgStatus = %@, taskHasEnded? %@, shouldSetLastResultCalled? %@, shouldSetScriptCalled? %@", 
+            [self description], [bgResults quote], BMStringFromTerminationStatus(bgStatus), BMStringFromBOOL(taskHasEnded), BMStringFromBOOL(shouldSetLastResultCalled), BMStringFromBOOL(shouldSetScriptCalled) ];
 }
 
 // MARK: BMScript Delegate Methods
@@ -82,7 +82,7 @@
 // MARK: BMScriptLanguageProtocol
 
 - (NSDictionary *) defaultOptionsForLanguage {
-    BMScriptSynthesizeOptions(@"/bin/echo", @"using /bin/echo from ObserverDummy", nil);
+    BMSynthesizeOptions(@"/bin/echo", @"using /bin/echo from ObserverDummy", nil);
     return defaultDict;
 }
 

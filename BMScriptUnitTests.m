@@ -348,7 +348,7 @@
 }
 
 - (void) testMacros {
-    BMScriptSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e", nil);
+    BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e", nil);
     STAssertTrue([[defaultDict descriptionInStringsFileFormat] 
                     isEqualToString:[alternativeOptions descriptionInStringsFileFormat]], 
                     @"but is '%@'", [defaultDict descriptionInStringsFileFormat]);

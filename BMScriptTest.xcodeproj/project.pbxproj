@@ -430,6 +430,10 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_CFLAGS = (
+					"-D",
+					"BMSCRIPT_UNIT_TESTS=1",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,

@@ -4,8 +4,8 @@
 #import "TaskObserver.h"
 
 #if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS))
-    #define BMAssertLog(_COND_, _DESC_) if (!(_COND_)) \
-        NSLog(@"*** AssertionFailure: %s should be YES but is %@", #_COND_, (_DESC_))
+    #define BMAssertLog(_COND_) if (!(_COND_)) \
+        NSLog(@"*** AssertionFailure: %s should be YES but is %@", #_COND_, ((_COND_) ? @"YES" : @"NO"))
     #define BMAssertThrow(_COND_, _DESC_) if (!(_COND_)) \
         @throw [NSException exceptionWithName:@"*** AssertionFailure" reason:[NSString stringWithFormat:@"%s should be YES but is %@", #_COND_, (_DESC_)] userInfo:nil]
 #else
@@ -35,6 +35,7 @@ int main (int argc, const char * argv[]) {
     BOOL success = NO;
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     TaskObserver * to = [[TaskObserver alloc] init];
     
@@ -49,20 +50,22 @@ int main (int argc, const char * argv[]) {
     [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.025];
 
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
 
     BMScript * script1 = [[BMScript alloc] init];
     [script1 execute];
     NSString * result1 = [script1 lastResult];
-    NSLog(@"result1 = %@", result1);
+    NSLog(@"script1 result = %@", result1);
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:@"puts 1+2"];
     NSString * result2;
     success = [script2 executeAndReturnResult:&result2];
    
     if (success) {
-        NSLog(@"result2 = %@", result2);
+        NSLog(@"script2 result = %@", result2);
     };
     
     NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
@@ -82,6 +85,7 @@ int main (int argc, const char * argv[]) {
     }
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     NSString * path = @"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTest/Convert To Oct.rb";
     
@@ -92,6 +96,7 @@ int main (int argc, const char * argv[]) {
     NSLog(@"script3 result = %@", [script3 lastResult]);
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     NSString * result4;
     
@@ -102,9 +107,10 @@ int main (int argc, const char * argv[]) {
     [script4 execute];
     
     result4 = [script4 lastResult];
-    NSLog(@"script2 result = %@", result4);
+    NSLog(@"script4 result = %@", result4);
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     NSString * result5;
     NSString * result6;
@@ -116,6 +122,7 @@ int main (int argc, const char * argv[]) {
                                                     alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
     [script5 executeAndReturnResult:&result5];
@@ -133,6 +140,7 @@ int main (int argc, const char * argv[]) {
     }
 
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     BMScript * script7 = [BMScript rubyScriptWithContentsOfTemplateFile:@"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTestSVN/trunk/Multiple Defined Tokens Template.rb"];
     NSDictionary * templateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"template", @"TEMPLATE", @"1", @"NUM", @"tokens", @"TOKENS", nil];
@@ -140,18 +148,18 @@ int main (int argc, const char * argv[]) {
     [script7 execute];
     NSString * result7 = [script7 lastResult];
     
-    BMAssertLog([[script4 lastResult] isEqualToString:result7], BMStringFromBOOL([[script4 lastResult] isEqualToString:result7]));
+    BMAssertLog([[script4 lastResult] isEqualToString:result7]);
     
     NSLog(@"script7 result = %@", result7);
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
-    BMAssertLog([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"], 
-                  BMStringFromBOOL([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]));
-
+    BMAssertLog([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]);
     [to release];
     
     // ---------------------------------------------------------------------------------------- 
+sleep(2);
     
     NSString * result8;
     
@@ -160,10 +168,25 @@ int main (int argc, const char * argv[]) {
     
     NSLog(@"result8 = %@", result8);
     
+    // ---------------------------------------------------------------------------------------- 
+sleep(2);
+    
+    NSLog(@"[script4 isEqual:script7]? %@", BMStringFromBOOL([script4 isEqual:script7]));
+    NSLog(@"[script4 isEqual:script4]? %@", BMStringFromBOOL([script4 isEqual:script4]));
+    NSLog(@"[script4 isEqualToScript:script7]? %@", BMStringFromBOOL([script4 isEqualToScript:script7]));
+    NSLog(@"[script4 isEqualToScript:script4]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
+    
+    // ---------------------------------------------------------------------------------------- 
+sleep(2);
+    
+    
     [script1 release];
     [script2 release];
         
     [pool drain];
+
+    sleep(2);
+
     return 0;
 }
 

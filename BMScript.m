@@ -425,7 +425,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             options = [scriptOptions retain];
         } else {
             // NSLog(@"*** BMScript Warning: Using an outside-specific scriptSource but defaultOptions supplied by BMScript (defaults to /bin/echo). "
-            //       @"Did you set a proper options dictionary to support the language you are trying to utilize? (tip: use BMScriptSynthesizeOptions)");
+            //       @"Did you set a proper options dictionary to support the language you are trying to utilize? (tip: use BMSynthesizeOptions)");
             options = [defaultOptions retain];
         }
         script = [scriptSource retain];
@@ -1026,7 +1026,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:0];
         if (s_hasDelegate) {
             if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
-                if ([self shouldReturnItemFromHistory:item]) {
+                if ([[self delegate] shouldReturnItemFromHistory:item]) {
                     return item;
                 }
             }
@@ -1048,7 +1048,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:1];
         if (s_hasDelegate) {
             if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
-                if ([self shouldReturnItemFromHistory:item]) {
+                if ([[self delegate] shouldReturnItemFromHistory:item]) {
                     return item;
                 }
             }
@@ -1070,7 +1070,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         NSString * item = [[[self history] lastObject] objectAtIndex:0];
         if (s_hasDelegate) {
             if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
-                if ([self shouldReturnItemFromHistory:item]) {
+                if ([[self delegate] shouldReturnItemFromHistory:item]) {
                     return item;
                 }
             }
@@ -1092,7 +1092,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         NSString * item = [[[self history] lastObject] objectAtIndex:1];
         if (s_hasDelegate) {
             if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
-                if ([self shouldReturnItemFromHistory:item]) {
+                if ([[self delegate] shouldReturnItemFromHistory:item]) {
                     return item;
                 }
             }
@@ -1109,6 +1109,19 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     return nil;
 }
 
+// MARK: Equality
+
+- (BOOL) isEqualToScript:(BMScript *)other {
+    BOOL sameScript = [[self script] isEqualToString:[other script]];
+    BOOL sameLaunchPath = [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] 
+                           isEqualToString:[[other options] objectForKey:BMScriptOptionsTaskLaunchPathKey]];
+    return sameScript && sameLaunchPath;
+}
+
+- (BOOL) isEqual:(BMScript *)other {
+    return [[self script] isEqualToString:[other script]];
+}
+
 // MARK: Delegate Methods
 
 - (BOOL) shouldAddItemToHistory:(id)anItem { return YES; }
@@ -1122,7 +1135,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: BMScriptLanguage
 
 - (NSDictionary *) defaultOptionsForLanguage {
-    BMScriptSynthesizeOptions(@"/bin/echo", nil);
+    BMSynthesizeOptions(@"/bin/echo", nil);
     return defaultDict;
 }
 
@@ -1179,21 +1192,6 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     return self;
 }
 
-// MARK: Misc
-
-- (NSUInteger) hash {
-    NSUInteger scriptHash = [script hash];
-    NSUInteger selfHash   = [self hash];
-    return selfHash & scriptHash;
-}
-
-- (BOOL) isEqual:(id)other {
-    if ([self hash] == [other hash]) {
-        return YES;
-    }
-    return NO;
-}
-
 @end
 
 @implementation BMScript (CommonScriptLanguagesFactories)
@@ -1201,51 +1199,51 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // Ruby
 
 + (id) rubyScriptWithSource:(NSString *)scriptSource {
-    BMScriptSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+    BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
     return [[[self alloc] initWithScriptSource:scriptSource options:defaultDict] autorelease];
 }
 
 + (id) rubyScriptWithContentsOfFile:(NSString *)path {
-    BMScriptSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+    BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
     return [[[self alloc] initWithContentsOfFile:path options:defaultDict] autorelease];
 }
 
 + (id) rubyScriptWithContentsOfTemplateFile:(NSString *)path {
-	BMScriptSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+	BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
     return [[[self alloc] initWithContentsOfTemplateFile:path options:defaultDict] autorelease];
 }
 
 // Python 
 
 + (id) pythonScriptWithSource:(NSString *)scriptSource {
-    BMScriptSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
+    BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
     return [[[self alloc] initWithScriptSource:scriptSource options:defaultDict] autorelease];
 }
 
 + (id) pythonScriptWithContentsOfFile:(NSString *)path {
-    BMScriptSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
+    BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
     return [[[self alloc] initWithContentsOfFile:path options:defaultDict] autorelease];
 }
 
 + (id) pythonScriptWithContentsOfTemplateFile:(NSString *)path {
-    BMScriptSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
+    BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
     return [[[self alloc] initWithContentsOfTemplateFile:path options:defaultDict] autorelease];
 }
 
 // Perl
 
 + (id) perlScriptWithSource:(NSString *)scriptSource {
-	BMScriptSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
+	BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
     return [[[self alloc] initWithScriptSource:scriptSource options:defaultDict] autorelease];
 }
 
 + (id) perlScriptWithContentsOfFile:(NSString *)path {
-	BMScriptSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
+	BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
     return [[[self alloc] initWithContentsOfFile:path options:defaultDict] autorelease];
 }
 
 + (id) perlScriptWithContentsOfTemplateFile:(NSString *)path {
-	BMScriptSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
+	BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
     return [[[self alloc] initWithContentsOfTemplateFile:path options:defaultDict] autorelease];
 }
 
