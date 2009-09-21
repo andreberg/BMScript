@@ -9,32 +9,34 @@
 #import <Cocoa/Cocoa.h>
 #include <AvailabilityMacros.h>
 
-#define THREAD_SAFE 1
-#define TRUNCATE_LENGTH 20
-#define REPLACEMENT_TOKEN @"%@"  /* used by templates to mark locations where a replacement should occurr */
+#define BMSCRIPT_THREAD_SAFE 1
+#define BMSCRIPT_REPLACEMENT_TOKEN @"%@"        /* used by templates to mark locations where a replacement should occurr */
+#define NSSTRING_TRUNCATE_LENGTH 20    /* used by -truncate, defined in NSString (BMScriptUtilities) */
 
-#define SynthesizeOptions(_PATH_, ...) \
+#define BMScriptSynthesizeOptions(_PATH_, ...) \
 NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
 (_PATH_), BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
 
 // To simplify support for 64bit (and Leopard in general), 
 // provide the type defines for non Leopard SDKs
 #if !(MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-// NSInteger/NSUInteger and Max/Mins
-#ifndef NSINTEGER_DEFINED
-    #if __LP64__ || NS_BUILD_32_LIKE_64
-        typedef long NSInteger;
-        typedef unsigned long NSUInteger;
-    #else
-        typedef int NSInteger;
-        typedef unsigned int NSUInteger;
-    #endif
-    #define NSIntegerMax    LONG_MAX
-    #define NSIntegerMin    LONG_MIN
-    #define NSUIntegerMax   ULONG_MAX
-    #define NSINTEGER_DEFINED 1
-#endif  // NSINTEGER_DEFINED
-// CGFloat
+
+    // NSInteger/NSUInteger and Max/Mins
+    #ifndef NSINTEGER_DEFINED
+        #if __LP64__ || NS_BUILD_32_LIKE_64
+            typedef long NSInteger;
+            typedef unsigned long NSUInteger;
+        #else
+            typedef int NSInteger;
+            typedef unsigned int NSUInteger;
+        #endif
+        #define NSIntegerMax    LONG_MAX
+        #define NSIntegerMin    LONG_MIN
+        #define NSUIntegerMax   ULONG_MAX
+        #define NSINTEGER_DEFINED 1
+    #endif  // NSINTEGER_DEFINED
+
+    // CGFloat
     #ifndef CGFLOAT_DEFINED
         #if defined(__LP64__) && __LP64__
             // This really is an untested path (64bit on Tiger?)
@@ -51,26 +53,29 @@ NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
         #define CGFLOAT_DEFINED 1
     #endif // CGFLOAT_DEFINED
 
-#if !defined(NS_INLINE)
-    #if defined(__GNUC__)
-        #define NS_INLINE static __inline__ __attribute__((always_inline))
-    #elif defined(__MWERKS__) || defined(__cplusplus)
-        #define NS_INLINE static inline
-    #elif defined(_MSC_VER)
-        #define NS_INLINE static __inline
-    #elif defined(__WIN32__)
-        #define NS_INLINE static __inline__
+    // NS_INLINE
+    #if !defined(NS_INLINE)
+        #if defined(__GNUC__)
+            #define NS_INLINE static __inline__ __attribute__((always_inline))
+        #elif defined(__MWERKS__) || defined(__cplusplus)
+            #define NS_INLINE static inline
+        #elif defined(_MSC_VER)
+            #define NS_INLINE static __inline
+        #elif defined(__WIN32__)
+            #define NS_INLINE static __inline__
+        #endif
     #endif
-#endif
 
 #endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
+NS_INLINE NSString * BMStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
 
 typedef NSInteger TerminationStatus;
 
 enum {
     BMScriptNotExecutedTerminationStatus = -1,
-    BMScriptFinishedSuccessfullyTerminationStatus = 0
+    BMScriptFinishedSuccessfullyTerminationStatus = 0,
+    BMScriptTaskFailedTerminationStatus
     /* all else indicates erroneous termination status as returned by the task */
 };
 
@@ -97,9 +102,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @optional
 - (NSString *) defaultScriptSourceForLanguage;  /* implement this to supply a default script for [[self alloc] init].
                                                    if unimplemented, an empty script will be set as initial value for self.defaultScript */
-
-- (SEL) taskFinishedCallback:(id)obj;           /* can be implemented in order to have -[self executeInBackgroundAndNotify] issue a callback
-                                                   once the task has completed. passes self as obj. */
 @end
 
 @interface BMScript : NSObject <NSCopying, NSCoding, BMScriptLanguageProtocol> {
@@ -229,4 +231,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (NSString *) truncate;
 - (NSString *) truncateToLength:(NSInteger)len;
 - (NSInteger) countOccurrencesOfString:(NSString *)aString;
+@end
+
+@interface NSDictionary (BMScriptUtilities)
+- (NSDictionary *) dictionaryByAddingObject:(id)object forKey:(id)key;
 @end

@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
-		654295A9105FE2410037E0C8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
-		654295AA105FE2460037E0C8 /* BMRubyScriptUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429590105FE1B80037E0C8 /* BMRubyScriptUnitTests.m */; };
 		654295AB105FE24F0037E0C8 /* Convert To Oct.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958B105FE1B80037E0C8 /* Convert To Oct.rb */; };
 		654295AC105FE24F0037E0C8 /* Convert To Hex Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */; };
 		654295AD105FE24F0037E0C8 /* Convert To Decimal Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */; };
@@ -17,10 +15,25 @@
 		654295AF105FE2540037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295D1105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		654295D2105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
+		65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */; };
+		65BA2B5C10676ABB000B5D3B /* TaskObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA2B5B10676ABB000B5D3B /* TaskObserver.m */; };
+		65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
+		65BA2B9B10676CBF000B5D3B /* TaskObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA2B5B10676ABB000B5D3B /* TaskObserver.m */; };
+		65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */; };
 		8DD76F9A0486AA7600D96B5E /* BMRubyScriptTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* BMScriptTest.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* BMScriptTest.1 */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6581A39210675DA300558062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
+			remoteInfo = BMScriptTest;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
@@ -36,7 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScriptTest.m; sourceTree = "<group>"; };
+		08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
 		6542958B105FE1B80037E0C8 /* Convert To Oct.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Oct.rb"; sourceTree = "<group>"; };
@@ -51,6 +64,10 @@
 		654295A8105FE2410037E0C8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
+		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
+		65BA2B5A10676ABB000B5D3B /* TaskObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskObserver.h; sourceTree = "<group>"; };
+		65BA2B5B10676ABB000B5D3B /* TaskObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskObserver.m; sourceTree = "<group>"; };
+		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BMScriptTest.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,7 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				654295A9105FE2410037E0C8 /* SenTestingKit.framework in Frameworks */,
+				65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +97,7 @@
 			children = (
 				08FB7795FE84155DC02AAC07 /* Source */,
 				65429588105FE1B80037E0C8 /* Unit Tests */,
+				65731F961067771B001E9123 /* Other Sources */,
 				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -92,7 +110,6 @@
 			isa = PBXGroup;
 			children = (
 				65429594105FE1D00037E0C8 /* Classes */,
-				32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */,
 			);
 			name = Source;
@@ -120,7 +137,9 @@
 			isa = PBXGroup;
 			children = (
 				65429589105FE1B80037E0C8 /* Resources */,
+				65BA2D2D106776E5000B5D3B /* Helper Classes */,
 				65429590105FE1B80037E0C8 /* BMRubyScriptUnitTests.m */,
+				65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */,
 			);
 			name = "Unit Tests";
 			sourceTree = "<group>";
@@ -148,6 +167,7 @@
 				6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */,
 				6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */,
 				6542958F105FE1B80037E0C8 /* Multiple Tokens Template.rb */,
+				65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */,
 			);
 			name = Templates;
 			sourceTree = "<group>";
@@ -161,6 +181,23 @@
 				65429596105FE1D00037E0C8 /* BMRubyScript.m */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		65731F961067771B001E9123 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		65BA2D2D106776E5000B5D3B /* Helper Classes */ = {
+			isa = PBXGroup;
+			children = (
+				65BA2B5A10676ABB000B5D3B /* TaskObserver.h */,
+				65BA2B5B10676ABB000B5D3B /* TaskObserver.m */,
+			);
+			name = "Helper Classes";
 			sourceTree = "<group>";
 		};
 		C6859EA2029092E104C91782 /* Documentation */ = {
@@ -186,6 +223,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6581A39310675DA300558062 /* PBXTargetDependency */,
 			);
 			name = BMScriptUnitTests;
 			productName = BMScriptUnitTests;
@@ -216,7 +254,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
+				BuildIndependentTargetsInParallel = YES;
 			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "BMScriptTest" */;
 			compatibilityVersion = "Xcode 3.1";
@@ -240,6 +278,7 @@
 				654295AC105FE24F0037E0C8 /* Convert To Hex Template.rb in Resources */,
 				654295AD105FE24F0037E0C8 /* Convert To Decimal Template.rb in Resources */,
 				654295AE105FE24F0037E0C8 /* Multiple Tokens Template.rb in Resources */,
+				65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,8 +306,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				654295AF105FE2540037E0C8 /* BMRubyScript.m in Sources */,
-				654295AA105FE2460037E0C8 /* BMRubyScriptUnitTests.m in Sources */,
 				654295D2105FE2A90037E0C8 /* BMScript.m in Sources */,
+				65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */,
+				65BA2B5C10676ABB000B5D3B /* TaskObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65BA2B9B10676CBF000B5D3B /* TaskObserver.m in Sources */,
 				8DD76F9A0486AA7600D96B5E /* BMRubyScriptTest.m in Sources */,
 				65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */,
 				654295D1105FE2A90037E0C8 /* BMScript.m in Sources */,
@@ -283,6 +324,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6581A39310675DA300558062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* BMScriptTest */;
+			targetProxy = 6581A39210675DA300558062 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
@@ -406,7 +455,6 @@
 				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.4;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = "Debug w Profiling Code";
@@ -442,6 +490,10 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_CFLAGS = (
+					"-D",
+					"BMSCRIPT_UNIT_TESTS=1",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -454,6 +506,135 @@
 			};
 			name = "Debug w Profiling Code";
 		};
+		65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = "Debug w Profiling Code (LLVM)";
+		};
+		65C57D19106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug w Profiling Code (LLVM)";
+		};
+		65C57D1A106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_CFLAGS = (
+					"-D",
+					"BMSCRIPT_UNIT_TESTS=1",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = "Debug w Profiling Code (LLVM)";
+		};
+		65C57EEF10673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = "Debug w Profiling Code (GC LLVM)";
+		};
+		65C57EF010673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug w Profiling Code (GC LLVM)";
+		};
+		65C57EF110673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_CFLAGS = (
+					"-D",
+					"BMSCRIPT_UNIT_TESTS=1",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = "Debug w Profiling Code (GC LLVM)";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -462,6 +643,8 @@
 			buildConfigurations = (
 				1DEB927508733DD40010E9CD /* Debug */,
 				6542ED5E1061DDBC009DF7DF /* Debug w Profiling Code */,
+				65C57D19106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
+				65C57EF010673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
 				1DEB927608733DD40010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -472,6 +655,8 @@
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
 				6542ED5D1061DDBC009DF7DF /* Debug w Profiling Code */,
+				65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
+				65C57EEF10673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
 				1DEB927A08733DD40010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -482,6 +667,8 @@
 			buildConfigurations = (
 				654295A4105FE22C0037E0C8 /* Debug */,
 				6542ED5F1061DDBC009DF7DF /* Debug w Profiling Code */,
+				65C57D1A106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
+				65C57EF110673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
 				654295A5105FE22C0037E0C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

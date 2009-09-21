@@ -255,11 +255,19 @@
     BMRubyScript * script2 = [BMRubyScript scriptWithSource:[script1 lastScriptSourceFromHistory] options:alternativeOptions];
     [script2 execute];
     result2 = [script2 lastResult];
-
-    //STAssertTrue([result2 isEqualToString:result1], @"instead '%@' != '%@'", result2, result1);
-    //STAssertTrue([[script1 lastResultFromHistory] isEqualToString:[script2 lastResultFromHistory]], @"");
     
-    //STAssertEqualObjects([script1 history], [script2 history], @"");
+    // Would need to chop off the "[objc $PID]:" part from the messages which SenTestKit is outputting to stderr. 
+    // Since we have told BMScript's out pipes to write to stdout and stderr what will spoil the test is that 
+    // although the output written from BMScript's results is fine, the $PID part from the messages send by SenTestKit 
+    // will cause the test to fail since testing the two instances causes it to spawn two test threads with a PID of 
+    // one apart from the other. 
+    // Edit: Unfortunately this is not possible: It appears that these will be run twice once for GC_ON and once for GC_OFF
+    // and only the GC_OFF case has this stupidity attached.
+    STAssertTrue([result2 isEqualToString:result1], @"instead '%@' != '%@'", [[result2 quote] truncate], [[result1 quote] truncate]);
+    STAssertTrue([[script1 lastResultFromHistory] isEqualToString:[script2 lastResultFromHistory]], @"");
+    
+    STAssertEqualObjects([script1 history], [script2 history], @"");
+    
     STAssertTrue([[script1 history] isKindOfClass:[NSMutableArray class]], @"but is '%@'", NSStringFromClass([[script1 history] class]));
     STAssertTrue([[script2 history] isKindOfClass:[NSMutableArray class]], @"but is '%@'", NSStringFromClass([[script2 history] class]));
     
@@ -280,7 +288,7 @@
                                                @"   print str\\n"
                                                @"end"], @"but is '%@'", quotedString);
     
-    // if truncate length unspecifified uses a default of 20 or TRUNCATE_LENGTH if defined
+    // if truncate length unspecifified uses a default of 20 or NSSTRING_TRUNCATE_LENGTH if defined
     NSString * truncatedQuotedString = [quotedString truncate];
     
     STAssertTrue([truncatedQuotedString isEqualToString:@"str = %%{}\\n"

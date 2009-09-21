@@ -1,67 +1,23 @@
 #import <Foundation/Foundation.h>
+#import "BMScript.h"
 #import "BMRubyScript.h"
+#import "TaskObserver.h"
 
-NS_INLINE NSString * NSStringFromBOOL(BOOL b) {
-    return (b ? @"YES" : @"NO");
-}
+#if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS))
+    #define BMAssertLog(_COND_, _DESC_) if (!(_COND_)) \
+        NSLog(@"*** AssertionFailure: %s should be YES but is %@", #_COND_, (_DESC_))
+    #define BMAssertThrow(_COND_, _DESC_) if (!(_COND_)) \
+        @throw [NSException exceptionWithName:@"*** AssertionFailure" reason:[NSString stringWithFormat:@"%s should be YES but is %@", #_COND_, (_DESC_)] userInfo:nil]
+#else
+    #define BMAsssertLog
+    #define BMAssertThrow
+#endif
 
-static BOOL s_taskHasEnded = NO;
-
-@interface ObserverDummy : NSObject <BMScriptLanguageProtocol> {
-    
-}
-- (void) taskFinished:(NSNotification *)aNotification;
-@end
-
-@implementation ObserverDummy 
-
-- (void) taskFinished:(NSNotification *)aNotification {
-    TerminationStatus status = [[[aNotification userInfo] objectForKey:BMScriptNotificationInfoTaskTerminationStatusKey] intValue];
-    NSString * results = [[aNotification userInfo] objectForKey:BMScriptNotificationInfoTaskResultsKey];
-    NSLog(@"task finished with status = %ld, results = %@", status, results);
-    s_taskHasEnded = YES;
-}
-
-- (id) init {
-    self = [super init];
-    if (self != nil) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:BMScriptTaskDidEndNotification object:nil];
-        // FIXME: support for bg execution 
-        // TIP: read concurrent programming topics
-        BMRubyScript * bgScript = [BMRubyScript scriptWithSource:@"print 3**2"];
-        [bgScript setDelegate:self];
-        //BMRubyScript * bgScript = [[BMScript alloc] init];
-        [bgScript executeInBackgroundAndNotify];
-    }
-    return self;
-}
-
-- (BOOL) shouldSetLastResult:(NSString *)aString {
-    if ([aString isEqualToString:@"9"]) {
-        NSLog(@"LastResult will be set to 9");
-        return YES;
-    }
-    return NO;
-}
-
-- (BOOL) shouldSetScript:(NSString *)aScript {
-    NSLog(@"%s", _cmd);
-    return YES;
-}
-
-- (NSDictionary *) defaultOptionsForLanguage {
-    SynthesizeOptions(@"/bin/echo", @"using /bin/echo from ObserverDummy", nil);
-    return defaultDict;
-}
-
-
-- (void) dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
-}
-@end
-
-
+#ifdef PATHFOR
+    #define OLD_PATHFOR PATHFOR
+#undef PATHFOR
+    #endif
+#define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
 // ---------------------------------------------------------------------------------------- 
 // MARK: MAIN
@@ -74,99 +30,142 @@ int main (int argc, const char * argv[]) {
     NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED = %i", MAC_OS_X_VERSION_MIN_REQUIRED);
     NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED = %i", MAC_OS_X_VERSION_MAX_ALLOWED);
     
+    NSLog(@"GarbageCollector enabled? %@", BMStringFromBOOL([[NSGarbageCollector defaultCollector] isEnabled]));
+    
     BOOL success = NO;
     
-    ObserverDummy * od = [[ObserverDummy alloc] init];
+    // ---------------------------------------------------------------------------------------- 
+    
+    TaskObserver * to = [[TaskObserver alloc] init];
     
     // test protocol conformance
-    BOOL respondsToDefaultOpts = [od respondsToSelector:@selector(defaultOptionsForLanguage)];
-    BOOL respondsToDefaultScript = [od respondsToSelector:@selector(defaultScriptSourceForLanguage)];
-    BOOL respondsToTaskFinishedCallback = [od respondsToSelector:@selector(taskFinishedCallback:)];
+    BOOL respondsToDefaultOpts = [to respondsToSelector:@selector(defaultOptionsForLanguage)];
+    BOOL respondsToDefaultScript = [to respondsToSelector:@selector(defaultScriptSourceForLanguage)];
+    BOOL respondsToTaskFinishedCallback = [to respondsToSelector:@selector(taskFinishedCallback:)];
     
-    NSLog(@"od conforms to BMScriptLanguageProtocol = %@", NSStringFromBOOL([ObserverDummy conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
-    NSLog(@"od implements all required methods for %@ = %@", @"BMScriptLanguageProtocol", NSStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript && respondsToTaskFinishedCallback));
+    NSLog(@"TaskObserver conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([TaskObserver conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
+    NSLog(@"TaskObserver implements all required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript && respondsToTaskFinishedCallback));
     
-    BMScript * newScript1 = [[BMScript alloc] init];
-    [newScript1 execute];
-    NSString * result1 = [newScript1 lastResult];
-    NSLog(@"newScript1 result = %@", result1);
+    [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.025];
+
+    // ---------------------------------------------------------------------------------------- 
+
+    BMScript * script1 = [[BMScript alloc] init];
+    [script1 execute];
+    NSString * result1 = [script1 lastResult];
+    NSLog(@"result1 = %@", result1);
     
-    BMRubyScript * newScript2 = [[BMRubyScript alloc] initWithScriptSource:@"puts 1+2"];
+    // ---------------------------------------------------------------------------------------- 
+    
+    BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:@"puts 1+2"];
     NSString * result2;
-    success = [newScript2 executeAndReturnResult:&result2];
-    
+    success = [script2 executeAndReturnResult:&result2];
+   
     if (success) {
-        NSLog(@"newScript2 result = %@", result2);
+        NSLog(@"result2 = %@", result2);
     };
-    
-    
     
     NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
     NSDictionary * newOptions = [NSDictionary dictionaryWithObjectsAndKeys:
                                  @"/usr/local/bin/ruby1.9", BMScriptOptionsTaskLaunchPathKey, 
-                                 newArgs, BMScriptOptionsTaskArgumentsKey, nil];
-    NSError * outError;
+                                                   newArgs, BMScriptOptionsTaskArgumentsKey, nil];
+
+    NSError * error;
     NSString * newResult1;
     
-    [newScript1 setScript:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
-    [newScript1 setOptions:newOptions];
-    success = [newScript1 executeAndReturnResult:&newResult1 error:&outError];
+    [script1 setScript:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
+    [script1 setOptions:newOptions];
+    success = [script1 executeAndReturnResult:&newResult1 error:&error];
     
     if (success) {
-        NSLog(@"newScript1 new result (unquoted) = %@ (%@)", [newResult1 quote], newResult1);
+        NSLog(@"script1 new result (unquoted) = %@ (%@)", [newResult1 quote], newResult1);
     }
+    
+    // ---------------------------------------------------------------------------------------- 
     
     NSString * path = @"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTest/Convert To Oct.rb";
     
-    BMRubyScript * script1 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
-    [script1 saturateTemplateWithArgument:@"100"];
-    [script1 execute];
+    BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
+    [script3 saturateTemplateWithArgument:@"100"];
+    [script3 execute];
     
-    NSLog(@"script1 result = %@", [script1 lastResult]);
+    NSLog(@"script3 result = %@", [script3 lastResult]);
+    
+    // ---------------------------------------------------------------------------------------- 
+    
+    NSString * result4;
     
     path = @"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTest/Multiple Tokens Template.rb";
     
-    BMRubyScript * script2 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
-    [script2 saturateTemplateWithArguments:@"template", @"1", @"tokens"];
-    [script2 execute];
+    BMRubyScript * script4 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
+    [script4 saturateTemplateWithArguments:@"template", @"1", @"tokens"];
+    [script4 execute];
     
-    NSLog(@"script2 result = %@", [script2 lastResult]);
-
-
-    if (s_taskHasEnded) {
-        [od release];
-    } else {
-        NSLog(@"*** Warning: ObserverDummy still around. ObserverDummy * od = %@, s_taskHasEnded = %d", od, NSStringFromBOOL(s_taskHasEnded));
-    }
+    result4 = [script4 lastResult];
+    NSLog(@"script2 result = %@", result4);
     
-    NSString * result3;
-    NSString * result4;
+    // ---------------------------------------------------------------------------------------- 
+    
+    NSString * result5;
+    NSString * result6;
     
     // alternative options (ruby 1.9)
     NSArray * alternativeArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
     NSDictionary * alternativeOptions = [NSDictionary dictionaryWithObjectsAndKeys:
                                           @"/usr/local/bin/ruby1.9", BMScriptOptionsTaskLaunchPathKey, 
-                                          alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
+                                                    alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
     
-    BMRubyScript * script3 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
-    [script3 execute];
-    result3 = [script3 lastResult];
+    // ---------------------------------------------------------------------------------------- 
+    
+    BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
+    [script5 executeAndReturnResult:&result5];
         
-    BMRubyScript * script4 = [BMRubyScript scriptWithSource:[script3 lastScriptSourceFromHistory] options:alternativeOptions];
-    [script4 execute];
-    result4 = [script4 lastResult];
+    BMRubyScript * script6 = [BMRubyScript scriptWithSource:[script5 lastScriptSourceFromHistory] options:alternativeOptions];
+    [script6 execute];
+    result6 = [script6 lastResult];
     
-    if (![result3 isEqualToString:result4]) {
+    if (![result5 isEqualToString:result6]) {
         NSLog(@"*** AssertionFailure: result3 should be equal to result4!");
     }
     
-    if (![[script3 history] isEqual:[script4 history]]) {
+    if (![[script5 history] isEqual:[script6 history]]) {
         NSLog(@"*** AssertionFailure: [result3 history] should be equal to [result4 history]");
     }
+
+    // ---------------------------------------------------------------------------------------- 
     
-    [newScript1 release];
-    [newScript2 release];
+    BMScript * script7 = [BMScript rubyScriptWithContentsOfTemplateFile:@"/Users/andre/Documents/Xcode/Command Line Utility/Foundation/+ Tests/BMScriptTestSVN/trunk/Multiple Defined Tokens Template.rb"];
+    NSDictionary * templateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"template", @"TEMPLATE", @"1", @"NUM", @"tokens", @"TOKENS", nil];
+    [script7 saturateTemplateWithDictionary:templateDict];
+    [script7 execute];
+    NSString * result7 = [script7 lastResult];
+    
+    BMAssertLog([[script4 lastResult] isEqualToString:result7], BMStringFromBOOL([[script4 lastResult] isEqualToString:result7]));
+    
+    NSLog(@"script7 result = %@", result7);
+    
+    // ---------------------------------------------------------------------------------------- 
+    
+    BMAssertLog([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"], 
+                  BMStringFromBOOL([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]));
+
+    [to release];
+    
+    // ---------------------------------------------------------------------------------------- 
+    
+    NSString * result8;
+    
+    BMScript * script8 = [BMScript perlScriptWithSource:@"print 2**64;"];
+    [script8 executeAndReturnResult:&result8 error:&error];
+    
+    NSLog(@"result8 = %@", result8);
+    
+    [script1 release];
+    [script2 release];
         
     [pool drain];
     return 0;
 }
+
+#undef PATHFOR
+#define PATHFOR OLD_PATHFOR
