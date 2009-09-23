@@ -44,7 +44,7 @@
         
         BMScript * bgScript = [BMScript pythonScriptWithSource:@"print 3**100"];
         
-        [bgScript setDelegate:self];
+        //[bgScript setDelegate:bgScript];
         [bgScript executeInBackgroundAndNotify];
     }
     return self;
@@ -66,6 +66,7 @@
 
 - (BOOL) shouldSetLastResult:(NSString *)aString {
     self.shouldSetLastResultCalled = YES;
+    NSLog(@"Inside %s", __PRETTY_FUNCTION__);
     if ([aString isEqualToString:@"9"]) {
         NSLog(@"LastResult will be set to 9");
         return YES;
@@ -75,7 +76,7 @@
 
 - (BOOL) shouldSetScript:(NSString *)aScript {
     self.shouldSetScriptCalled = YES;
-    NSLog(@"%s", _cmd);
+    NSLog(@"Inside %s", __PRETTY_FUNCTION__);
     return YES;
 }
 

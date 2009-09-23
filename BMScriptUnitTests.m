@@ -117,7 +117,7 @@
 
 - (void) testFactories {
     
-    NSString * result = [NSString string];
+    NSString * result;
     
     BMScript * script1 = [BMScript scriptWithContentsOfFile:rubyConvertToOctPath options:rubyDefaultOptions];
     [script1 execute];
@@ -203,7 +203,7 @@
 
 - (void) testExecution {
     
-    BOOL success = NO;
+    BOOL success;
     
     // Case 1: 
     // test initalizer for default values
@@ -225,6 +225,8 @@
     
     STAssertTrue([result2 isEqualToString:@"0xff"], @"script2Result is \"%@\"", result2);
     
+    NSLog(@"script2 success = %@", BMStringFromBOOL(success));
+    
     [script2 release];
 
     // Case 3: 
@@ -238,7 +240,9 @@
     
     STAssertTrue([result3 isEqualToString:@"255"], @"script3Result is \"%@\", outError is \"%@\"", result3, outError);
     
-    [script3 release];    
+    NSLog(@"script3 success = %@", BMStringFromBOOL(success));
+    
+    [script3 release];
 
 }
 - (void) testBackgroundExecution {
@@ -247,7 +251,7 @@
     // Right now I have reasonable test coverage by testing in main
 //     STAssertTrue([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"], @"but is %@", to.bgResults);
 //     STAssertTrue(to.bgStatus == BMScriptFinishedSuccessfullyTerminationStatus, @"but is %d", to.bgStatus);
-//     STAssertFalse(to.bgStatus == BMScriptTaskFailedTerminationStatus, @"but is %d", to.bgStatus);
+//     STAssertFalse(to.bgStatus == BMScriptFailedTerminationStatus, @"but is %d", to.bgStatus);
 
 }
 

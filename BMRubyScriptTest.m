@@ -2,6 +2,7 @@
 #import "BMScript.h"
 #import "BMRubyScript.h"
 #import "TaskObserver.h"
+#include <unistd.h>
 
 #if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS))
     #define BMAssertLog(_COND_) if (!(_COND_)) \
@@ -37,10 +38,9 @@ int main (int argc, const char * argv[]) {
     BOOL success = NO;
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     TaskObserver * to = [[TaskObserver alloc] init];
-    
+        
     // test protocol conformance
     BOOL respondsToDefaultOpts = [to respondsToSelector:@selector(defaultOptionsForLanguage)];
     BOOL respondsToDefaultScript = [to respondsToSelector:@selector(defaultScriptSourceForLanguage)];
@@ -49,10 +49,9 @@ int main (int argc, const char * argv[]) {
     NSLog(@"TaskObserver conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([TaskObserver conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
     NSLog(@"TaskObserver implements all required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript && respondsToTaskFinishedCallback));
     
-    [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.025];
+    [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.035];
 
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
 
     BMScript * script1 = [[BMScript alloc] init];
     [script1 execute];
@@ -60,7 +59,6 @@ int main (int argc, const char * argv[]) {
     NSLog(@"script1 result = %@", result1);
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:@"puts 1+2"];
     NSString * result2;
@@ -87,7 +85,6 @@ int main (int argc, const char * argv[]) {
     }
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     NSString * path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTest/Convert To Oct.rb";
     
@@ -98,7 +95,6 @@ int main (int argc, const char * argv[]) {
     NSLog(@"script3 result = %@", [script3 lastResult]);
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     NSString * result4;
     
@@ -112,7 +108,6 @@ int main (int argc, const char * argv[]) {
     NSLog(@"script4 result = %@", result4);
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     NSString * result5;
     NSString * result6;
@@ -124,7 +119,6 @@ int main (int argc, const char * argv[]) {
                                                     alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
     [script5 executeAndReturnResult:&result5];
@@ -142,7 +136,6 @@ int main (int argc, const char * argv[]) {
     }
 
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     BMScript * script7 = [BMScript rubyScriptWithContentsOfTemplateFile:@"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/Multiple Defined Tokens Template.rb"];
     NSDictionary * templateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"template", @"TEMPLATE", @"1", @"NUM", @"tokens", @"TOKENS", nil];
@@ -155,13 +148,11 @@ int main (int argc, const char * argv[]) {
     NSLog(@"script7 result = %@", result7);
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     BMAssertLog([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]);
     [to release];
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     NSString * result8;
     
@@ -171,7 +162,6 @@ int main (int argc, const char * argv[]) {
     NSLog(@"result8 = %@", result8);
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     NSLog(@"[script4 isEqual:script7]? %@", BMStringFromBOOL([script4 isEqual:script7]));
     NSLog(@"[script4 isEqual:script4]? %@", BMStringFromBOOL([script4 isEqual:script4]));
@@ -179,16 +169,18 @@ int main (int argc, const char * argv[]) {
     NSLog(@"[script4 isEqualToScript:script4]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
     
     // ---------------------------------------------------------------------------------------- 
-    if (DEBUG) sleep(2);
     
     
     [script1 release];
     [script2 release];
         
     [pool drain];
-
-        if (DEBUG) sleep(2);
-
+    
+    if (DEBUG) {
+        int c;
+        NSLog(@"Press any key to exit...");
+        c = getchar();
+    }
     return 0;
 }
 

@@ -1,4 +1,4 @@
-- (BOOL) execute;  // blocking. call lastResult after completion to obtain the result.
+- (BOOL) execute;  // call -lastResult after completion to obtain the result.
 - (BOOL) executeAndReturnResult:(NSString **)result;
 - (BOOL) executeAndReturnError:(NSError **)error;
 - (BOOL) executeAndReturnResult:(NSString **)result error:(NSError **)error;

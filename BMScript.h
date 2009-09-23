@@ -5,9 +5,12 @@
 //  Created by Andre Berg on 11.09.09.
 //  Copyright 2009 Berg Media. All rights reserved.
 //
+//  For license details see end of this file.
+//  Short version: licensed under MIT license.
+//
 
 /**
- * @mainpage BMScript: Utilize The Power Of Scripting Languages
+ * @mainpage BMScript: Harness The Power Of Scripting Languages
  * 
  * BMScript is an Objective-C class set to make it easier to harness the
  * power and flexibility of a whole range of scripting languages that already
@@ -28,17 +31,17 @@
  * by the command line tool. As it is, currently, optional, if absent the default source will
  * be set to an empty string.
  *
- * The defaultOptionsForLanguage method takes a dictionary which looks like this:
+ * The BMScript.defaultOptionsForLanguage method takes a dictionary which looks like this:
  *
  * @include bmScriptOptionsDictionary.m
  * 
  * There's two constant keys. These are the only keys you need to define values for.
- * CLI arguments or flags are passed as NSStrings in an NSArray. It is important to note 
+ * Task arguments or flags are passed as NSStrings in an NSArray. It is important to note 
  * that the script source string should <b>NOT</b> be supplied in the array for the
- * BMScriptOptionsTaskArgumentsKey, as it will be added by the class later after performing
+ * #BMScriptOptionsTaskArgumentsKey, as it will be added by the class later after performing
  * a series of tests and replacements.
  * 
- * A macro function called #BMSynthesizeOptions is available to ease the declaration of the options. 
+ * A macro function called BMSynthesizeOptions(path, args) is available to ease the declaration of the options. 
  * It is declared as:
  *
  * @include bmScriptSynthesizeOptions.m
@@ -51,7 +54,7 @@
  * @include bmScriptCreationMethods.m
  *
  * If you do not use the designated initializer and supply the options yourself, the
- * defaultOptionsForLanguage method of either your subclass or of BMScript will be called.
+ * BMScript.defaultOptionsForLanguage method of either your subclass or of BMScript will be called.
  * There are also convenience methods for the most common scripting languages, which have
  * have their options set to OS default values:
  *
@@ -71,8 +74,11 @@
  *
  * So how does a template look like then? We use standard text files which have special
  * token strings bound to get replaced. If you are familiar with Ruby, the magic template token
- * looks a lot like Ruby's double quoted string literal: %{}. If it is empty it will be replaced
- * in the order of occurrence. The first two saturate methods are good for this. 
+ * looks a lot like Ruby's double quoted string literal: 
+ * 
+ * @verbatim %{} @endverbatim 
+ * 
+ * If it is empty it will be replaced in the order of occurrence. The first two saturate methods are good for this. 
  * If the magic token wraps other values, a more flexible dictionary based system can be used
  * with the third saturate method. There, the magic token must wrap names of keys defined in the
  * dictionary which will dictiate what the replacement value will be. Here is an example of a
@@ -87,23 +93,23 @@
  *
  * Using the blocking execution model you can either pass a pointer to NSString where the result will be
  * written to (including NSError if needed), or just use plain BMScript.execute. The non-blocking execution 
- * model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7">notifications</a>. 
+ * model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="external">notifications</a>. 
  * You register your class as observer with the default notification center for
- * the notification called BMScriptTaskDidEndNotification passing a selector to execute once the notification
- * arrives. Then you tell the BMScript instance to executeInBackgroundAndNotify. When your selector is called
- * it will be passed NSNotification object which encapsulates the NSTask used to run the script. To make that
+ * the notification called #BMScriptTaskDidEndNotification passing a selector to execute once the notification
+ * arrives. Then you tell the BMScript instance to BMScript.executeInBackgroundAndNotify. When your selector is called
+ * it will be passed an NSNotification object which encapsulates the NSTask used to run the script. To make that
  * clearer here's an example with the relevant parts thrown together:
  *
  * @include bmScriptNotificationExample.m
  *
- * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate ivars.
+ * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate instance variables.
  * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment. 
  *
  * @par On The Topic Of Concurrency
  * 
  * All access to global data, shared variables and mutable objects has been 
- * locked with pthread_mutex_locks. This is done by a macro wrapper which will avaluate to nothing if 
- * BMSCRIPT_THREAD_SAFE is not 1. Note that there haven't been enough tests yet to say that BMScript is
+ * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a>. This is done by a macro wrapper which will avaluate to nothing if 
+ * #BMSCRIPT_THREAD_SAFE is not 1. Note that there haven't been enough tests yet to say that BMScript is
  * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will 
  * unfortunately have to be tested by you. 
  *
@@ -113,37 +119,54 @@
  * 
  * @include bmScriptDelegateMethods.m
  *
- * And last but not least, BMScript features a execution cache, called its history. This works like the Shell history
- * in that it will keep script sources as well as the results of the exectution of those sources.
- * To access the history you have the following options:
+ * And last but not least, BMScript features an execution cache, called its history. This works like the Shell history
+ * in that it will keep script sources as well as the results of the execution of those sources.
+ * To access the history you may use the following methods:
  *
  * @include bmScriptHistory.m
+ *
+ */
+
+/** 
+ * @file BMScript.h
+ * Documentation and class interface of BMScript.
+ *
  *
  * @defgroup functions Functions and Global Variables
  * @defgroup constants Constants
  * @defgroup delegate Delegate Methods
  */
 
-
 #import <Cocoa/Cocoa.h>
 #include <AvailabilityMacros.h>
 
-/** 
- * Toggles synchronization locks. Set this to 1 to wrap globals, shared data and immutable objects with locks. 
- * The locks are implemented by a macro utilizing pthread_mutex_lock/unlock directly.
- */
-#define BMSCRIPT_THREAD_SAFE 0
+#ifndef BMSCRIPT_THREAD_SAFE
+    /** 
+     * @def BMSCRIPT_THREAD_SAFE
+     * Toggles synchronization locks. 
+     * Set this to 1 to wrap globals, shared data and immutable objects with locks. 
+     * The locks are implemented by a macro utilizing pthread_mutex_lock/unlock directly.
+     */
+    #define BMSCRIPT_THREAD_SAFE 1
+    #ifndef BMSCRIPT_FAST_LOCK
+        /** 
+         * @def BMSCRIPT_FAST_LOCK
+         * Toggles usage of pthread_mutex_lock() <-> synchronized(self).
+         * Set this to 1 to use the pthread library directly for locks.
+         */
+        #define BMSCRIPT_FAST_LOCK 1
+    #endif
+#endif
+
+
 
 /**
- * @def BMSynthesizeOptions
- * Used to synthesize a valid options dictionary. You can use this convenience macro to spawn a variable called defaultDict, which is of type NSDictionary * and contains values for the BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
- * @param _PATH_ the launch path for the task (ex: @"/bin/echo")
- * @param ... a nil terminated list of task parameter strings (ex: @"-e", nil)￼￼
- * @return (NSDictionary *) defaultDict
+ * @def BMSynthesizeOptions(path, ...)
+ * Used to synthesize a valid options dictionary. 
+ * You can use this convenience macro to spawn a variable called defaultDict, which is of type NSDictionary 
+ * and contains values for the BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
  */
-#define BMSynthesizeOptions(_PATH_, ...) \
-NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
-(_PATH_), BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
+#define BMSynthesizeOptions(_PATH_, ...) NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:(_PATH_), BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
 
 // To simplify support for 64bit (and Leopard in general), 
 // provide the type defines for non Leopard SDKs
@@ -196,16 +219,19 @@ NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:\
 
 #endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
+/** A macro function which combines testing for a probe is enabled and actually calling this probe. */
+#define BM_PROBE(name, ...) if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
+
 /** Provides a clearer indication of the task's termination status than simple integers.￼￼ */
 typedef NSInteger TerminationStatus;
 
 enum {
-    /** task did not execute (yet) */
+    /** task not executed yet */
     BMScriptNotExecutedTerminationStatus = -1,
-    /** task finished (successfully) */
+    /** task finished successfully */
     BMScriptFinishedSuccessfullyTerminationStatus = 0,
     /** task failed */
-    BMScriptTaskFailedTerminationStatus
+    BMScriptFailedTerminationStatus
     /* all else indicates erroneous termination status as returned by the task */
 };
 
@@ -259,34 +285,29 @@ OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
 OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
 
 /** 
- * @exception BMScriptTemplateArgumentMissingException 
  * Thrown when the template is not saturated with an argument. 
  *
  * Call BMScript.saturateTemplateWithArgument: before calling BMScript.execute or one of its variants 
  */
 OBJC_EXPORT NSString * const BMScriptTemplateArgumentMissingException;
 /** 
- * @exception BMScriptTemplateArgumentsMissingException 
  * Thrown when the template is not saturated with arguments. 
  *
  * Call BMScript.saturateTemplateWithArguments: before calling BMScript.execute or one of its variants 
  */
 OBJC_EXPORT NSString * const BMScriptTemplateArgumentsMissingException;
 
-/** 
- * @exception BMScriptLanguageProtocolDoesNotConformException 
+/**
  * Thrown when a subclass promises to conform to the BMScriptLanguageProtocol 
  * but consequently fails to declare the proper header. 
  */
 OBJC_EXPORT NSString * const BMScriptLanguageProtocolDoesNotConformException;
 /** 
- * @exception BMScriptLanguageProtocolMethodMissingException 
  * Thrown when a subclass promises to conform to the BMScriptLanguageProtocol 
  * but consequently fails to implement all required methods. 
  */
 OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 /** 
- * @exception BMScriptLanguageProtocolIllegalAccessException 
  * Thrown when a subclass promises accesses implemention details in an improper way. 
  * Currently unused. 
  */
@@ -321,20 +342,22 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * to various command line tools and interfaces.
  */
 @interface BMScript : NSObject <NSCopying, NSCoding, BMScriptLanguageProtocol> {
+@public
     NSString * script;
-    NSString * lastResult;
-@protected
-    id __weak delegate;
     NSDictionary * options;
+@protected
+    __weak id delegate;
+@private
+    BOOL isTemplate;
+    NSString * lastResult;
+    NSString * partialResult;
     NSMutableArray * history;
+    NSDictionary * defaultOptions;
+    NSString * defaultScript;
     NSTask * task;
     NSPipe * pipe;
-@private
-    NSString * defaultScript;
-    NSDictionary * defaultOptions;
     NSTask * bgTask;
     NSPipe * bgPipe;
-    NSString * partialResult;
 }
 
 // MARK: Initializer Methods
@@ -502,6 +525,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (BOOL) isEqualToScript:(BMScript *)other;
 
 // MARK: Accessors
+
 /**
  * Returns the script instance variable. Uses copy/autorelease.
  */
@@ -512,29 +536,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (void)setScript:(NSString *)newScript;
 /**
- * Returns the lastResult instance variable. Uses copy/autorelease.
- */
-- (NSString *)lastResult;
-/**
- * Sets the lastResult instance variable. Uses release/copy.
- * @param newLastResult new value for lastResult.
- */
-- (void)setLastResult:(NSString *)newLastResult;
-
-// MARK: Protected Accessors
-
-/**
- * Returns the history instance variable. Uses retain/autorelease.
- * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
- */
-- (NSMutableArray *)history;
-/**
- * Sets the history instance variable. Uses release/retain.
- * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
- * @param newHistory new value for history.
- */
-- (void)setHistory:(NSMutableArray *)newHistory;
-/**
  * Returns the options instance variable. Uses retain/autorelease.
  */
 - (NSDictionary *)options;
@@ -543,6 +544,18 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @param newOptions new value for options.
  */
 - (void)setOptions:(NSDictionary *)newOptions;
+/**
+ * Returns the lastResult instance variable. Uses copy/autorelease.
+ */
+- (NSString *)lastResult;
+/**
+ * Returns the history instance variable. Uses retain/autorelease.
+ * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
+ */
+- (NSMutableArray *)history;
+
+// MARK: Protected Accessors
+
 /**
  * Returns the script instance variable. Uses simple assignment.
  */
@@ -617,7 +630,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 + (id) rubyScriptWithSource:(NSString *)scriptSource;
 /** 
- * Returns an autoreleased Ruby script ready for execution.
+ * Returns an autoreleased Ruby script from a file ready for execution.
  *
  * @param path path to a file containing the commands to execute.
  */
@@ -633,7 +646,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 + (id) pythonScriptWithSource:(NSString *)scriptSource;
 /** 
- * Returns an autoreleased Python script ready for execution.
+ * Returns an autoreleased Python script from a file ready for execution.
  * @param path path to a file containing the commands to execute.
  */
 + (id) pythonScriptWithContentsOfFile:(NSString *)path;
@@ -648,7 +661,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 + (id) perlScriptWithSource:(NSString *)scriptSource;
 /** 
- * Returns an autoreleased Perl script ready for execution.
+ * Returns an autoreleased Perl script from a file ready for execution.
  * @param path path to a file containing the commands to execute.
  */
 + (id) perlScriptWithContentsOfFile:(NSString *)path;
@@ -712,3 +725,27 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (NSDictionary *) dictionaryByAddingObject:(id)object forKey:(id)key;
 @end
+
+/*
+ * Copyright (c) 2009 André Berg (Berg Media)
+ * 
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
