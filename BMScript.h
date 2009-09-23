@@ -7,53 +7,51 @@
 //
 
 /**
- * @mainpage BMScript: Access The Power Of Scripting Languages
- * ...and more
+ * @mainpage BMScript: Utilize The Power Of Scripting Languages
  * 
  * BMScript is an Objective-C class set to make it easier to harness the
  * power and flexibility of a whole range of scripting languages that already
- * come with all modern Macs. BMScript does not favor any particular scripting
- * language or UNIX™ command line tool for that matter, instead as it was written
- * as an interface to NSTask, it supports any command line tool, provided that it 
- * is available on the target system.
+ * come with modern Macs. BMScript does not favor any particular scripting
+ * language or UNIX™ command line tool for that matter, instead it was written
+ * as an abstraction layer to NSTask, and as such supports any command line tool, 
+ * provided that it is available on the target system.
  *
  * You can use BMScript as a sort of abstract superclass and customize its 
  * behaviour by making a subclass which knows about the details for the 
- * particular CLI that you want to utilize. Your subclass must implement the 
+ * particular tool that you want to utilize. Your subclass must implement the 
  * BMScriptLanguageProtocol which only has a required and one optional method:
  *
  * @include bmScriptLanguageProtocol.m
  *
- * The first method provides sensible defaults values specific to the CLI.
- * The second method provides a default script source or commands to execute
- * by the CLI. As it is (currently) optional, if absent, the default source will
- * be set to an empty string;
+ * The first method should return sensible default values specific to the command line tool.
+ * The second method should provide a default script source containing commands to execute
+ * by the command line tool. As it is, currently, optional, if absent the default source will
+ * be set to an empty string.
  *
- * The BMScript.defaultOptionsForLanguage: method takes a dictionary which looks like 
- * this:
+ * The defaultOptionsForLanguage method takes a dictionary which looks like this:
  *
  * @include bmScriptOptionsDictionary.m
  * 
- * @note There's two constant keys. These are the only keys you need to define values for.
+ * There's two constant keys. These are the only keys you need to define values for.
  * CLI arguments or flags are passed as NSStrings in an NSArray. It is important to note 
- * that the script source string should <i>NOT</i> be supplied in the array for the
+ * that the script source string should <b>NOT</b> be supplied in the array for the
  * BMScriptOptionsTaskArgumentsKey, as it will be added by the class later after performing
  * a series of tests and replacements.
  * 
- * A macro called BMSynthesizeOptions is available to ease the declaration of the options. 
+ * A macro function called #BMSynthesizeOptions is available to ease the declaration of the options. 
  * It is declared as:
  *
  * @include bmScriptSynthesizeOptions.m
  *
- * @note Don't forget the <b>nil</b> at the end if you don't need to supply any task arguments.
- * After calling the macro a local variable called defaultDict will contain the options dict.
+ * @note Don't forget the <b>nil</b> at the end even if you don't need to supply any task arguments.
+ * After calling the macro a local variable called <i>defaultDict</i> will contain the options dictionary.
  * 
  * The other, equally easy way to use BMScript is of course by using it directly:
  *
  * @include bmScriptCreationMethods.m
  *
  * If you do not use the designated initializer and supply the options yourself, the
- * defaultOptionsForLanguage: method of either your subclass or of BMScript will be called.
+ * defaultOptionsForLanguage method of either your subclass or of BMScript will be called.
  * There are also convenience methods for the most common scripting languages, which have
  * have their options set to OS default values:
  *
@@ -101,15 +99,15 @@
  * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate ivars.
  * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment. 
  *
- * @par On The Topic Of Concurrency: 
+ * @par On The Topic Of Concurrency
  * 
  * All access to global data, shared variables and mutable objects has been 
  * locked with pthread_mutex_locks. This is done by a macro wrapper which will avaluate to nothing if 
  * BMSCRIPT_THREAD_SAFE is not 1. Note that there haven't been enough tests yet to say that BMScript is
- * thread-safe. It is likely to be thread-safe enough, but if that will be enough will unfortunately be 
- * your burden to carry. 
+ * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will 
+ * unfortunately have to be tested by you. 
  *
- * @par Delegates
+ * @par Delegate Methods
  * 
  * BMScript also features delegate methods your subclass or another class posing as delegate can implement:
  * 
@@ -137,6 +135,7 @@
 #define BMSCRIPT_THREAD_SAFE 0
 
 /**
+ * @def BMSynthesizeOptions
  * Used to synthesize a valid options dictionary. You can use this convenience macro to spawn a variable called defaultDict, which is of type NSDictionary * and contains values for the BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
  * @param _PATH_ the launch path for the task (ex: @"/bin/echo")
  * @param ... a nil terminated list of task parameter strings (ex: @"-e", nil)￼￼
@@ -664,12 +663,23 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /** A category on NSString providing compatibility for missing methods on 10.4 (Tiger). */
 @interface NSString (BMScriptNSString10_4Compatibility)
 /** 
- * An implementation of the 10.5 (Leopard) method of NSString. Does what it says.
+ * An implementation of the 10.5 (Leopard) method of NSString. 
+ * Replaces all occurrences of a string with another string with the ability to define the search range and other comparison options.
+ * @param target the string to replace
+ * @param replacement the string to replace target with
+ * @param options on 10.5 this parameter is of type NSStringCompareOptions an untagged enum. On 10.4 you can use the following options:
+ *  - 1  (NSCaseInsensitiveSearch)
+ *  - 2  (NSLiteralSearch: Exact character-by-character equivalence)
+ *  - 4  (NSBackwardsSearch: Search from end of source string)
+ *  - 8  (NSAnchoredSearch: Search is limited to start (or end, if NSBackwardsSearch) of source string)
+ *  - 64 (NSNumericSearch: Numbers within strings are compared using numeric value, that is, Foo2.txt < Foo7.txt < Foo25.txt)
+ * @param searchRange an NSRange defining the location and length the search should be limited to
  * @deprecated Deprecated in 10.5 (Leopard) in favor of NSString's own implementation.
  */
 - (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement options:(unsigned)options range:(NSRange)searchRange; DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER
 /** 
- * An implementation of the 10.5 (Leopard) method of NSString. Does what it says.
+ * An implementation of the 10.5 (Leopard) method of NSString. Replaces all occurrences of a string with another string. 
+ * Calls stringByReplacingOccurrencesOfString:withString:options:range: with default options 0 and searchRange the full length of the searched string.
  * @deprecated Deprecated in 10.5 (Leopard) in favor of NSString's own implementation.
  */
 - (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement; DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER

@@ -160,8 +160,9 @@
     
     NSString * result;
     NSError * error;
+    NSString * path;
     
-    NSString * path = [[NSBundle bundleForClass:[BMScriptUnitTests class]] pathForResource:@"Convert To Hex Template" ofType:@"rb"];
+    path = [[NSBundle bundleForClass:[BMScriptUnitTests class]] pathForResource:@"Convert To Hex Template" ofType:@"rb"];
     BMScript * script1 = [BMScript rubyScriptWithContentsOfTemplateFile:path];
     
     STAssertNotNil(script1, @"but instead is %@", script1);
@@ -170,11 +171,13 @@
     [script1 executeAndReturnResult:&result error:&error];
     
     STAssertTrue([result isEqualToString:@"0x7fffffff"], @"but instead is %@", result);
+
+
     
     path = [[NSBundle bundleForClass:[BMScriptUnitTests class]] pathForResource:@"Multiple Tokens Template" ofType:@"rb"];
     BMScript * script2 = [BMScript scriptWithContentsOfTemplateFile:path options:rubyDefaultOptions];
     
-    STAssertNotNil(script2, @"but instead is %@", script1);
+    STAssertNotNil(script2, @"but instead is %@", script2);
     
     [script2 saturateTemplateWithArguments:@"template", @"1", @"token"];
     [script2 executeAndReturnResult:&result];

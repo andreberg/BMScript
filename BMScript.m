@@ -11,6 +11,7 @@
 #include <unistd.h>         /* for usleep       */
 #include <pthread.h>        /* for pthread_*    */
 
+#import "BMScriptProbes.h"  /* dtrace probes auto-generated from .d file(s) */
 
 #define BMSCRIPT_DEBUG 0
 #define BMSCRIPT_DEBUG_HISTORY 0
@@ -480,7 +481,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         s_isTemplate = YES;
         pthread_unlock
         scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-        scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%%{}" withString:@"%{"BMSCRIPT_INSERTION_TOKEN"}"];
+        scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%%{}" withString:@"%%{"BMSCRIPT_INSERTION_TOKEN"}"];
         return [self initWithScriptSource:scriptSource options:scriptOptions];
     } else {
         NSLog(@"Error reading file at %@\n%@", path, [err localizedFailureReason]);
@@ -514,22 +515,6 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 + (id) scriptWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions {
     return [[[self alloc] initWithContentsOfTemplateFile:path options:scriptOptions] autorelease];
 }
-
-// + (id) scriptWithContentsOfURL:(NSURL *)url {
-//     return [self scriptWithContentsOfURL:url options:nil];
-// }
-// + (id) scriptWithContentsOfURL:(NSURL *)url options:(NSDictionary *)scriptOptions {
-//     NSError * err;
-//     NSString * scriptSource = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
-//     if (scriptSource) {
-//         scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-//         scriptSource = [scriptSource stringByReplacingOccurrencesOfString:@"%%{}" withString:@"%%{%@}"];
-//         return [[[self alloc] initWithScriptSource:scriptSource options:scriptOptions] autorelease];
-//     } else {
-//         NSLog(@"Error reading file at URL '%@'\n%@", url, [err localizedFailureReason]);
-//     }
-//     return nil;
-// }
 
 // MARK: Private Methods
 
@@ -867,7 +852,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         
         NSInteger i = 0;
         for (NSString * key in keys) {
-            accumulator = [accumulator stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%%{"BMSCRIPT_INSERTION_TOKEN"}", key] 
+            accumulator = [accumulator stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%%{"BMSCRIPT_INSERTION_TOKEN"}", key ] 
                                                                  withString:[values objectAtIndex:i]];
             i++;
         }
@@ -908,7 +893,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                                        reason:@"please define all replacement values for the current template "
                                               @"by calling one of the -[saturateTemplate...] methods prior to execution" 
                                      userInfo:nil];
-    } else {            
+    } else {
         if ([self executeAndReturnResult:result error:nil] == YES) {
             return YES;
         }
@@ -931,7 +916,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                                                   @"by calling one of the -[saturateTemplate...] methods prior to execution" 
                                          userInfo:nil];            
         }
-    } else {            
+    } else {
         if ([self executeAndReturnResult:nil error:error] == YES) {
             return YES;
         }
@@ -940,6 +925,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 }
 
 - (BOOL) executeAndReturnResult:(NSString **)result error:(NSError **)error {
+    BMSCRIPT_START_EXECUTE((char *)[[self script] UTF8String], (int)s_isTemplate);
     
     BOOL success = NO;
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
@@ -1002,6 +988,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:0 userInfo:errorDict];
         }
     }
+    BMSCRIPT_END_EXECUTE((char *)[[self lastResult] UTF8String]);
     return success;
 }
 
