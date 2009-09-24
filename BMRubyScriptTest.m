@@ -20,7 +20,7 @@
     #endif
 #define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
-#define DEBUG 0
+#define DEBUG 1
 
 // ---------------------------------------------------------------------------------------- 
 // MARK: MAIN
@@ -47,9 +47,10 @@ int main (int argc, const char * argv[]) {
     BOOL respondsToTaskFinishedCallback = [to respondsToSelector:@selector(taskFinishedCallback:)];
     
     NSLog(@"TaskObserver conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([TaskObserver conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
-    NSLog(@"TaskObserver implements all required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript && respondsToTaskFinishedCallback));
-    
-    [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.035];
+    NSLog(@"TaskObserver implements all required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts));
+    NSLog(@"TaskObserver implements all methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript && respondsToTaskFinishedCallback));
+
+    [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.2];
 
     // ---------------------------------------------------------------------------------------- 
 
@@ -86,7 +87,7 @@ int main (int argc, const char * argv[]) {
     
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTest/Convert To Oct.rb";
+    NSString * path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/Convert To Oct.rb";
     
     BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
     [script3 saturateTemplateWithArgument:@"100"];
@@ -177,7 +178,7 @@ int main (int argc, const char * argv[]) {
     [pool drain];
     
     if (DEBUG) {
-        NSLog(@"Press any key to exit...");
+        NSLog(@"Press return to exit...");
         getchar();
     }
     return 0;

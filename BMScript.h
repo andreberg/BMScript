@@ -6,13 +6,13 @@
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 //  For license details see end of this file.
-//  Short version: licensed under MIT license.
+//  Short version: licensed under the MIT license.
 //
 
 /**
- * @mainpage BMScript: Harness The Power Of Scripting Languages
+ * @mainpage BMScript: Harness The Power Of Shell Scripts
  * 
- * BMScript is an Objective-C class set to make it easier to harness the
+ * BMScript is an Objective-C class set to make it easier to utilize the
  * power and flexibility of a whole range of scripting languages that already
  * come with modern Macs. BMScript does not favor any particular scripting
  * language or UNIX™ command line tool for that matter, instead it was written
@@ -56,7 +56,7 @@
  * If you do not use the designated initializer and supply the options yourself, the
  * BMScript.defaultOptionsForLanguage method of either your subclass or of BMScript will be called.
  * There are also convenience methods for the most common scripting languages, which have
- * have their options set to OS default values:
+ * their options set to OS default values:
  *
  * @include bmScriptConvenienceMethods.m
  *
@@ -130,7 +130,6 @@
 /** 
  * @file BMScript.h
  * Documentation and class interface of BMScript.
- *
  *
  * @defgroup functions Functions and Global Variables
  * @defgroup constants Constants
