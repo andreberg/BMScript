@@ -177,9 +177,8 @@ int main (int argc, const char * argv[]) {
     [pool drain];
     
     if (DEBUG) {
-        int c;
         NSLog(@"Press any key to exit...");
-        c = getchar();
+        getchar();
     }
     return 0;
 }
