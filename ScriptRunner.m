@@ -102,25 +102,14 @@
 
 - (BOOL) shouldSetLastResult:(NSString *)aString {
     self.shouldSetLastResultCalled = YES;
-    NSLog(@"Inside %s", __PRETTY_FUNCTION__);
-    if ([aString isEqualToString:@"9"]) {
-        NSLog(@"LastResult will be set to 9");
-        return YES;
-    }
+    // NSLog(@"Inside %s aString = %@", __PRETTY_FUNCTION__, aString);
     return YES;
 }
 
 - (BOOL) shouldSetScript:(NSString *)aScript {
     self.shouldSetScriptCalled = YES;
-    NSLog(@"Inside %s", __PRETTY_FUNCTION__);
+    //NSLog(@"Inside %s", __PRETTY_FUNCTION__);
     return YES;
-}
-
-// MARK: BMScriptLanguageProtocol
-
-- (NSDictionary *) defaultOptionsForLanguage {
-    NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", @"using /bin/echo from ObserverDummy", nil);
-    return opts;
 }
 
 @end

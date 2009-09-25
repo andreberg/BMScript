@@ -9,6 +9,8 @@
 //  Short version: licensed under the MIT license.
 //
 
+// MARK: Docs: Mainpage
+
 /**
  * @mainpage BMScript: Harness The Power Of Shell Scripts
  * 
@@ -41,7 +43,7 @@
  * #BMScriptOptionsTaskArgumentsKey, as it will be added by the class later after performing
  * a series of tests and replacements.
  * 
- * A macro function called BMSynthesizeOptions(path, args) is available to ease the declaration of the options. 
+ * A macro function called BMSynthesizeOptions(path, ...) is available to ease the declaration of the options. 
  * It is declared as:
  *
  * @include bmScriptSynthesizeOptions.m
@@ -107,7 +109,7 @@
  * @par On The Topic Of Concurrency
  * 
  * All access to global data, shared variables and mutable objects has been 
- * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a>. This is done by a macro wrapper which will avaluate to nothing if 
+ * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> (right-click: Open Link in Browser). This is done by a macro wrapper which will avaluate to nothing if 
  * #BMSCRIPT_THREAD_SAFE is not 1. Note that there haven't been enough tests yet to say that BMScript is
  * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will 
  * unfortunately have to be tested by you. 
@@ -133,17 +135,23 @@
  * @defgroup functions Functions and Global Variables
  * @defgroup constants Constants
  * @defgroup delegate Delegate Methods
+ * @defgroup defines Defines
  */
 
 #import <Cocoa/Cocoa.h>
 #include <AvailabilityMacros.h>
+
+/**
+ * @ingroup ￼defines
+ * @{
+ */
 
 #ifndef BMSCRIPT_THREAD_SAFE
     /** 
      * @def BMSCRIPT_THREAD_SAFE
      * Toggles synchronization locks. 
      * Set this to 1 to wrap globals, shared data and immutable objects with locks. 
-     * The locks are implemented by a macro utilizing pthread_mutex_lock/unlock directly.
+     * Evaluates to a no-op if set to 0.
      */
     #define BMSCRIPT_THREAD_SAFE 1
     #ifndef BMSCRIPT_FAST_LOCK
@@ -168,6 +176,8 @@
 [NSDictionary dictionaryWithObjectsAndKeys:(path),\
 BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
 
+
+/// @cond
 
 // To simplify support for 64bit (and Leopard in general), 
 // provide the type defines for non Leopard SDKs
@@ -220,8 +230,14 @@ BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScri
 
 #endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
+/// @endcond
+
 /** A macro function which combines testing for a probe is enabled and actually calling this probe. */
-#define BM_PROBE(name, ...) if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
+#define BM_PROBE(name, ...) \
+    if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
+
+/** @} */
+
 
 /** Provides a clearer indication of the task's termination status than simple integers.￼￼ */
 typedef NSInteger TerminationStatus;
@@ -350,7 +366,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
     id delegate;
 @private
     NSString * lastResult;
-    BOOL isTemplate;
+    NSString * partialResult;
+    __strong BOOL isTemplate;
     NSMutableArray * history;
     NSTask * task;
     NSPipe * pipe;

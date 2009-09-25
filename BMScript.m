@@ -16,7 +16,7 @@
 #include <pthread.h>        /* for pthread_*    */
 
 #ifndef BMSCRIPT_DEBUG_MEMORY
-#define BMSCRIPT_DEBUG_MEMORY 0
+#define BMSCRIPT_DEBUG_MEMORY  0
 #endif
 #ifndef BMSCRIPT_DEBUG_HISTORY
 #define BMSCRIPT_DEBUG_HISTORY 0
@@ -25,7 +25,7 @@
 #define BMSCRIPT_DEBUG_OBJECTS 0
 #endif
 #ifndef BMSCRIPT_DEBUG_INIT
-#define BMSCRIPT_DEBUG_INIT 0
+#define BMSCRIPT_DEBUG_INIT    0
 #endif
 #ifndef BMSCRIPT_DEBUG_DELEGATE_METHODS
 #define BMSCRIPT_DEBUG_DELEGATE_METHODS 0
@@ -132,37 +132,37 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (void) setupAndLaunchBackgroundTask;
 - (void) taskTerminated:(NSNotification *)aNotification;
 - (void) appendData:(NSData *)d;
+- (void) dataComplete:(NSNotification *)aNotification;
+- (void) dataReady:(NSNotification *)aNotification;
 - (void) printRetainCounts;
 
 // MARK: Private Accessors
-- (NSTask *)task;
-- (void)setTask:(NSTask *)newTask;
-- (NSPipe *)pipe;
+- (NSTask *) task;
+- (void) setTask:(NSTask *)newTask;
+- (NSPipe *) pipe;
 - (void)setOutPipe:(NSPipe *)newOutPipe;
-// - (NSString *) defaultScript;
-// - (void) setDefaultScript: (NSString *) newDefaultScript;
-// - (NSDictionary *) defaultOptions;
-// - (void) setDefaultOptions: (NSDictionary *) newDefaultOptions;
 - (NSThread *) bgThread;
-- (void) setBgThread: (NSThread *) newBgThread;
+- (void) setBgThread: (NSThread *)newBgThread;
 - (NSPipe *) bgPipe;
 - (void) setBgPipe:(NSPipe *)newBgPipe;
-// - (NSString *)partialResult;
-// - (void)setPartialResult:(NSString *)newPartialResult;
-- (BOOL)isTemplate;
-- (void)setIsTemplate:(BOOL)flag;
+- (BOOL) isTemplate;
+- (void) setIsTemplate:(BOOL)flag;
+
+- (NSString *) partialResult;
+- (void) setPartialResult:(NSString *)newPartialResult;
+
 /**
  * Sets the lastResult instance variable. Uses release/copy.
  * @param newLastResult new value for lastResult.
  */
-- (void)setLastResult:(NSString *)newLastResult;
+- (void) setLastResult:(NSString *)newLastResult;
 
 /**
  * Sets the history instance variable. Uses release/retain.
  * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
  * @param newHistory new value for history.
  */
-- (void)setHistory:(NSMutableArray *)newHistory;
+- (void) setHistory:(NSMutableArray *)newHistory;
 
 @end
 
@@ -197,14 +197,16 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 //  lastResult 
 //=========================================================== 
 - (NSString *)lastResult {
-    return [[lastResult copy] autorelease]; 
+    return [[lastResult retain] autorelease]; 
 }
 
 - (void)setLastResult:(NSString *)newLastResult {
     BMSCRIPT_LOCK
+    //NSLog(@"Inside %@ %s:", (bgTask ? [super description] : @""), __PRETTY_FUNCTION__); 
     if (lastResult != newLastResult) {
+        //NSLog(@"lastResult was '%@', will set to '%@'", [[lastResult quote] truncate], [[newLastResult quote] truncate]);
         [lastResult release];
-        lastResult = [newLastResult copy];
+        lastResult = [newLastResult retain];
     }
     BMSCRIPT_UNLOCK
     
@@ -345,17 +347,17 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 //=========================================================== 
 //  partialResult 
 //=========================================================== 
-// - (NSString *)partialResult {
-//     return [[partialResult copy] autorelease];
-// }
-// - (void)setPartialResult:(NSString *)newPartialResult {
-//     BMSCRIPT_LOCK
-//     if (partialResult != newPartialResult) {
-//         [partialResult release];
-//         partialResult = [newPartialResult copy];
-//     }
-//     BMSCRIPT_UNLOCK
-// }
+- (NSString *)partialResult {
+    return [[partialResult retain] autorelease];
+}
+- (void)setPartialResult:(NSString *)newPartialResult {
+    BMSCRIPT_LOCK
+    if (partialResult != newPartialResult) {
+        [partialResult release];
+        partialResult = [newPartialResult retain];
+    }
+    BMSCRIPT_UNLOCK
+}
 
 //=========================================================== 
 //  delegate 
@@ -394,10 +396,19 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
+    if ([task isRunning]) {
+        [task terminate];
+    }
+    
+    if ([bgTask isRunning]) {
+        [bgTask terminate];
+    }
+    
     [script release], script = nil;
     [history release], history = nil;
     [options release], options = nil;
     [lastResult release], lastResult = nil;
+    [partialResult release], partialResult = nil;
     [task release], task = nil;
     [pipe release], pipe = nil;
     [bgTask release], bgTask = nil;
@@ -405,7 +416,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     [super dealloc];
 }
 
-- (void) finalize {    
+- (void) finalize {  
     [super finalize];
 }
 
@@ -447,7 +458,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
                 script = [[self performSelector:@selector(defaultScriptSourceForLanguage)] retain];
             } else {
-                script = @"no script source set";
+                script = @"<script source placeholder>";
             }
         }
 
@@ -469,6 +480,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         
         history = [[NSMutableArray alloc] init];
         lastResult = [[NSString alloc] init];
+        partialResult = [[NSString alloc] init];
         
         // tasks/pipes will be allocated & initialized as needed
         task = nil;
@@ -733,27 +745,63 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             [bgTask setStandardError:bgPipe];
             
             // register for notifications
+            
+            // currently the execution model for background tasks is an incremental one:
+            // self.partialResult is accumulated over the time the task is running and
+            // posting NSFileHandleReadCompletionNotification notifications. This happens
+            // through #dataReady: which calls #appendData: until the NSTaskDidTerminateNotification 
+            // is posted. Then, the partialResult is simply mirrored over to lastResult.
+            // This gives the user the advantage for long running scripts to check partialResult
+            // periodically and see if the task needs to be aborted.
             [[NSNotificationCenter defaultCenter] addObserver:self 
                                                      selector:@selector(dataReady:) 
                                                          name:NSFileHandleReadCompletionNotification 
-                                                       object:[bgPipe fileHandleForReading]];
+                                                       object:nil];
+            
+//             [[NSNotificationCenter defaultCenter] addObserver:self 
+//                                                      selector:@selector(dataComplete:) 
+//                                                          name:NSFileHandleReadToEndOfFileCompletionNotification 
+//                                                        object:nil];
             
             [[NSNotificationCenter defaultCenter] addObserver:self 
                                                      selector:@selector(taskTerminated:) 
                                                          name:NSTaskDidTerminateNotification 
-                                                       object:bgTask];
+                                                       object:nil];
             
             [bgTask launch];
             
             // kick off pipe reading in background
             [[bgPipe fileHandleForReading] readInBackgroundAndNotify];
+            //[[bgPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
         }
+    }
+}
+
+- (void) dataComplete:(NSNotification *)aNotification {
+    
+    NSData * data = [[aNotification userInfo] objectForKey:NSFileHandleNotificationDataItem];
+    // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
+    if (data) {
+        NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (string) {
+            if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
+                if ([[self delegate] shouldSetLastResult:string]) {
+                    self.lastResult = [self.lastResult stringByAppendingString:string];
+                }
+            } else {
+                self.lastResult = [self.lastResult stringByAppendingString:string];
+            }
+        } else {
+            NSLog(@"*** Warning: -[appendData:] attempted but could not append to self.lastResult. Data maybe lost!");
+        }
+        [string release];
     }
 }
 
 - (void) dataReady:(NSNotification *)aNotification {
     
 	NSData * data = [[aNotification userInfo] valueForKey:NSFileHandleNotificationDataItem];
+    // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
     if (data) {
         [self appendData:data];
     }
@@ -765,11 +813,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (string) {
-        if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
-            if ([[self delegate] shouldSetLastResult:string]) {
-                self.lastResult = [self.lastResult stringByAppendingString:string];
-            }
-        }
+        self.partialResult = [self.partialResult stringByAppendingString:string];
     } else {
         NSLog(@"*** Warning: -[appendData:] attempted but could not append to self.partialResult. Data maybe lost!");
     }
@@ -778,10 +822,22 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (void) taskTerminated:(NSNotification *)aNotification {
     
+    // read out remaining data, as the pipes have a limited buffer size 
+    // and may stall on subsequent calls if full
 	NSData * dataInPipe = [[bgPipe fileHandleForReading] readDataToEndOfFile];
     if (dataInPipe) {
         [self appendData:dataInPipe];
     }
+    
+    // task is finished, copy over the accumulated partialResults into lastResult
+    if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
+        if ([[self delegate] shouldSetLastResult:self.partialResult]) {
+            self.lastResult = self.partialResult;
+        }
+    } else {
+        self.lastResult = [self.lastResult stringByAppendingString:self.partialResult];
+    }
+    
     
     BMSCRIPT_LOCK
     s_bgTaskStatus = [[aNotification object] terminationStatus];
@@ -791,11 +847,18 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                            [NSNumber numberWithInt:s_bgTaskStatus], BMScriptNotificationInfoTaskTerminationStatusKey, 
                            [self lastResult], BMScriptNotificationInfoTaskResultsKey, nil];
     
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:BMScriptTaskDidEndNotification object:[self bgTask] userInfo:info]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:BMScriptTaskDidEndNotification object:self.bgTask userInfo:info]];
     
     NSArray * historyItem = [NSArray arrayWithObjects:[self script], [self lastResult], nil];
     [[self history] addObject:historyItem];
     if (BMSCRIPT_DEBUG_HISTORY) NSLog(@"Script '%@' executed successfully.\nAdded to history = %@", [[script quote] truncate], history);
+    
+    if([bgTask isRunning]) {
+        [bgTask terminate];
+    }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSTaskDidTerminateNotification object:nil];
+
 }
 
 // MARK: Templates

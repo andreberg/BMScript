@@ -8,6 +8,7 @@
 //  For license details see end of this file.
 //  Short version: licensed under the MIT license.
 //
+/// @cond
 
 #import <Cocoa/Cocoa.h>
 #import "BMScript.h"
@@ -49,6 +50,8 @@
 @property (nonatomic, assign) BOOL shouldSetScriptCalled;
 
 @end
+
+/// @endcond
 
 /*
  * Copyright (c) 2009 Andre Berg (Berg Media)

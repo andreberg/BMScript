@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = BMScript
-PROJECT_NUMBER         = "0.1 (r15)"
+PROJECT_NUMBER         = "0.1 (r23)"
 OUTPUT_DIRECTORY       = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/BMScript.docset
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -25,9 +25,9 @@ ABBREVIATE_BRIEF       = "The $name class" \
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = /Developer/Applications/Utilities/Third-Party/
+STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
-SHORT_NAMES            = NO
+SHORT_NAMES            = YES
 JAVADOC_AUTOBRIEF      = YES
 QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
@@ -83,8 +83,8 @@ FILE_VERSION_FILTER    =
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
-QUIET                  = YES
-WARNINGS               = NO
+QUIET                  = NO
+WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
@@ -93,7 +93,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk
+INPUT                  = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -128,12 +128,12 @@ FILE_PATTERNS          = *.c \
                          *.vhdl \
                          *.sample
 RECURSIVE              = NO
-EXCLUDE                = 
+EXCLUDE                = BMScriptProbes.h
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        = 
-EXAMPLE_PATH           = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk
-EXAMPLE_PATTERNS       = *
+EXAMPLE_PATH           = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/
+EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = 
 INPUT_FILTER           = 
@@ -235,12 +235,13 @@ PERLMOD_MAKEVAR_PREFIX =
 #---------------------------------------------------------------------------
 # Configuration options related to the preprocessor   
 #---------------------------------------------------------------------------
-ENABLE_PREPROCESSING   = NO
-MACRO_EXPANSION        = YES
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = NO
 EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
-INCLUDE_PATH           = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk
-INCLUDE_FILE_PATTERNS  = 
+INCLUDE_PATH           = 
+INCLUDE_FILE_PATTERNS  = *.mm \
+                         *.h
 PREDEFINED             = 
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
@@ -273,7 +274,7 @@ CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
-DOT_PATH               = /opt/local/bin
+DOT_PATH               = /Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/
 DOTFILE_DIRS           = 
 DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 1000
