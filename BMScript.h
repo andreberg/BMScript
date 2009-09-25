@@ -31,9 +31,9 @@
  * The first method should return sensible default values specific to the command line tool.
  * The second method should provide a default script source containing commands to execute
  * by the command line tool. As it is, currently, optional, if absent the default source will
- * be set to an empty string.
+ * be set to <span class="stringliteral">@"<script source placeholder>"</span>.
  *
- * The BMScript.defaultOptionsForLanguage method takes a dictionary which looks like this:
+ * The BMScriptLanguageProtocol-p.defaultOptionsForLanguage method takes a dictionary which looks like this:
  *
  * @include bmScriptOptionsDictionary.m
  * 
@@ -43,19 +43,19 @@
  * #BMScriptOptionsTaskArgumentsKey, as it will be added by the class later after performing
  * a series of tests and replacements.
  * 
- * A macro function called BMSynthesizeOptions(path, ...) is available to ease the declaration of the options. 
+ * A macro function called #BMSynthesizeOptions(path, args) is available to ease the declaration of the options. 
  * It is declared as:
  *
  * @include bmScriptSynthesizeOptions.m
  *
- * @note Don't forget the <b>nil</b> at the end even if you don't need to supply any task arguments.
+ * @note Don't forget the <b><span class="stringliteral">nil</span></b> at the end even if you don't need to supply any task arguments.
  * 
  * The other, equally easy way to use BMScript is of course by using it directly:
  *
  * @include bmScriptCreationMethods.m
  *
- * If you do not use the designated initializer and supply the options yourself, the
- * BMScript.defaultOptionsForLanguage method of either your subclass or of BMScript will be called.
+ * If you do not use the designated initializer and supply the options yourself, the 
+ * BMScriptLanguageProtocol-p.defaultOptionsForLanguage method of either your subclass or of BMScript will be called.
  * There are also convenience methods for the most common scripting languages, which have
  * their options set to OS default values:
  *
@@ -109,8 +109,10 @@
  * @par On The Topic Of Concurrency
  * 
  * All access to global data, shared variables and mutable objects has been 
- * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> (right-click: Open Link in Browser). This is done by a macro wrapper which will avaluate to nothing if 
- * #BMSCRIPT_THREAD_SAFE is not 1. Note that there haven't been enough tests yet to say that BMScript is
+ * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> 
+ * (Xcode: right-click and "Open Link in Browser"). 
+ * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not 1. 
+ * Note that there haven't been enough tests yet to say that BMScript is
  * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will 
  * unfortunately have to be tested by you. 
  *
@@ -151,7 +153,7 @@
      * @def BMSCRIPT_THREAD_SAFE
      * Toggles synchronization locks. 
      * Set this to 1 to wrap globals, shared data and immutable objects with locks. 
-     * Evaluates to a no-op if set to 0.
+     * Noop if set to 0.
      */
     #define BMSCRIPT_THREAD_SAFE 1
     #ifndef BMSCRIPT_FAST_LOCK
@@ -167,14 +169,14 @@
 
 
 /**
- * @def BMSynthesizeOptions(path, ...)
+ * @def BMSynthesizeOptions(path, args)
  * Used to synthesize a valid options dictionary. 
  * You can use this convenience macro to generate the boilerplate code for the 
  * BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
  */
 #define BMSynthesizeOptions(path, ...) \
-[NSDictionary dictionaryWithObjectsAndKeys:(path),\
-BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
+    [NSDictionary dictionaryWithObjectsAndKeys:(path),\
+        BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
 
 
 /// @cond
@@ -232,7 +234,7 @@ BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScri
 
 /// @endcond
 
-/** A macro function which combines testing for a probe is enabled and actually calling this probe. */
+/** A macro function which combines testing if a probe is enabled and actually calling this probe. */
 #define BM_PROBE(name, ...) \
     if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
 
@@ -339,24 +341,21 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @protocol BMScriptLanguageProtocol
 /**
  * Returns the options dictionary. This is required.
- * @see BMSynthesizeOptions and @link bmScriptOptionsDictionary.m @endlink
+ * @see #BMSynthesizeOptions and @link bmScriptOptionsDictionary.m @endlink
  */
 - (NSDictionary *) defaultOptionsForLanguage;
 @optional
 /**
- * Returns the default script source. This is optional and will be set to an empty string if absent.
- * BMScript's implementation just returns some info text on how to subclass or utilize BMScript. You 
- * might want to implement this if you plan on using plain alloc/init with your subclass a lot since 
- * alloc/init will pull this in as default script if no script source was supplied to the designated 
- * initalizer.
+ * Returns the default script source. This is optional and will be set to a placeholder if absent.
+ * You might want to implement this if you plan on using plain alloc/init with your subclass a lot since 
+ * alloc/init will pull this in as default script if no script source was supplied to the designated initalizer.
  */
 - (NSString *) defaultScriptSourceForLanguage; 
 
 @end
 
 /**
- * A decorator class to NSTask in connection with a protocol for providing an easily reusable driver
- * to various command line tools and interfaces.
+ * A decorator class to NSTask providing elegant and easy access to the shell.
  */
 @interface BMScript : NSObject <NSCopying, NSCoding> {
 @public

@@ -8,6 +8,6 @@
 //  This file contains general settings that are used in various Run Script build phases.
 //  They may need to be changed by the developer from machine to machine.
 
-DOXYGEN_PATH = /Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen
-DOXYFILE = Doxyfile
-DOCSETFULLNAME = BMScript.docset
+DOXYGEN_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen
+DOXYFILE=Doxyfile
+DOCSETFULLNAME=BMScript.docset

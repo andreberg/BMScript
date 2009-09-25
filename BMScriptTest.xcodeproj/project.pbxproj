@@ -730,6 +730,7 @@
 		};
 		657323EC1067BF6A001E9123 /* Debug w Profiling Code (GC LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
