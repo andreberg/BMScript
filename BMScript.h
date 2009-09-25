@@ -47,7 +47,6 @@
  * @include bmScriptSynthesizeOptions.m
  *
  * @note Don't forget the <b>nil</b> at the end even if you don't need to supply any task arguments.
- * After calling the macro a local variable called <i>defaultDict</i> will contain the options dictionary.
  * 
  * The other, equally easy way to use BMScript is of course by using it directly:
  *
@@ -162,10 +161,13 @@
 /**
  * @def BMSynthesizeOptions(path, ...)
  * Used to synthesize a valid options dictionary. 
- * You can use this convenience macro to spawn a variable called defaultDict, which is of type NSDictionary 
- * and contains values for the BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
+ * You can use this convenience macro to generate the boilerplate code for the 
+ * BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
  */
-#define BMSynthesizeOptions(_PATH_, ...) NSDictionary * defaultDict = [NSDictionary dictionaryWithObjectsAndKeys:(_PATH_), BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
+#define BMSynthesizeOptions(path, ...) \
+[NSDictionary dictionaryWithObjectsAndKeys:(path),\
+BMScriptOptionsTaskLaunchPathKey, [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
+
 
 // To simplify support for 64bit (and Leopard in general), 
 // provide the type defines for non Leopard SDKs
@@ -254,7 +256,7 @@ NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
             return @"task not executed";
             break;
         case BMScriptFinishedSuccessfullyTerminationStatus:
-            return @"task finished (successfully)";
+            return @"task finished successfully";
             break;
         default:
             return @"task failed";
@@ -340,19 +342,16 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * A decorator class to NSTask in connection with a protocol for providing an easily reusable driver
  * to various command line tools and interfaces.
  */
-@interface BMScript : NSObject <NSCopying, NSCoding, BMScriptLanguageProtocol> {
+@interface BMScript : NSObject <NSCopying, NSCoding> {
 @public
     NSString * script;
     NSDictionary * options;
 @protected
-    __weak id delegate;
+    id delegate;
 @private
-    BOOL isTemplate;
     NSString * lastResult;
-    NSString * partialResult;
+    BOOL isTemplate;
     NSMutableArray * history;
-    NSDictionary * defaultOptions;
-    NSString * defaultScript;
     NSTask * task;
     NSPipe * pipe;
     NSTask * bgTask;
@@ -595,8 +594,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (BOOL) shouldSetLastResult:(NSString *)aString;
 /** 
  * Called multiple times during async execution in background whenever there is new data available if implemented. 
- * Will set partialResult first then copy the new state over to lastResult if successful and this method does not
- * return NO.
+ * @note This delegate is not called during initialization of a new instance. 
+ * It is only triggered when calling the BMScript.setScript: accessor method.
  *
  * @param string the string that will be used as new value if this method returns YES.
  */

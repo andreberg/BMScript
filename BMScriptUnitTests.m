@@ -8,7 +8,6 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "BMScript.h"
-#import "TaskObserver.h"
 
 #ifdef PATHFOR
     #define OLD_PATHFOR PATHFOR
@@ -355,10 +354,10 @@
 }
 
 - (void) testMacros {
-    BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e", nil);
-    STAssertTrue([[defaultDict descriptionInStringsFileFormat] 
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e", nil);
+    STAssertTrue([[opts descriptionInStringsFileFormat] 
                     isEqualToString:[alternativeOptions descriptionInStringsFileFormat]], 
-                    @"but is '%@'", [defaultDict descriptionInStringsFileFormat]);
+                    @"but is '%@'", [opts descriptionInStringsFileFormat]);
 }
 
 

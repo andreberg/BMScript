@@ -31,6 +31,14 @@ do { \
 } while (0)
 #define	BMSCRIPT_ACQUIRE_LOCK_START_ENABLED() \
 	__dtrace_isenabled$BMScript$acquire_lock_start$v1()
+#define	BMSCRIPT_END_BG_EXECUTE(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$end_bg_execute$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_END_BG_EXECUTE_ENABLED() \
+	__dtrace_isenabled$BMScript$end_bg_execute$v1()
 #define	BMSCRIPT_END_NET_EXECUTE(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -39,6 +47,38 @@ do { \
 } while (0)
 #define	BMSCRIPT_END_NET_EXECUTE_ENABLED() \
 	__dtrace_isenabled$BMScript$end_net_execute$v1()
+#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENT(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$end_saturate_with_argument$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENT_ENABLED() \
+	__dtrace_isenabled$BMScript$end_saturate_with_argument$v1()
+#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENTS(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$end_saturate_with_arguments$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENTS_ENABLED() \
+	__dtrace_isenabled$BMScript$end_saturate_with_arguments$v1()
+#define	BMSCRIPT_END_SATURATE_WITH_DICTIONARY(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$end_saturate_with_dictionary$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_END_SATURATE_WITH_DICTIONARY_ENABLED() \
+	__dtrace_isenabled$BMScript$end_saturate_with_dictionary$v1()
+#define	BMSCRIPT_START_BG_EXECUTE(arg0, arg1, arg2) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$start_bg_execute$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_START_BG_EXECUTE_ENABLED() \
+	__dtrace_isenabled$BMScript$start_bg_execute$v1()
 #define	BMSCRIPT_START_NET_EXECUTE(arg0, arg1, arg2) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -47,16 +87,56 @@ do { \
 } while (0)
 #define	BMSCRIPT_START_NET_EXECUTE_ENABLED() \
 	__dtrace_isenabled$BMScript$start_net_execute$v1()
+#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENT(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$start_saturate_with_argument$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENT_ENABLED() \
+	__dtrace_isenabled$BMScript$start_saturate_with_argument$v1()
+#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENTS() \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$start_saturate_with_arguments$v1(); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENTS_ENABLED() \
+	__dtrace_isenabled$BMScript$start_saturate_with_arguments$v1()
+#define	BMSCRIPT_START_SATURATE_WITH_DICTIONARY(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$start_saturate_with_dictionary$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_START_SATURATE_WITH_DICTIONARY_ENABLED() \
+	__dtrace_isenabled$BMScript$start_saturate_with_dictionary$v1()
 
 
 extern void __dtrace_probe$BMScript$acquire_lock_end$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$acquire_lock_end$v1(void);
 extern void __dtrace_probe$BMScript$acquire_lock_start$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$acquire_lock_start$v1(void);
+extern void __dtrace_probe$BMScript$end_bg_execute$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$end_bg_execute$v1(void);
 extern void __dtrace_probe$BMScript$end_net_execute$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$end_net_execute$v1(void);
+extern void __dtrace_probe$BMScript$end_saturate_with_argument$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$end_saturate_with_argument$v1(void);
+extern void __dtrace_probe$BMScript$end_saturate_with_arguments$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$end_saturate_with_arguments$v1(void);
+extern void __dtrace_probe$BMScript$end_saturate_with_dictionary$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$end_saturate_with_dictionary$v1(void);
+extern void __dtrace_probe$BMScript$start_bg_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
+extern int __dtrace_isenabled$BMScript$start_bg_execute$v1(void);
 extern void __dtrace_probe$BMScript$start_net_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
 extern int __dtrace_isenabled$BMScript$start_net_execute$v1(void);
+extern void __dtrace_probe$BMScript$start_saturate_with_argument$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$start_saturate_with_argument$v1(void);
+extern void __dtrace_probe$BMScript$start_saturate_with_arguments$v1(void);
+extern int __dtrace_isenabled$BMScript$start_saturate_with_arguments$v1(void);
+extern void __dtrace_probe$BMScript$start_saturate_with_dictionary$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$start_saturate_with_dictionary$v1(void);
 
 #ifdef	__cplusplus
 }

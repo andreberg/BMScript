@@ -32,8 +32,25 @@ typedef struct {
 } NSRange;
 
 provider BMScript {
+    /* Execution */
     probe start_net_execute(char * scriptSource, char * isTemplate, char * launchPath);
     probe end_net_execute(char * result);
+    
+    probe start_bg_execute(char * scriptSource, char * isTemplate, char * launchPath);
+    probe end_bg_execute(char * result);
+    
+    /* Templates */
+    probe start_saturate_with_argument(char * theArg);
+    probe end_saturate_with_argument(char * saturatedScript);
+    
+    probe start_saturate_with_arguments();
+    probe end_saturate_with_arguments(char * saturatedScript);
+    
+    probe start_saturate_with_dictionary(char * theDict);
+    probe end_saturate_with_dictionary(char * saturatedScript);
+    
+    /* Locking */
     probe acquire_lock_start(char * usesPthread);
     probe acquire_lock_end(char * usesPthread);
+
 };

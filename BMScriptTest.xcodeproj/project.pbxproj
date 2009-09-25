@@ -11,8 +11,8 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 657323F21067BFA4001E9123 /* Build configuration list for PBXAggregateTarget "BMScriptDocumentation" */;
 			buildPhases = (
-				657323E71067BF6A001E9123 /* Run Doxygen Build Script */,
-				65454AB8106A015800E03140 /* Overwrite doxygen.css with fine-tuned copy */,
+				657323E71067BF6A001E9123 /* Run Doxygen */,
+				65454AB8106A015800E03140 /* Overwrite doxygen.css Copies */,
 				655D7B78106A1CA500B4B907 /* Import DocSet into Xcode */,
 			);
 			dependencies = (
@@ -45,12 +45,12 @@
 		654295D1105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		654295D2105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */ = {isa = PBXBuildFile; fileRef = 6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */; };
+		654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
+		654E9D59106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
 		65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */; };
-		65BA2B5C10676ABB000B5D3B /* TaskObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA2B5B10676ABB000B5D3B /* TaskObserver.m */; };
 		65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
-		65BA2B9B10676CBF000B5D3B /* TaskObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA2B5B10676ABB000B5D3B /* TaskObserver.m */; };
 		65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */; };
-		8DD76F9A0486AA7600D96B5E /* BMRubyScriptTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */; settings = {ATTRIBUTES = (); }; };
+		8DD76F9A0486AA7600D96B5E /* BMScriptTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* BMScriptTest.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* BMScriptTest.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* BMScriptTest.1 */; };
 /* End PBXBuildFile section */
@@ -100,7 +100,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
+		08FB7796FE84155DC02AAC07 /* BMScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
 		653A09A41067C5CC0027DF98 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
@@ -593,9 +593,10 @@
 		65454AB31069FD4A00E03140 /* struct_n_s_range.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = struct_n_s_range.xml; sourceTree = "<group>"; };
 		65454AB6106A00E100E03140 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = doxygen.css; sourceTree = "<group>"; };
 		6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.dtrace; path = BMScriptProbes.d; sourceTree = "<group>"; };
+		654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Documentation.xcconfig; sourceTree = "<group>"; };
+		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptRunner.h; sourceTree = "<group>"; };
+		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
-		65BA2B5A10676ABB000B5D3B /* TaskObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskObserver.h; sourceTree = "<group>"; };
-		65BA2B5B10676ABB000B5D3B /* TaskObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskObserver.m; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BMScriptTest.1; sourceTree = "<group>"; };
@@ -624,6 +625,7 @@
 		08FB7794FE84155DC02AAC07 /* BMScriptTest */ = {
 			isa = PBXGroup;
 			children = (
+				654E9CE4106BEFBF008CC673 /* Config */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				65429588105FE1B80037E0C8 /* Unit Tests */,
 				6547BCCC10698F2400B3A390 /* Probes */,
@@ -640,7 +642,7 @@
 			isa = PBXGroup;
 			children = (
 				65429594105FE1D00037E0C8 /* Classes */,
-				08FB7796FE84155DC02AAC07 /* BMRubyScriptTest.m */,
+				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -667,7 +669,6 @@
 			isa = PBXGroup;
 			children = (
 				65429589105FE1B80037E0C8 /* Resources */,
-				65BA2D2D106776E5000B5D3B /* Helper Classes */,
 				65429590105FE1B80037E0C8 /* BMRubyScriptUnitTests.m */,
 				65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */,
 			);
@@ -705,6 +706,7 @@
 		65429594105FE1D00037E0C8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				65BA2D2D106776E5000B5D3B /* Helper Classes */,
 				654295CF105FE2A90037E0C8 /* BMScript.h */,
 				654295D0105FE2A90037E0C8 /* BMScript.m */,
 				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
@@ -1280,6 +1282,14 @@
 			name = Probes;
 			sourceTree = "<group>";
 		};
+		654E9CE4106BEFBF008CC673 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
+			);
+			name = Config;
+			sourceTree = "<group>";
+		};
 		65731F961067771B001E9123 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1309,8 +1319,8 @@
 		65BA2D2D106776E5000B5D3B /* Helper Classes */ = {
 			isa = PBXGroup;
 			children = (
-				65BA2B5A10676ABB000B5D3B /* TaskObserver.h */,
-				65BA2B5B10676ABB000B5D3B /* TaskObserver.m */,
+				654E9D56106C2082008CC673 /* ScriptRunner.h */,
+				654E9D57106C2082008CC673 /* ScriptRunner.m */,
 			);
 			name = "Helper Classes";
 			sourceTree = "<group>";
@@ -1420,19 +1430,19 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
-		65454AB8106A015800E03140 /* Overwrite doxygen.css with fine-tuned copy */ = {
+		65454AB8106A015800E03140 /* Overwrite doxygen.css Copies */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Overwrite doxygen.css with fine-tuned copy";
+			name = "Overwrite doxygen.css Copies";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo overwriting auto-generated doxygen.css with tuned copy from Documentation group\ncp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\"\ncp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\ncp -f \"$SOURCE_ROOT/doxygen.css\" \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\nexit 0";
+			shellScript = "\nif [[ -e \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\" ]]; then\n\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\"\nfi\n\nif [[ -e \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\nfi\n\nif [[ -e \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\nfi";
 		};
 		6547BD221069943B00B3A390 /* Generate dtrace header files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1460,21 +1470,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DOXYFILE=\"Doxyfile\"\nDOCSETFULLNAME=\"BMScript.docset\"\n\n#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSETFULLNAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"load documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" \n     >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\nosascript \"$TEMP_DIR/loadDocSet.scpt\"\n\nexit 0";
+			shellScript = "#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSETFULLNAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"\tload documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\nosascript \"$TEMP_DIR/loadDocSet.scpt\"";
 		};
-		657323E71067BF6A001E9123 /* Run Doxygen Build Script */ = {
+		657323E71067BF6A001E9123 /* Run Doxygen */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Run Doxygen Build Script";
+			name = "Run Doxygen";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#  Build the doxygen documentation for the project and load the docset into Xcode.\n\n#  Use the following to adjust the value of the $DOXYGEN_PATH User-Defined Setting:\n#    Binary install location: /Applications/Doxygen.app/Contents/Resources/doxygen\n#    Source build install location: /usr/local/bin/doxygen\n\n#  If the config file doesn't exist, run 'doxygen -g $SOURCE_ROOT/doxygen.config' to \n#   a get default file.\n\n#DOXYGEN_PATH=\"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen\"\n\nDOXYFILE=\"Doxyfile\"\nDOCSETFULLNAME=\"BMScript.docset\"\n\n# run doxygen to generate the makefile based on our DOXYFILE\n\n\"$DOXYGEN_PATH\" \"$SOURCE_ROOT/$DOXYFILE\"\n\nexit 0";
+			shellScript = "#  Build the doxygen documentation for the project and load the docset into Xcode.\n\n#  Use the following to adjust the value of the $DOXYGEN_PATH User-Defined Setting:\n#    Binary install location: /Applications/Doxygen.app/Contents/Resources/doxygen\n#    Source build install location: /usr/local/bin/doxygen\n\n#  If the config file doesn't exist, run 'doxygen -g $SOURCE_ROOT/doxygen.config' to \n#   a get default file.\n\n# run doxygen to generate the makefile based on our DOXYFILE\n\n\"$DOXYGEN_PATH\" \"$SOURCE_ROOT/$DOXYFILE\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1486,7 +1496,7 @@
 				654295AF105FE2540037E0C8 /* BMRubyScript.m in Sources */,
 				654295D2105FE2A90037E0C8 /* BMScript.m in Sources */,
 				65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */,
-				65BA2B5C10676ABB000B5D3B /* TaskObserver.m in Sources */,
+				654E9D59106C2082008CC673 /* ScriptRunner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1494,11 +1504,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65BA2B9B10676CBF000B5D3B /* TaskObserver.m in Sources */,
-				8DD76F9A0486AA7600D96B5E /* BMRubyScriptTest.m in Sources */,
+				8DD76F9A0486AA7600D96B5E /* BMScriptTest.m in Sources */,
 				65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */,
 				654295D1105FE2A90037E0C8 /* BMScript.m in Sources */,
 				6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */,
+				654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,11 +10,10 @@
 //
 
 #import "BMScript.h"
+#import "BMScriptProbes.h"  /* dtrace probes auto-generated from .d file(s) */
 
 #include <unistd.h>         /* for usleep       */
 #include <pthread.h>        /* for pthread_*    */
-
-#import "BMScriptProbes.h"  /* dtrace probes auto-generated from .d file(s) */
 
 #ifndef BMSCRIPT_DEBUG_MEMORY
 #define BMSCRIPT_DEBUG_MEMORY 0
@@ -33,19 +32,19 @@
 #endif
 
 #if (BMSCRIPT_DEBUG_DELEGATE_METHODS)
-    #define BMSCRIPT_METHOD_TRACE NSLog(@"inside %s", __PRETTY_FUNCTION__);
+    #define BMSCRIPT_DELEGATE_METHOD_TRACE NSLog(@"Inside %s", __PRETTY_FUNCTION__);
 #else
-    #define BMSCRIPT_METHOD_TRACE
+    #define BMSCRIPT_DELEGATE_METHOD_TRACE
 #endif
 
 #if (BMSCRIPT_DEBUG_OBJECTS)
-    #define BMSCRIPT_OBJECT_TRACE NSLog(@"creating object %@", [super description]);
+    #define BMSCRIPT_OBJECT_TRACE NSLog(@"Creating object %@", [super description]);
 #else
     #define BMSCRIPT_OBJECT_TRACE
 #endif
 
 #if (BMSCRIPT_DEBUG_INIT)
-    #define BMSCRIPT_INIT_TRACE NSLog(@"initialization done for: %@", [self debugDescription]);
+    #define BMSCRIPT_INIT_TRACE NSLog(@"Initializing object %@ with:\n %@", [super description], [self debugDescription]);
 #else
     #define BMSCRIPT_INIT_TRACE
 #endif
@@ -140,16 +139,16 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (void)setTask:(NSTask *)newTask;
 - (NSPipe *)pipe;
 - (void)setOutPipe:(NSPipe *)newOutPipe;
-- (NSString *) defaultScript;
-- (void) setDefaultScript: (NSString *) newDefaultScript;
-- (NSDictionary *) defaultOptions;
-- (void) setDefaultOptions: (NSDictionary *) newDefaultOptions;
+// - (NSString *) defaultScript;
+// - (void) setDefaultScript: (NSString *) newDefaultScript;
+// - (NSDictionary *) defaultOptions;
+// - (void) setDefaultOptions: (NSDictionary *) newDefaultOptions;
 - (NSThread *) bgThread;
 - (void) setBgThread: (NSThread *) newBgThread;
 - (NSPipe *) bgPipe;
 - (void) setBgPipe:(NSPipe *)newBgPipe;
-- (NSString *)partialResult;
-- (void)setPartialResult:(NSString *)newPartialResult;
+// - (NSString *)partialResult;
+// - (void)setPartialResult:(NSString *)newPartialResult;
 - (BOOL)isTemplate;
 - (void)setIsTemplate:(BOOL)flag;
 /**
@@ -191,7 +190,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             script = [newScript copy];
         }
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
@@ -202,11 +201,13 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 }
 
 - (void)setLastResult:(NSString *)newLastResult {
+    BMSCRIPT_LOCK
     if (lastResult != newLastResult) {
         [lastResult release];
         lastResult = [newLastResult copy];
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    BMSCRIPT_UNLOCK
+    
 }
 
 //=========================================================== 
@@ -229,7 +230,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             options = item;
         }
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
@@ -250,7 +251,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         history = [newHistory retain];
     }
     BMSCRIPT_UNLOCK
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
@@ -265,7 +266,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         [task release];
         task = [newTask retain];
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
@@ -280,38 +281,36 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         [pipe release];
         pipe = [newPipe retain];
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
 //  defaultScript 
 //=========================================================== 
-- (NSString *)defaultScript {
-    return [[defaultScript copy] autorelease]; 
-}
-
-- (void)setDefaultScript:(NSString *)newDefaultScript {
-    if (defaultScript != newDefaultScript) {
-        [defaultScript release];
-        defaultScript = [newDefaultScript copy];
-    }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
-}
+// - (NSString *)defaultScript {
+//     return [[defaultScript copy] autorelease]; 
+// }
+// 
+// - (void)setDefaultScript:(NSString *)newDefaultScript {
+//     if (defaultScript != newDefaultScript) {
+//         [defaultScript release];
+//         defaultScript = [newDefaultScript copy];
+//     }
+// }
 
 //=========================================================== 
 //  defaultOptions 
 //=========================================================== 
-- (NSDictionary *)defaultOptions {
-    return [[defaultOptions retain] autorelease]; 
-}
-
-- (void)setDefaultOptions:(NSDictionary *)newDefaultOptions {
-    if (defaultOptions != newDefaultOptions) {
-        [defaultOptions release];
-        defaultOptions = [newDefaultOptions retain];
-    }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
-}
+// - (NSDictionary *)defaultOptions {
+//     return [[defaultOptions retain] autorelease]; 
+// }
+// 
+// - (void)setDefaultOptions:(NSDictionary *)newDefaultOptions {
+//     if (defaultOptions != newDefaultOptions) {
+//         [defaultOptions release];
+//         defaultOptions = [newDefaultOptions retain];
+//     }
+// }
 
 //=========================================================== 
 //  bgTask 
@@ -325,7 +324,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         [bgTask release];
         bgTask = [newBgTask retain];
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
@@ -340,25 +339,23 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         [bgPipe release];
         bgPipe = [newBgPipe retain];
     }
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
 //  partialResult 
 //=========================================================== 
-- (NSString *)partialResult {
-    return [[partialResult copy] autorelease];
-}
-
-- (void)setPartialResult:(NSString *)newPartialResult {
-    BMSCRIPT_LOCK
-    if (partialResult != newPartialResult) {
-        [partialResult release];
-        partialResult = [newPartialResult copy];
-    }
-    BMSCRIPT_UNLOCK
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
-}
+// - (NSString *)partialResult {
+//     return [[partialResult copy] autorelease];
+// }
+// - (void)setPartialResult:(NSString *)newPartialResult {
+//     BMSCRIPT_LOCK
+//     if (partialResult != newPartialResult) {
+//         [partialResult release];
+//         partialResult = [newPartialResult copy];
+//     }
+//     BMSCRIPT_UNLOCK
+// }
 
 //=========================================================== 
 //  delegate 
@@ -373,7 +370,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         delegate = newDelegate;
     }
     BMSCRIPT_UNLOCK
-    //if (BMSCRIPT_DEBUG_MEMORY) RETAIN_COUNT_FOOTPRINT;
+    
 }
 
 //=========================================================== 
@@ -403,12 +400,8 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     [lastResult release], lastResult = nil;
     [task release], task = nil;
     [pipe release], pipe = nil;
-    [defaultScript release], defaultScript = nil;
-    [defaultOptions release], defaultOptions = nil;
     [bgTask release], bgTask = nil;
     [bgPipe release], bgPipe = nil;
-    [partialResult release], partialResult = nil;
-    
     [super dealloc];
 }
 
@@ -419,13 +412,13 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: Description
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"%@,\n script: '%@',\n history (count %d): %@,\n lastResult: %@,\n options: %@", 
-            [super description], [script quote], [history count], history, lastResult, [options descriptionInStringsFileFormat]];
+    return [NSString stringWithFormat:@"%@,\n script: '%@',\n lastResult: '%@',\n delegate: %@,\n options: %@", 
+            [super description], [script quote], [lastResult quote], (delegate == self? @"self" : delegate), [options descriptionInStringsFileFormat]];
 }
 
 - (NSString *) debugDescription {
-    return [NSString stringWithFormat:@"%@,\n task: %@,\n pipe: %@,\n bgTask: %@,\n bgPipe: %@", 
-            [self description], bgTask, pipe, bgTask, bgPipe ];
+    return [NSString stringWithFormat:@"%@,\n history (%d items): %@,\n task: %@,\n pipe: %@,\n bgTask: %@,\n bgPipe: %@", 
+            [self description], [history count], history, task, pipe, bgTask, bgPipe ];
 }
 
 // MARK: Initializer Methods
@@ -441,46 +434,48 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 /* designated initializer */
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions {
     
-    if (![self conformsToProtocol:@protocol(BMScriptLanguageProtocol)]) {
+    if ([[self superclass] isEqual:[BMScript class]] && ![self conformsToProtocol:@protocol(BMScriptLanguageProtocol)]) {
         @throw [NSException exceptionWithName:BMScriptLanguageProtocolDoesNotConformException 
                                        reason:@"descendants of BMScript must conform to the BMScriptLanguageProtocol" 
                                      userInfo:nil];
     }
     
-    if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
-        defaultScript = [[self defaultScriptSourceForLanguage] retain];
-    } else {
-        defaultScript = @"";
-    }
-    
-    if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
-        defaultOptions = [[self defaultOptionsForLanguage] retain];
-    } else {
-        @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
-                                       reason:@"descendants of BMScript must implement -[defaultOptionsForLanguage]" 
-                                     userInfo:nil];
-    }
-    
     if (self = [super init]) {
-        if (!scriptSource) {
-            scriptSource = defaultScript;
+        if (scriptSource) {
+            script = [scriptSource retain];
+        } else {
+            if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
+                script = [[self performSelector:@selector(defaultScriptSourceForLanguage)] retain];
+            } else {
+                script = @"no script source set";
+            }
         }
+
         if (scriptOptions) {
             options = [scriptOptions retain];
         } else {
-            // NSLog(@"*** BMScript Warning: Using an outside-specific scriptSource but defaultOptions supplied by BMScript (defaults to /bin/echo). "
-            //       @"Did you set a proper options dictionary to support the language you are trying to utilize? (tip: use BMSynthesizeOptions)");
-            options = [defaultOptions retain];
+            if ([[self superclass] isEqual:[BMScript class]] && ![self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
+                @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
+                                               reason:@"descendants of BMScript must implement -[defaultOptionsForLanguage]" 
+                                             userInfo:nil];
+            } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
+                options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
+            } else {
+                NSDictionary * defaultOptions = BMSynthesizeOptions(@"/bin/echo", nil);
+                options = [defaultOptions retain];
+            }
+            
         }
-        script = [scriptSource retain];
+        
         history = [[NSMutableArray alloc] init];
         lastResult = [[NSString alloc] init];
-        partialResult = [[NSString alloc] init];
+        
         // tasks/pipes will be allocated & initialized as needed
         task = nil;
         pipe = nil;
         bgTask = nil;
         bgPipe = nil;
+        
         delegate = self;
         
         BMSCRIPT_INIT_TRACE
@@ -594,21 +589,21 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     if (pipe) {
         pipeRetainCount = [pipe retainCount];
     }
-    if (defaultScript) {
-        defaultScriptRetainCount = [defaultScript retainCount];
-    }
-    if (defaultOptions) {
-        defaultOptionsRetainCount = [defaultOptions retainCount];
-    }
+//     if (defaultScript) {
+//         defaultScriptRetainCount = [defaultScript retainCount];
+//     }
+//     if (defaultOptions) {
+//         defaultOptionsRetainCount = [defaultOptions retainCount];
+//     }
     if (bgTask) {
         bgTaskRetainCount = [bgTask retainCount];
     }
     if (bgPipe) {
         bgPipeRetainCount = [bgPipe retainCount];
     }
-    if (partialResult) {
-        partialResultRetainCount = [partialResult retainCount];
-    }
+//     if (partialResult) {
+//         partialResultRetainCount = [partialResult retainCount];
+//     }
 
     NSLog(@"\nRetain Counts\n"
           @" self = %ld\n"
@@ -648,9 +643,19 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
        pipe = [[NSPipe alloc] init];
         
         if (task && pipe) {
-            NSArray * args = [options objectForKey:BMScriptOptionsTaskArgumentsKey];
-            args = [args arrayByAddingObject:script];
+            
             NSString * path = [options objectForKey:BMScriptOptionsTaskLaunchPathKey];
+            NSArray * args = [options objectForKey:BMScriptOptionsTaskArgumentsKey];
+            
+            // If BMSynthesizeOptions is called with "nil" as second argument 
+            // that effectively sets up BMScriptOptionsTaskArgumentsKey as 
+            // [NSArray arrayWithObjects:nil] which in turn becomes a "__NSArray0"
+            if (!args || [NSStringFromClass([args class]) isEqualToString:@"__NSArray0"]) {
+                //NSLog(@"args = %@, args class = %@", args, NSStringFromClass([args class]));
+                args = [NSArray arrayWithObject:script];
+            } else {
+                args = [args arrayByAddingObject:script];
+            }  
             
             [task setLaunchPath:path];
             [task setArguments:args];
@@ -708,9 +713,18 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             bgTask = [[NSTask alloc] init];
             bgPipe = [[NSPipe alloc] init];    
             
-            NSArray * args = [options objectForKey:BMScriptOptionsTaskArgumentsKey];
-            args = [args arrayByAddingObject:script];
             NSString * path = [options objectForKey:BMScriptOptionsTaskLaunchPathKey];
+            NSArray * args = [options objectForKey:BMScriptOptionsTaskArgumentsKey];
+            
+            // If BMSynthesizeOptions is called with "nil" as second argument 
+            // that effectively sets up BMScriptOptionsTaskArgumentsKey as 
+            // [NSArray arrayWithObjects:nil] which in turn becomes a "__NSArray0"
+            if (!args || [NSStringFromClass([args class]) isEqualToString:@"__NSArray0"]) {
+                //NSLog(@"args = %@, args class = %@", args, NSStringFromClass([args class]));
+                args = [NSArray arrayWithObject:script];
+            } else {
+                args = [args arrayByAddingObject:script];
+            }  
             
             // set options for background task
             [bgTask setLaunchPath:path];
@@ -751,14 +765,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (string) {
-        if ([[self delegate] respondsToSelector:@selector(shouldAppendPartialResult:)]) {
-            if ([[self delegate] shouldAppendPartialResult:string]) {
-                self.partialResult = [partialResult stringByAppendingString:string];
-            }
-        }
         if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
             if ([[self delegate] shouldSetLastResult:string]) {
-                self.lastResult = [partialResult stringByAppendingString:string];
+                self.lastResult = [self.lastResult stringByAppendingString:string];
             }
         }
     } else {
@@ -1073,29 +1082,32 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 // MARK: Delegate Methods
 
-- (BOOL) shouldAddItemToHistory:(id)anItem { BMSCRIPT_METHOD_TRACE return YES; }
-- (BOOL) shouldReturnItemFromHistory:(id)anItem { BMSCRIPT_METHOD_TRACE return YES; }
-- (BOOL) shouldSetLastResult:(NSString *)aString { BMSCRIPT_METHOD_TRACE return YES; }
-- (BOOL) shouldAppendPartialResult:(NSString *)string { BMSCRIPT_METHOD_TRACE return YES; }
-- (BOOL) shouldSetScript:(NSString *)aScript { BMSCRIPT_METHOD_TRACE return YES; }
-- (BOOL) shouldSetOptions:(NSDictionary *)opts { BMSCRIPT_METHOD_TRACE return YES; }
+- (BOOL) shouldAddItemToHistory:(id)anItem { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
+- (BOOL) shouldReturnItemFromHistory:(id)anItem { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
+- (BOOL) shouldSetLastResult:(NSString *)aString { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
+- (BOOL) shouldAppendPartialResult:(NSString *)string { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
+- (BOOL) shouldSetScript:(NSString *)aScript { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
+- (BOOL) shouldSetOptions:(NSDictionary *)opts { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
 
 
-// MARK: BMScriptLanguage
+// MARK BMScriptLanguage
 
-- (NSDictionary *) defaultOptionsForLanguage {
-    BMSynthesizeOptions(@"/bin/echo", nil);
-    //NSLog(@"defaultDict: %@", [defaultDict descriptionInStringsFileFormat]);
-    return defaultDict;
-}
+// Currently unused as BMScriptLanguageProtocol was initially intended for subclasses
+// It might change again but that's the status at the time of writing
 
-- (NSString *) defaultScriptSourceForLanguage {
-    return @"BMScript running default task (/bin/echo) with this message as script source.\n"
-           @"If you want to customize BMScript you can create a subclass easily with help of the BMScriptLanguageProtocol\n "
-           @"which describes a required method for supplying the default options dictionary and some optional methods.\n "
-           @"You can also call one of BMScript's many initializer and convenience factory methods to provide default options\n "
-           @"such as task launch path and arguments and a default script to execute.\n";
-}
+//- (NSDictionary *) defaultOptionsForLanguage {
+//     NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", nil);
+//     return opts;
+//}
+
+//- (NSString *) defaultScriptSourceForLanguage {
+//     return @"BMScript running default task (/bin/echo) with this message as script source.\n"
+//            @"If you want to customize BMScript you can create a subclass easily with help of the BMScriptLanguageProtocol\n "
+//            @"which describes a required method for supplying the default options dictionary and some optional methods.\n "
+//            @"You can also call one of BMScript's many initializer and convenience factory methods to provide default options\n "
+//            @"such as task launch path and arguments and a default script to execute.\n";  
+//    return nil;
+//}
 
 // MARK: NSCopying
 
@@ -1114,11 +1126,8 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     [coder encodeObject:history];
     [coder encodeObject:task];
     [coder encodeObject:pipe];
-    [coder encodeObject:defaultScript];
-    [coder encodeObject:defaultOptions];
     [coder encodeObject:bgTask];
     [coder encodeObject:bgPipe];
-    [coder encodeObject:partialResult];
     [coder encodeObject:delegate];
     [coder encodeValueOfObjCType:@encode(BOOL) at:&isTemplate];
 }
@@ -1126,20 +1135,17 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (id) initWithCoder:(NSCoder *)coder { 
     if (self = [super init]) { 
-        int version = [coder versionForClassName:NSStringFromClass([self class])]; 
-        NSLog(@"class version = %i", version);
-        script =         [[coder decodeObject] retain];
-        lastResult =     [[coder decodeObject] retain];
-        options =        [[coder decodeObject] retain];
-        history =        [[coder decodeObject] retain];
-        task =           [[coder decodeObject] retain];
-        pipe =           [[coder decodeObject] retain];
-        defaultScript =  [[coder decodeObject] retain];
-        defaultOptions = [[coder decodeObject] retain];
-        bgTask =         [[coder decodeObject] retain];
-        bgPipe =         [[coder decodeObject] retain];
-        partialResult =  [[coder decodeObject] retain];
-        delegate =       [[coder decodeObject] retain];
+        //int version = [coder versionForClassName:NSStringFromClass([self class])]; 
+        //NSLog(@"class version = %i", version);
+        script     = [[coder decodeObject] retain];
+        lastResult = [[coder decodeObject] retain];
+        options    = [[coder decodeObject] retain];
+        history    = [[coder decodeObject] retain];
+        task       = [[coder decodeObject] retain];
+        pipe       = [[coder decodeObject] retain];
+        bgTask     = [[coder decodeObject] retain];
+        bgPipe     = [[coder decodeObject] retain];
+        delegate   = [[coder decodeObject] retain];
         [coder decodeValueOfObjCType:@encode(BOOL) at:&isTemplate];
         
     }
@@ -1153,52 +1159,52 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // Ruby
 
 + (id) rubyScriptWithSource:(NSString *)scriptSource {
-    BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
-    return [[[self alloc] initWithScriptSource:scriptSource options:defaultDict] autorelease];
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+    return [[[self alloc] initWithScriptSource:scriptSource options:opts] autorelease];
 }
 
 + (id) rubyScriptWithContentsOfFile:(NSString *)path {
-    BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
-    return [[[self alloc] initWithContentsOfFile:path options:defaultDict] autorelease];
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+    return [[[self alloc] initWithContentsOfFile:path options:opts] autorelease];
 }
 
 + (id) rubyScriptWithContentsOfTemplateFile:(NSString *)path {
-	BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
-    return [[[self alloc] initWithContentsOfTemplateFile:path options:defaultDict] autorelease];
+	NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+    return [[[self alloc] initWithContentsOfTemplateFile:path options:opts] autorelease];
 }
 
 // Python 
 
 + (id) pythonScriptWithSource:(NSString *)scriptSource {
-    BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
-    return [[[self alloc] initWithScriptSource:scriptSource options:defaultDict] autorelease];
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
+    return [[[self alloc] initWithScriptSource:scriptSource options:opts] autorelease];
 }
 
 + (id) pythonScriptWithContentsOfFile:(NSString *)path {
-    BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
-    return [[[self alloc] initWithContentsOfFile:path options:defaultDict] autorelease];
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
+    return [[[self alloc] initWithContentsOfFile:path options:opts] autorelease];
 }
 
 + (id) pythonScriptWithContentsOfTemplateFile:(NSString *)path {
-    BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
-    return [[[self alloc] initWithContentsOfTemplateFile:path options:defaultDict] autorelease];
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/python", @"-c", nil);
+    return [[[self alloc] initWithContentsOfTemplateFile:path options:opts] autorelease];
 }
 
 // Perl
 
 + (id) perlScriptWithSource:(NSString *)scriptSource {
-	BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
-    return [[[self alloc] initWithScriptSource:scriptSource options:defaultDict] autorelease];
+	NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
+    return [[[self alloc] initWithScriptSource:scriptSource options:opts] autorelease];
 }
 
 + (id) perlScriptWithContentsOfFile:(NSString *)path {
-	BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
-    return [[[self alloc] initWithContentsOfFile:path options:defaultDict] autorelease];
+	NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
+    return [[[self alloc] initWithContentsOfFile:path options:opts] autorelease];
 }
 
 + (id) perlScriptWithContentsOfTemplateFile:(NSString *)path {
-	BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
-    return [[[self alloc] initWithContentsOfTemplateFile:path options:defaultDict] autorelease];
+	NSDictionary * opts = BMSynthesizeOptions(@"/usr/bin/perl", @"-Mutf8", @"-e", nil);
+    return [[[self alloc] initWithContentsOfTemplateFile:path options:opts] autorelease];
 }
 
 @end

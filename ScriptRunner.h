@@ -1,27 +1,54 @@
 //
-//  BMRubyScript.h
-//  ProgrammersFriend
+//  ScriptRunner.h
+//  BMScriptTest
 //
-//  Created by Andre Berg on 11.09.09.
+//  Created by Andre Berg on 24.09.09.
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 //  For license details see end of this file.
-//  Short version: licensed under MIT license.
+//  Short version: licensed under the MIT license.
 //
 
-/// @cond 
- 
 #import <Cocoa/Cocoa.h>
 #import "BMScript.h"
 
-@interface BMRubyScript : BMScript <BMScriptLanguageProtocol> {
 
+@interface ScriptRunner : NSObject {
+    
+    BMScript * script;
+    BMScript * bgScript;
+    
+    NSString * results;
+    NSString * bgResults;
+    
+    TerminationStatus status;
+    TerminationStatus bgStatus;
+    
+    BOOL taskHasEnded;
+    BOOL bgTaskHasEnded;
+    
+    BOOL shouldSetLastResultCalled;
+    BOOL shouldSetScriptCalled;
 }
-- (NSString *) defaultScriptSourceForLanguage;
-- (NSDictionary *) defaultOptionsForLanguage;
-@end
 
-/// @endcond
+- (void) launch;
+- (void) launchBackground;
+
+- (void) bgTaskFinished:(NSNotification *)aNotification;
+- (NSString *) debugDescription;
+
+@property (nonatomic, retain) BMScript * script;
+@property (nonatomic, retain) BMScript * bgScript;
+@property (nonatomic, copy) NSString * results;
+@property (nonatomic, copy) NSString * bgResults;
+@property (nonatomic, assign) TerminationStatus status;
+@property (nonatomic, assign) TerminationStatus bgStatus;
+@property (nonatomic, assign) BOOL taskHasEnded;
+@property (nonatomic, assign) BOOL bgTaskHasEnded;
+@property (nonatomic, assign) BOOL shouldSetLastResultCalled;
+@property (nonatomic, assign) BOOL shouldSetScriptCalled;
+
+@end
 
 /*
  * Copyright (c) 2009 Andre Berg (Berg Media)

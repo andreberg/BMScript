@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "BMScript.h"
 #import "BMRubyScript.h"
-#import "TaskObserver.h"
+#import "ScriptRunner.h"
 #include <unistd.h>
 
 #if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS))
@@ -20,7 +20,7 @@
     #endif
 #define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
-#define DEBUG 1
+#define DEBUG 0
 
 // ---------------------------------------------------------------------------------------- 
 // MARK: MAIN
@@ -39,18 +39,18 @@ int main (int argc, const char * argv[]) {
     
     // ---------------------------------------------------------------------------------------- 
     
-    TaskObserver * to = [[TaskObserver alloc] init];
+    ScriptRunner * sr = [[ScriptRunner alloc] init];
+    [sr launchBackground];
         
     // test protocol conformance
-    BOOL respondsToDefaultOpts = [to respondsToSelector:@selector(defaultOptionsForLanguage)];
-    BOOL respondsToDefaultScript = [to respondsToSelector:@selector(defaultScriptSourceForLanguage)];
-    BOOL respondsToTaskFinishedCallback = [to respondsToSelector:@selector(taskFinishedCallback:)];
+    BOOL respondsToDefaultOpts = [sr respondsToSelector:@selector(defaultOptionsForLanguage)];
+    BOOL respondsToDefaultScript = [sr respondsToSelector:@selector(defaultScriptSourceForLanguage)];
     
-    NSLog(@"TaskObserver conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([TaskObserver conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
-    NSLog(@"TaskObserver implements all required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts));
-    NSLog(@"TaskObserver implements all methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript && respondsToTaskFinishedCallback));
+    NSLog(@"ScriptRunner conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
+    NSLog(@"ScriptRunner implements required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts));
+    NSLog(@"ScriptRunner implements all methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript));
 
-    [to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.2];
+    //[to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.2];
 
     // ---------------------------------------------------------------------------------------- 
 
@@ -150,8 +150,8 @@ int main (int argc, const char * argv[]) {
     
     // ---------------------------------------------------------------------------------------- 
     
-    BMAssertLog([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]);
-    [to release];
+    BMAssertLog([sr.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]);
+    // [sr release];
     
     // ---------------------------------------------------------------------------------------- 
     
@@ -170,7 +170,6 @@ int main (int argc, const char * argv[]) {
     NSLog(@"[script4 isEqualToScript:script4]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
     
     // ---------------------------------------------------------------------------------------- 
-    
     
     [script1 release];
     [script2 release];
