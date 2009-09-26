@@ -25,19 +25,61 @@
 typedef long NSInteger;
 typedef unsigned long NSUInteger;
 typedef int BOOL;
+typedef NSInteger TerminationStatus;
 
 typedef struct {
   NSUInteger location;
   NSUInteger length;
 } NSRange;
 
+/* 
+ * TODO: Change probes so they are more atomic.
+ * So that their names reflect more the methods they are attached to. 
+ * This allows us to define instruments that mix and match these probes 
+ * and bundle many probes for one statistic or very fine-grained for multiple stats. 
+ */
 provider BMScript {
+
+    /* Atomic Probes */
+    probe enter_execute(char * scriptSource, char * isTemplate, char * launchPath);
+    probe  exit_execute(char * result);
+    
+    probe enter_execute_and_return_result(char * scriptSource, char * isTemplate, char * launchPath);
+    probe  exit_execute_and_return_result(char * result);
+    
+    probe enter_execute_and_return_result_error(char * scriptSource, char * isTemplate, char * launchPath);
+    probe  exit_execute_and_return_result_error(char * result);
+    
+    probe enter_execute_and_return_error(char * scriptSource, char * isTemplate, char * launchPath);
+    probe  exit_execute_and_return_error(char * result);
+    
+    probe enter_setup_task(char * taskIsRunning);
+    probe  exit_setup_task(char * taskIsRunning);
+            
+    probe enter_launch_task_and_store_last_result(char * taskIsRunning, char * lastResult);
+    probe  exit_launch_task_and_store_last_result(char * taskIsRunning, char * lastResult);
+    
+    probe enter_setup_and_launch_background_task(char * bgTaskIsRunning, char * lastResult);
+    probe  exit_setup_and_launch_background_task(char * bgTaskIsRunning, char * lastResult);
+    
+    probe enter_data_ready();
+    probe  exit_data_ready();
+    
+    probe enter_append_data(char * data);
+    probe  exit_append_data(char * partialResult);
+    
+    probe enter_task_terminated(char * userInfo);
+    probe  exit_task_terminated(char * lastResult, char * partialResult);
+        
     /* Execution */
     probe start_net_execute(char * scriptSource, char * isTemplate, char * launchPath);
     probe end_net_execute(char * result);
     
     probe start_bg_execute(char * scriptSource, char * isTemplate, char * launchPath);
     probe end_bg_execute(char * result);
+    
+    probe start_task_launch(TerminationStatus status, char * statusText);
+    probe end_task_launch(TerminationStatus status, char * statusText);
     
     /* Templates */
     probe start_saturate_with_argument(char * theArg);
@@ -48,6 +90,20 @@ provider BMScript {
     
     probe start_saturate_with_dictionary(char * theDict);
     probe end_saturate_with_dictionary(char * saturatedScript);
+    
+    /* History */
+    
+    probe enter_script_source_from_history_at_index(NSInteger index, int historySize);
+    probe  exit_script_source_from_history_at_index(char * script, int historySize);
+    
+    probe enter_result_from_history_at_index(NSInteger index, int historySize);
+    probe  exit_result_from_history_at_index(char * result, int historySize);
+    
+    probe enter_last_script_source_from_history(int historySize);
+    probe  exit_last_script_source_from_history(char * script, int historySize);
+    
+    probe enter_last_result_from_history(int historySize);
+    probe  exit_last_result_from_history(char * result, int historySize);
     
     /* Locking */
     probe acquire_lock_start(char * usesPthread);

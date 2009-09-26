@@ -134,9 +134,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (void) appendData:(NSData *)d;
 - (void) dataComplete:(NSNotification *)aNotification;
 - (void) dataReady:(NSNotification *)aNotification;
-- (void) printRetainCounts;
 
 // MARK: Private Accessors
+
 - (NSTask *) task;
 - (void) setTask:(NSTask *)newTask;
 - (NSPipe *) pipe;
@@ -150,18 +150,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (NSString *) partialResult;
 - (void) setPartialResult:(NSString *)newPartialResult;
-
-/**
- * Sets the lastResult instance variable. Uses release/copy.
- * @param newLastResult new value for lastResult.
- */
 - (void) setLastResult:(NSString *)newLastResult;
-
-/**
- * Sets the history instance variable. Uses release/retain.
- * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
- * @param newHistory new value for history.
- */
 - (void) setHistory:(NSMutableArray *)newHistory;
 
 @end
@@ -190,7 +179,6 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             script = [newScript copy];
         }
     }
-    
 }
 
 //=========================================================== 
@@ -353,8 +341,15 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (void)setPartialResult:(NSString *)newPartialResult {
     BMSCRIPT_LOCK
     if (partialResult != newPartialResult) {
-        [partialResult release];
-        partialResult = [newPartialResult retain];
+        if ([[self delegate] respondsToSelector:@selector(shouldAppendPartialResult:)]) {
+            if ([[self delegate] shouldAppendPartialResult:newPartialResult]) {
+                [partialResult release];
+                partialResult = [newPartialResult retain];
+            }
+        } else {
+            [partialResult release];
+            partialResult = [newPartialResult retain];
+        }
     }
     BMSCRIPT_UNLOCK
 }
@@ -362,11 +357,11 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 //=========================================================== 
 //  delegate 
 //=========================================================== 
-- (id)delegate {
+- (id<BMScriptDelegateProtocol>)delegate {
     return delegate; 
 }
 
-- (void)setDelegate:(id)newDelegate {
+- (void)setDelegate:(id<BMScriptDelegateProtocol>)newDelegate {
     BMSCRIPT_LOCK
     if (delegate != newDelegate) {
         delegate = newDelegate;
@@ -416,15 +411,11 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     [super dealloc];
 }
 
-- (void) finalize {  
-    [super finalize];
-}
-
 // MARK: Description
 
 - (NSString *) description {
     return [NSString stringWithFormat:@"%@,\n script: '%@',\n lastResult: '%@',\n delegate: %@,\n options: %@", 
-            [super description], [script quote], [lastResult quote], (delegate == self? @"self" : delegate), [options descriptionInStringsFileFormat]];
+            [super description], [script quote], [lastResult quote], (delegate == self? (id)@"self" : delegate), [options descriptionInStringsFileFormat]];
 }
 
 - (NSString *) debugDescription {
@@ -488,7 +479,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         bgTask = nil;
         bgPipe = nil;
         
-        delegate = self;
+        if ([self conformsToProtocol:@protocol(BMScriptDelegateProtocol)]) {
+            delegate = self;
+        }
         
         BMSCRIPT_INIT_TRACE
     }
@@ -558,95 +551,12 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 // MARK: Private Methods
 
-- (void) printRetainCounts {
-    //
-    // Yes, I know retainCount is bad, yes I have read the longer mailinglist thread 
-    // where bbum and everyone else basically says "never ever rely on retainCount!"
-    // ...
-    // ...
-    // and I am still abusing it. Spank me! :p
-    //
-    // PS: Don't get all wet on this... it was just used for general observations that 
-    // have lead to absolutely no decisions about internal object state or design.
-    // This abonimation will be deleted in the near future.
-    // PPS: http://lists.apple.com/archives/xcode-users/2009/Jun/msg00242.html
-    //
-    NSInteger selfRetainCount = 0, scriptRetainCount = 0, lastResultRetainCount = 0,
-              delegateRetainCount = 0, optionsRetainCount = 0, historyRetainCount = 0,
-              taskRetainCount = 0, pipeRetainCount = 0, defaultScriptRetainCount = 0,
-              defaultOptionsRetainCount = 0, bgTaskRetainCount = 0, bgPipeRetainCount = 0,
-              partialResultRetainCount = 0;
-
-    if (self) {
-        selfRetainCount = [self retainCount];
-    }
-    if (script) {
-        scriptRetainCount = [script retainCount];
-    }
-    if (lastResult) {
-        lastResultRetainCount = [lastResult retainCount];
-    }
-    if (delegate) {
-        delegateRetainCount = [delegate retainCount];
-    }
-    if (options) {
-        optionsRetainCount = [options retainCount];
-    }
-    if (history) {
-        historyRetainCount = [history retainCount];
-    }
-    if (task) {
-        taskRetainCount = [task retainCount];
-    }
-    if (pipe) {
-        pipeRetainCount = [pipe retainCount];
-    }
-//     if (defaultScript) {
-//         defaultScriptRetainCount = [defaultScript retainCount];
-//     }
-//     if (defaultOptions) {
-//         defaultOptionsRetainCount = [defaultOptions retainCount];
-//     }
-    if (bgTask) {
-        bgTaskRetainCount = [bgTask retainCount];
-    }
-    if (bgPipe) {
-        bgPipeRetainCount = [bgPipe retainCount];
-    }
-//     if (partialResult) {
-//         partialResultRetainCount = [partialResult retainCount];
-//     }
-
-    NSLog(@"\nRetain Counts\n"
-          @" self = %ld\n"
-          @" script = %ld\n"
-          @" lastResult = %ld\n"
-          @" delegate = %ld\n"
-          @" options = %ld\n"
-          @" history = %ld\n"
-          @" task = %ld\n"
-          @" pipe = %ld\n"
-          @" defaultScript = %ld\n"
-          @" defaultOptions = %ld\n"
-          @" bgTask = %ld\n"
-          @" bgPipe = %ld\n"
-          @" partialResult = %ld", 
-          selfRetainCount, 
-          scriptRetainCount,
-          lastResultRetainCount, 
-          delegateRetainCount,
-          optionsRetainCount,
-          historyRetainCount,
-          taskRetainCount,
-          pipeRetainCount,
-          defaultScriptRetainCount,
-          defaultOptionsRetainCount,
-          bgTaskRetainCount,
-          bgPipeRetainCount,
-          partialResultRetainCount);
-}
-
 - (BOOL) setupTask {
+    
+    BM_PROBE(ENTER_SETUP_TASK, 
+             (char *) [BMStringFromBOOL((task == nil ? NO : [task isRunning])) UTF8String]);
+
+    BOOL success = NO;
     
     if ([task isRunning]) {
         [task terminate];
@@ -683,23 +593,33 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                 //NSLog(@"[task setStandardError:pipe]");
             #endif
             
-            return YES;
+            success = YES;
         }
     }
-    return NO; 
+    
+    BM_PROBE(EXIT_SETUP_TASK, 
+             (char *) [BMStringFromBOOL((task == nil ? NO : [task isRunning])) UTF8String]);
+    
+    return success; 
 }
 
 /* fires a one-off (blocking or synchroneous) task and stores the result */
 - (TerminationStatus) launchTaskAndStoreLastResult {
+    
+    BM_PROBE(ENTER_LAUNCH_TASK_AND_STORE_LAST_RESULT, 
+             (char *) [BMStringFromBOOL((task == nil ? NO : [task isRunning])) UTF8String], 
+             (char *) [[lastResult quote] UTF8String]);
     
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
     [task launch];
     NSData * data = [[pipe fileHandleForReading] readDataToEndOfFile];
     [task waitUntilExit];
     status = [task terminationStatus];
+    
     BMSCRIPT_LOCK
     s_taskStatus = status;
     BMSCRIPT_UNLOCK
+    
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
         if ([[self delegate] shouldSetLastResult:string]) {
@@ -708,13 +628,23 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     } else {
         self.lastResult = string;
     }
+    
     [string release];
+
+    BM_PROBE(EXIT_LAUNCH_TASK_AND_STORE_LAST_RESULT, 
+             (char *) [BMStringFromBOOL((task == nil ? NO : [task isRunning])) UTF8String], 
+             (char *) [[lastResult quote] UTF8String]);
+    
     return status;
 }
 
 /* fires a one-off (non-blocking or asynchroneous) task and reels in the results 
    one after another thru notifications */
 - (void) setupAndLaunchBackgroundTask {
+    
+    BM_PROBE(ENTER_SETUP_AND_LAUNCH_BACKGROUND_TASK, 
+             (char *) [BMStringFromBOOL((bgTask == nil ? NO : [bgTask isRunning])) UTF8String], 
+             (char *) [[lastResult quote] UTF8String]);
     
     if ([bgTask isRunning]) {
         [bgTask terminate];
@@ -770,6 +700,10 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             
             [bgTask launch];
             
+            BM_PROBE(EXIT_SETUP_AND_LAUNCH_BACKGROUND_TASK, 
+                     (char *) [BMStringFromBOOL((bgTask == nil ? NO : [bgTask isRunning])) UTF8String], 
+                     (char *) [[lastResult quote] UTF8String]);
+
             // kick off pipe reading in background
             [[bgPipe fileHandleForReading] readInBackgroundAndNotify];
             //[[bgPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
@@ -800,11 +734,17 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (void) dataReady:(NSNotification *)aNotification {
     
+    BM_PROBE(ENTER_DATA_READY);
+    
 	NSData * data = [[aNotification userInfo] valueForKey:NSFileHandleNotificationDataItem];
     // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
+    
     if (data) {
         [self appendData:data];
     }
+    
+    BM_PROBE(EXIT_DATA_READY);
+    
     // fire again in background after each notification
     [[bgPipe fileHandleForReading] readInBackgroundAndNotify];
 }
@@ -812,22 +752,28 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (void) appendData:(NSData *)data {
     
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    BM_PROBE(ENTER_APPEND_DATA, (char *) [[string quote] UTF8String]);
     if (string) {
         self.partialResult = [self.partialResult stringByAppendingString:string];
     } else {
         NSLog(@"*** Warning: -[appendData:] attempted but could not append to self.partialResult. Data maybe lost!");
     }
     [string release];
+    BM_PROBE(EXIT_APPEND_DATA, (char *) [[partialResult quote] UTF8String]);
 }
 
 - (void) taskTerminated:(NSNotification *)aNotification {
     
+    BM_PROBE(ENTER_TASK_TERMINATED, (char *) [[[[aNotification userInfo] descriptionInStringsFileFormat] quote] UTF8String]);
+
     // read out remaining data, as the pipes have a limited buffer size 
     // and may stall on subsequent calls if full
 	NSData * dataInPipe = [[bgPipe fileHandleForReading] readDataToEndOfFile];
     if (dataInPipe) {
         [self appendData:dataInPipe];
     }
+    
+    BM_PROBE(END_BG_EXECUTE, (char *) [[lastResult quote] UTF8String]);
     
     // task is finished, copy over the accumulated partialResults into lastResult
     if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
@@ -858,7 +804,8 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSTaskDidTerminateNotification object:nil];
-
+    
+    BM_PROBE(EXIT_TASK_TERMINATED, (char *) [[lastResult quote] UTF8String], (char *) [[partialResult quote] UTF8String]);
 }
 
 // MARK: Templates
@@ -942,6 +889,14 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: Execution
 
 - (BOOL) execute {
+    
+    BM_PROBE(ENTER_EXECUTE, 
+             (char *) [[[self script] quote] UTF8String], 
+             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+    
+    BOOL success = NO;
+    
     if (self.isTemplate) {
         @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
                                        reason:@"please define all replacement values for the current template "
@@ -950,13 +905,23 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
     } else {
         if ([self executeAndReturnResult:nil] == YES) {
-            return YES;
+            success = YES;
         }
     }
-    return NO;
+    
+    BM_PROBE(EXIT_EXECUTE, (char *) [[self.lastResult quote] UTF8String]);
+    return success;
 }
 
 - (BOOL) executeAndReturnResult:(NSString **)result {
+    
+    BM_PROBE(ENTER_EXECUTE_AND_RETURN_RESULT, 
+             (char *) [[[self script] quote] UTF8String], 
+             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+    
+    BOOL success = NO;
+    
     if (self.isTemplate) {
         @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
                                        reason:@"please define all replacement values for the current template "
@@ -964,13 +929,23 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                                      userInfo:nil];
     } else {
         if ([self executeAndReturnResult:result error:nil] == YES) {
-            return YES;
+            success = YES;
         }
     }
-    return NO;
+    
+    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, (char *) [[self.lastResult quote] UTF8String]);
+    return success;
 }
 
 - (BOOL) executeAndReturnError:(NSError **)error {
+    
+    BM_PROBE(ENTER_EXECUTE_AND_RETURN_ERROR, 
+             (char *) [[[self script] quote] UTF8String], 
+             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+    
+    BOOL success = NO;
+    
     if (self.isTemplate) {
         if (error) {
             NSDictionary * errorDict = 
@@ -986,16 +961,24 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         }
     } else {
         if ([self executeAndReturnResult:nil error:error] == YES) {
-            return YES;
+            success = YES;
         }
     }
-    return NO;
+    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, (char *) [[self.lastResult quote] UTF8String]);
+    return success;
 }
 
 - (BOOL) executeAndReturnResult:(NSString **)result error:(NSError **)error {
     
-
-    BM_PROBE(START_NET_EXECUTE, (char *) [[[self script] quote] UTF8String], (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+    BM_PROBE(ENTER_EXECUTE_AND_RETURN_RESULT_ERROR,
+             (char *) [[[self script] quote] UTF8String], 
+             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+    
+    BM_PROBE(START_NET_EXECUTE, 
+             (char *) [[[self script] quote] UTF8String], 
+             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
     
     BOOL success = NO;
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
@@ -1051,7 +1034,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         }
     }
     
-    BM_PROBE(END_NET_EXECUTE, (char *)[[[self lastResult] quote] UTF8String]);
+    BM_PROBE(END_NET_EXECUTE, (char *) [[[self lastResult] quote] UTF8String]);
+    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT_ERROR, (char *) [[[self lastResult] quote] UTF8String]);
+
     return success;
 }
 
@@ -1068,6 +1053,11 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                                          userInfo:nil];            
     }
     
+    BM_PROBE(START_BG_EXECUTE, 
+             (char *) [[[self script] quote] UTF8String], 
+             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+    
     [self setupAndLaunchBackgroundTask];
     
 }
@@ -1075,59 +1065,78 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: History
 
 - (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index {
+    
+    BM_PROBE(ENTER_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX, index, (int) [history count]);
+    NSString * aScript = nil;
     if ([history count] > 0) {
         NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:0];
         if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([[self delegate] shouldReturnItemFromHistory:item]) {
-                return item;
+                aScript = item;
             }
         } else {
-            return item;
+            aScript = item;
         }
     }
-    return nil;
+    BM_PROBE(EXIT_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    return [[aScript retain] autorelease];
 }
 
 - (NSString *) resultFromHistoryAtIndex:(NSInteger)index {
+    
+    BM_PROBE(ENTER_RESULT_FROM_HISTORY_AT_INDEX, index, (int) [history count]);
+    NSString * aResult = nil;
     if ([history count] > 0) {
         NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:1];
         if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([[self delegate] shouldReturnItemFromHistory:item]) {
-                return item;
+                aResult = item;
             }
         } else {
-            return item;
+            aResult = item;
         }
     }
-    return nil;
+    BM_PROBE(EXIT_RESULT_FROM_HISTORY_AT_INDEX, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    return [[aResult retain] autorelease];
 }
 
 - (NSString *) lastScriptSourceFromHistory {
+    
+    BM_PROBE(ENTER_LAST_SCRIPT_SOURCE_FROM_HISTORY, (int) [history count]);
+    NSString * aScript = nil;
     if ([history count] > 0) {
         NSString * item = [[[self history] lastObject] objectAtIndex:0];
         if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([[self delegate] shouldReturnItemFromHistory:item]) {
-                return item;
+                aScript = item;
             }
         } else {
-            return item;
+            aScript = item;
         }
     }
-    return nil;
+    BM_PROBE(EXIT_LAST_SCRIPT_SOURCE_FROM_HISTORY, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    return [[aScript retain] autorelease];
 }
 
 - (NSString *) lastResultFromHistory {
+    
+    BM_PROBE(ENTER_LAST_RESULT_FROM_HISTORY, (int) [history count]);
+    
+    NSString * aResult = nil;
     if ([history count] > 0) {
         NSString * item = [[[self history] lastObject] objectAtIndex:1];
         if ([[self delegate] respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([[self delegate] shouldReturnItemFromHistory:item]) {
-                return item;
+                aResult = item;
             }
         } else {
-            return item;
+            aResult = item;
         }
     }
-    return nil;
+    
+    BM_PROBE(EXIT_LAST_RESULT_FROM_HISTORY, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    
+    return [[aResult retain] autorelease];
 }
 
 // MARK: Equality
@@ -1143,7 +1152,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     return [[self script] isEqualToString:[other script]];
 }
 
-// MARK: Delegate Methods
+// MARK: BMScriptDelegate
 
 - (BOOL) shouldAddItemToHistory:(id)anItem { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }
 - (BOOL) shouldReturnItemFromHistory:(id)anItem { BMSCRIPT_DELEGATE_METHOD_TRACE return YES; }

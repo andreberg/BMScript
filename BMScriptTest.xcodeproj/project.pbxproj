@@ -456,7 +456,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSETFULLNAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"\tload documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\nosascript \"$TEMP_DIR/loadDocSet.scpt\"";
+			shellScript = "#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSETFULLNAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"\tload documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\narch -i386 osascript \"$TEMP_DIR/loadDocSet.scpt\"";
 		};
 		657323E71067BF6A001E9123 /* Run Doxygen */ = {
 			isa = PBXShellScriptBuildPhase;

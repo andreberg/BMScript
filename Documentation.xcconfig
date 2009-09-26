@@ -6,8 +6,11 @@
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 //  This file contains general settings that are used in various Run Script build phases.
-//  They may need to be changed by the developer from machine to machine.
+//  May need to be changed by the developer from machine to machine.
 
+// path to the doxygen utility
 DOXYGEN_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen
+// name of the config file
 DOXYFILE=Doxyfile
+// name of the generated docset
 DOCSETFULLNAME=BMScript.docset

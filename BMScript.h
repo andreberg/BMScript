@@ -118,7 +118,8 @@
  *
  * @par Delegate Methods
  * 
- * BMScript also features delegate methods your subclass or another class posing as delegate can implement:
+ * BMScript also features a delegate protocol (BMScriptDelegateProtocol) providing descriptions for methods 
+ * your subclass or another class posing as delegate can implement:
  * 
  * @include bmScriptDelegateMethods.m
  *
@@ -136,7 +137,7 @@
  *
  * @defgroup functions Functions and Global Variables
  * @defgroup constants Constants
- * @defgroup delegate Delegate Methods
+ * @defgroup protocols Protocols
  * @defgroup defines Defines
  */
 
@@ -161,6 +162,7 @@
          * @def BMSCRIPT_FAST_LOCK
          * Toggles usage of pthread_mutex_lock() <-> synchronized(self).
          * Set this to 1 to use the pthread library directly for locks.
+         * @see <a href="http://googlemac.blogspot.com/2006/10/synchronized-swimming.html">Synchronized Swimming (Google Mac Blog)</a>
          */
         #define BMSCRIPT_FAST_LOCK 1
     #endif
@@ -334,6 +336,11 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 /** @} */
 
+/**
+ * @ingroup protocols
+ * @{
+ */
+
 /** 
  * @protocol BMScriptLanguageProtocol
  * Must be implemented by subclasses to provide sensible defaults for language or tool specific values.
@@ -351,18 +358,69 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * alloc/init will pull this in as default script if no script source was supplied to the designated initalizer.
  */
 - (NSString *) defaultScriptSourceForLanguage; 
+@end
+
+
+/** 
+ * @protocol BMScriptDelegateProtocol
+ * Objects conforming to this protocol may pose as delegates for BMScript.
+ */
+@protocol BMScriptDelegateProtocol
+@optional
+/** 
+ * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
+ * give the delegate the power to abort an operation by returning NO. 
+ *
+ * @param anItem the item that will be set as new value in setter if this method returns YES.
+ */
+- (BOOL) shouldAddItemToHistory:(id)anItem;
+/** 
+ * Called in the getter if implemented. Delegate methods beginning with <i>should</i> 
+ * give the delegate the power to abort an operation by returning NO. 
+ *
+ * @param anItem the item that will be returned from getter if this method returns YES.
+ */
+- (BOOL) shouldReturnItemFromHistory:(id)anItem;
+/** 
+ * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
+ * give the delegate the power to abort an operation by returning NO.
+ *
+ * @param aString the string that will be used as new value if this method returns YES.
+ */
+- (BOOL) shouldSetLastResult:(NSString *)aString;
+/** 
+ * Called multiple times during async execution in background whenever there is new data available if implemented. 
+ * @note This delegate is not called during initialization of a new instance. 
+ * It is only triggered when calling the BMScript.setScript: accessor method.
+ *
+ * @param string the string that will be used as new value if this method returns YES.
+ */
+- (BOOL) shouldAppendPartialResult:(NSString *)string;
+/** 
+ * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
+ * give the delegate the power to abort an operation by returning NO.
+ * @param aScript the script that will be used as new value if this method returns YES.
+ */
+- (BOOL) shouldSetScript:(NSString *)aScript;
+/** 
+ * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
+ * give the delegate the power to abort an operation by returning NO.
+ * @param opts the dictionary that will be used as new value if this method returns YES.
+ */
+- (BOOL) shouldSetOptions:(NSDictionary *)opts;
+/** @} */
 
 @end
 
 /**
  * A decorator class to NSTask providing elegant and easy access to the shell.
  */
-@interface BMScript : NSObject <NSCopying, NSCoding> {
+@interface BMScript : NSObject <NSCopying, NSCoding, BMScriptDelegateProtocol> {
 @public
     NSString * script;
     NSDictionary * options;
 @protected
-    id delegate;
+    id<BMScriptDelegateProtocol> delegate;
 @private
     NSString * lastResult;
     NSString * partialResult;
@@ -581,59 +639,10 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (void)setDelegate:(id)newDelegate;
 
-// MARK: Delegate Methods
-
-/**
- * @ingroup delegate
- * @{
- */
-/** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO. 
- *
- * @param anItem the item that will be set as new value in setter if this method returns YES.
- */
-- (BOOL) shouldAddItemToHistory:(id)anItem;
-/** 
- * Called in the getter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO. 
- *
- * @param anItem the item that will be returned from getter if this method returns YES.
- */
-- (BOOL) shouldReturnItemFromHistory:(id)anItem;
-/** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO.
- *
- * @param aString the string that will be used as new value if this method returns YES.
- */
-- (BOOL) shouldSetLastResult:(NSString *)aString;
-/** 
- * Called multiple times during async execution in background whenever there is new data available if implemented. 
- * @note This delegate is not called during initialization of a new instance. 
- * It is only triggered when calling the BMScript.setScript: accessor method.
- *
- * @param string the string that will be used as new value if this method returns YES.
- */
-- (BOOL) shouldAppendPartialResult:(NSString *)string;
-/** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO.
- * @param aScript the script that will be used as new value if this method returns YES.
- */
-- (BOOL) shouldSetScript:(NSString *)aScript;
-/** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO.
- * @param opts the dictionary that will be used as new value if this method returns YES.
- */
-- (BOOL) shouldSetOptions:(NSDictionary *)opts;
-/** @} */
-
 @end
 
 /** 
- * A category on BMScript adding some default factory methods for convenience.
+ * A category on BMScript adding default factory methods for Ruby, Python and Perl.
  * The task options use default paths (for 10.5 and 10.6) for the task launch path.
  */
 @interface BMScript(CommonScriptLanguagesFactories)
@@ -718,15 +727,26 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * for end user display of strings. 
  */
 @interface NSString (BMScriptStringUtilities)
-/** Replaces all occurrences of newlines, carriage returns, double quotes etc. with their escaped versions */ 
+/** 
+ * Replaces all occurrences of newlines, carriage returns, double quotes etc. with their escaped versions 
+ * @return the quoted string
+ */ 
 - (NSString *) quote;
-/** Truncates a string to 20 characters plus ellipsis. Uses NSSTRING_TRUNCATE_LENGTH if defined. */ 
+/** 
+ * Truncates a string to 20 characters plus ellipsis. Uses NSSTRING_TRUNCATE_LENGTH if defined. 
+ * @return the truncated string
+ */ 
 - (NSString *) truncate;
 /** Truncates a string to len characters plus ellipsis.
  * @param len new length. ellipsis will be added.
+ * @return the truncated string
  */ 
 - (NSString *) truncateToLength:(NSInteger)len;
-/** Counts the number of occurrences of a string in another string */
+/** 
+ * Counts the number of occurrences of a string in another string 
+ * @param aString the string to count occurrences of
+ * @return NSInteger with the amount of occurrences
+ */
 - (NSInteger) countOccurrencesOfString:(NSString *)aString;
 @end
 
@@ -736,6 +756,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns a new dictionary by adding another object. 
  * @param object the object to add
  * @param key the key to add it for
+ * @return the modified dictionary
  */
 - (NSDictionary *) dictionaryByAddingObject:(id)object forKey:(id)key;
 @end

@@ -6,6 +6,9 @@
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 
+// !!! Andre Berg 20090925: This file has been obsoleted by BMScriptUnitTests.m
+// It may be updated to support tests for subclassing BMScript through BMRubyScript
+
 #import <SenTestingKit/SenTestingKit.h>
 #import "BMRubyScript.h"
 
@@ -31,7 +34,7 @@
 @implementation BMRubyScriptUnitTests
 
 - (void) setUp {
-    
+    NSImageView
     // default options (ruby 1.8)
     NSArray * defaultArgs = [NSArray arrayWithObjects:@"-Ku", @"-e", nil];
     defaultOptions = [NSDictionary dictionaryWithObjectsAndKeys:

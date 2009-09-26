@@ -43,16 +43,38 @@ int main (int argc, const char * argv[]) {
     ScriptRunner * sr = [[ScriptRunner alloc] init];
     [sr launchBackground];
         
-    // test protocol conformance
-    BOOL respondsToDefaultOpts = [sr respondsToSelector:@selector(defaultOptionsForLanguage)];
-    BOOL respondsToDefaultScript = [sr respondsToSelector:@selector(defaultScriptSourceForLanguage)];
+    // test BMScriptLanguageProtocol conformance
+    BOOL respondsToDefaultOpts                  = [sr respondsToSelector:@selector(defaultOptionsForLanguage)];
+    BOOL respondsToDefaultScript                = [sr respondsToSelector:@selector(defaultScriptSourceForLanguage)];
+
+    // test BMScriptDelegateProtocol conformance
+    BOOL respondsToShouldSetScript              = [sr respondsToSelector:@selector(shouldSetScript:)];
+    BOOL respondsToShouldLastResult             = [sr respondsToSelector:@selector(shouldSetLastResult:)];
+    BOOL respondsToShouldAddItemToHistory       = [sr respondsToSelector:@selector(shouldAddItemToHistory:)];
+    BOOL respondsToShouldReturnItemFromHistory  = [sr respondsToSelector:@selector(shouldReturnItemFromHistory:)];
+    BOOL respondsToShouldAppendPartialResult    = [sr respondsToSelector:@selector(shouldAppendPartialResult:)];
+    BOOL respondsToShouldSetOptions             = [sr respondsToSelector:@selector(shouldSetOptions:)];
     
     NSLog(@"ScriptRunner conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
     NSLog(@"ScriptRunner implements required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts));
     NSLog(@"ScriptRunner implements all methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript));
 
-    //[to performSelector:@selector(checkTaskHasFinished:) withObject:to afterDelay:0.2];
-
+    NSLog(@"ScriptRunner conforms to BMScriptDelegateProtocol? %@", BMStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptDelegateProtocol)]));
+    NSLog(@"ScriptRunner implements some methods for %@? %@", @"BMScriptLanguageProtocol", 
+          BMStringFromBOOL(respondsToShouldSetScript 
+                           || respondsToShouldLastResult 
+                           || respondsToShouldAddItemToHistory 
+                           || respondsToShouldReturnItemFromHistory 
+                           || respondsToShouldAppendPartialResult 
+                           || respondsToShouldSetOptions));
+    NSLog(@"ScriptRunner implements all methods for %@? %@", @"BMScriptLanguageProtocol", 
+          BMStringFromBOOL(respondsToShouldSetScript 
+                           && respondsToShouldLastResult 
+                           && respondsToShouldAddItemToHistory 
+                           && respondsToShouldReturnItemFromHistory 
+                           && respondsToShouldAppendPartialResult 
+                           && respondsToShouldSetOptions));
+    
     // ---------------------------------------------------------------------------------------- 
 
     BMScript * script1 = [[BMScript alloc] init];

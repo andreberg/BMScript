@@ -14,7 +14,7 @@
 #import "BMScript.h"
 
 
-@interface ScriptRunner : NSObject {
+@interface ScriptRunner : NSObject <BMScriptDelegateProtocol> {
     
     BMScript * script;
     BMScript * bgScript;
