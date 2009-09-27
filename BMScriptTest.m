@@ -33,8 +33,8 @@ int main (int argc, const char * argv[]) {
     NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED = %i", MAC_OS_X_VERSION_MIN_REQUIRED);
     NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED = %i", MAC_OS_X_VERSION_MAX_ALLOWED);
     NSLog(@"BMSCRIPT_THREAD_SAFE = %i", BMSCRIPT_THREAD_SAFE);
-    
-    NSLog(@"GarbageCollector enabled? %@", BMStringFromBOOL([[NSGarbageCollector defaultCollector] isEnabled]));
+    NSLog(@"BMSCRIPT_FAST_LOCK = %i", BMSCRIPT_FAST_LOCK);
+    //NSLog(@"GarbageCollector enabled? %@", BMStringFromBOOL([[NSGarbageCollector defaultCollector] isEnabled]));
     
     BOOL success = NO;
     
@@ -49,7 +49,7 @@ int main (int argc, const char * argv[]) {
 
     // test BMScriptDelegateProtocol conformance
     BOOL respondsToShouldSetScript              = [sr respondsToSelector:@selector(shouldSetScript:)];
-    BOOL respondsToShouldLastResult             = [sr respondsToSelector:@selector(shouldSetLastResult:)];
+    BOOL respondsToShouldLastResult             = [sr respondsToSelector:@selector(shouldSetResult:)];
     BOOL respondsToShouldAddItemToHistory       = [sr respondsToSelector:@selector(shouldAddItemToHistory:)];
     BOOL respondsToShouldReturnItemFromHistory  = [sr respondsToSelector:@selector(shouldReturnItemFromHistory:)];
     BOOL respondsToShouldAppendPartialResult    = [sr respondsToSelector:@selector(shouldAppendPartialResult:)];
@@ -80,7 +80,7 @@ int main (int argc, const char * argv[]) {
      BMScript * script1 = [[BMScript alloc] init];
      [script1 execute];
      NSString * result1 = [script1 lastResult];
-     NSLog(@"script1 result = %@", result1);
+     printf("script1 result = %s", [result1 UTF8String]);
     
     // ---------------------------------------------------------------------------------------- 
     

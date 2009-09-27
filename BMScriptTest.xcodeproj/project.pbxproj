@@ -48,7 +48,7 @@
 		654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
 		654E9D59106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
 		65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */; };
-		6597EF2E106E877F00487C1E /* BMScriptTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* BMScriptTest.m */; };
+		6583F842106F5D2B0073983C /* BMScriptBareBonesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */; };
 		65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
 		65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -134,6 +134,7 @@
 		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptRunner.h; sourceTree = "<group>"; };
 		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
+		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
 		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				65BA2D2D106776E5000B5D3B /* Helper Classes */,
+				6583FB79106FA7C30073983C /* BMDefines.h */,
 				654295CF105FE2A90037E0C8 /* BMScript.h */,
 				654295D0105FE2A90037E0C8 /* BMScript.m */,
 				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
@@ -492,7 +494,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6597EF2E106E877F00487C1E /* BMScriptTest.m in Sources */,
+				6583F842106F5D2B0073983C /* BMScriptBareBonesTest.m in Sources */,
 				65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */,
 				654295D1105FE2A90037E0C8 /* BMScript.m in Sources */,
 				6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */,

@@ -238,7 +238,7 @@
 
 /** A macro function which combines testing if a probe is enabled and actually calling this probe. */
 #define BM_PROBE(name, ...) \
-    if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
+    if (name##_ENABLED()) name(__VA_ARGS__)
 
 /** @} */
 
@@ -294,9 +294,9 @@ NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
 /** Notficiation sent when the background task has ended */
 OBJC_EXPORT NSString * const BMScriptTaskDidEndNotification;
 /** Key incorporated by the notification's userInfo dictionary. Contains the result string of the finished task */
-OBJC_EXPORT NSString * const BMScriptNotificationInfoTaskResultsKey;
+OBJC_EXPORT NSString * const BMScriptNotificationTaskResults;
 /** Key incorporated by the notification's userInfo dictionary. Contains the termination status of the finished task */
-OBJC_EXPORT NSString * const BMScriptNotificationInfoTaskTerminationStatusKey;
+OBJC_EXPORT NSString * const BMScriptNotificationTaskTerminationStatus;
 
 /** Key incorporated by the options dictionary. Contains the launch path string for the task */
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
@@ -368,46 +368,83 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @protocol BMScriptDelegateProtocol
 @optional
 /** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO. 
+ * If implemented, called whenever a history item is about to be added to the history. 
+ * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  *
  * @param anItem the item that will be set as new value in setter if this method returns YES.
  */
-- (BOOL) shouldAddItemToHistory:(id)anItem;
+- (BOOL) shouldAddItemToHistory:(NSArray *)historyItem;
 /** 
- * Called in the getter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO. 
+ * If implemented, called whenever a history item is about to be returned from the history.
+ * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  *
  * @param anItem the item that will be returned from getter if this method returns YES.
  */
-- (BOOL) shouldReturnItemFromHistory:(id)anItem;
+- (BOOL) shouldReturnItemFromHistory:(NSString *)historyItem;
 /** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO.
+ * If implemented, called whenever BMScript.result is about to change.
+ * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  *
  * @param aString the string that will be used as new value if this method returns YES.
  */
-- (BOOL) shouldSetLastResult:(NSString *)aString;
+- (BOOL) shouldSetResult:(NSString *)aString;
 /** 
- * Called multiple times during async execution in background whenever there is new data available if implemented. 
- * @note This delegate is not called during initialization of a new instance. 
- * It is only triggered when calling the BMScript.setScript: accessor method.
- *
+ * If implemented, called during execution in background (non-blocking) whenever new data is available.
+ * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  * @param string the string that will be used as new value if this method returns YES.
  */
 - (BOOL) shouldAppendPartialResult:(NSString *)string;
 /** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO.
+ * If implemented, called  whenever BMScript.script is set to a new value.  
+ * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
+ * Can be used to guard against malicious cases if the script comes directly from the end-user.
+ * @note This delegate is not called during initialization of a new instance. It is only triggered when changing BMScript.script after initialization is complete.
  * @param aScript the script that will be used as new value if this method returns YES.
  */
 - (BOOL) shouldSetScript:(NSString *)aScript;
 /** 
- * Called in the setter if implemented. Delegate methods beginning with <i>should</i> 
- * give the delegate the power to abort an operation by returning NO.
+ * If implemented, called  whenever BMScript.options is set to a new value.  
+ * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
+ * Can be used to guard against malicious cases if the options come directly from the end-user.
  * @param opts the dictionary that will be used as new value if this method returns YES.
  */
 - (BOOL) shouldSetOptions:(NSDictionary *)opts;
+/** 
+ * If implemented, called before right before a new item is finally added to the history. 
+ * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
+ * @param anItem the string that will be added
+ */
+- (NSString *) willAddItemToHistory:(NSString *)anItem;
+/** 
+ * If implemented, called before right before an item is finally returned from the history. 
+ * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
+ * @param anItem the string that will be returned
+ */
+- (NSString *) willReturnItemFromHistory:(NSString *)anItem;
+/** 
+ * If implemented, called before right before a string is appended to BMScript.partialResult. 
+ * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
+ * @param string the string that will be appended
+ */
+- (NSString *) willAppendPartialResult:(NSString *)string;
+/** 
+ * If implemented, called before right before BMScript.result is set to a new value. 
+ * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
+ * @param aString the string that will be used as result
+ */
+- (NSString *) willSetResult:(NSString *)aString;
+/** 
+ * If implemented, called before right before BMScript.script is set to a new value. 
+ * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
+ * @param aScript the string that will be used as script
+ */
+- (NSString *) willSetScript:(NSString *)aScript;
+/** 
+ * If implemented, called before right before BMScript.options is set to a new value. 
+ * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
+ * @param opts the dictionary that will be used as options
+ */
+- (NSDictionary *) willSetOptions:(NSDictionary *)opts;
 /** @} */
 
 @end
@@ -415,15 +452,16 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /**
  * A decorator class to NSTask providing elegant and easy access to the shell.
  */
-@interface BMScript : NSObject <NSCopying, NSMutableCopying, NSCoding, BMScriptDelegateProtocol> {
-@public
+@interface BMScript : NSObject <NSCoding, NSCopying, NSMutableCopying, BMScriptDelegateProtocol> {
+ @public
     NSString * script;
     NSDictionary * options;
-@protected
-    id<BMScriptDelegateProtocol> delegate;
     NSString * lastResult;
+ @private
+    NSString * result;
     NSString * partialResult;
-    BOOL isTemplate;
+    __weak id delegate;
+    __strong BOOL isTemplate;
     NSMutableArray * history;
     NSTask * task;
     NSPipe * pipe;
@@ -431,22 +469,92 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
     NSPipe * bgPipe;
 }
 
+@property (nonatomic, copy) NSString * script;
+@property (nonatomic, retain) NSDictionary * options;
+@property (readonly, copy) NSString * lastResult;
+@property (copy) NSString * result;
+@property (copy) NSString * partialResult;
+@property (assign) __weak id<BMScriptDelegateProtocol> delegate;
+@property (assign) __strong BOOL isTemplate;
+@property (retain) NSMutableArray * history;
+@property (nonatomic, retain) NSTask * task;
+@property (nonatomic, retain) NSPipe * pipe;
+@property (nonatomic, retain) NSTask * bgTask;
+@property (nonatomic, retain) NSPipe * bgPipe;
+
+
+// MARK: Accessors
+
+/**
+ * Returns the script instance variable. Uses copy/autorelease.
+ */
+- (NSString *)script;
+/**
+ * Sets the script instance variable. Uses release/copy.
+ * @param newScript new value for script.
+ */
+- (void)setScript:(NSString *)newScript;
+/**
+ * Returns the options instance variable. Uses retain/autorelease.
+ */
+- (NSDictionary *)options;
+/**
+ * Sets the options instance variable. Uses release/retain.
+ * @param newOptions new value for options.
+ */
+- (void)setOptions:(NSDictionary *)newOptions;
+/**
+ * Returns the last execution result. Read only.
+ */
+- (NSString *)lastResult;
+
+// MARK: Protected Accessors
+
+/**
+ * Returns the delegate object. Uses simple assignment.
+ */
+- (id)delegate;
+/**
+ * Sets the delegate using simple assignment. 
+ * @note It is important that classes posing as delegate to set this instance variable to nil
+ * in their dealloc method to prevent BMScript of sending messages to its delegate after it 
+ * has been deallocated.
+ * @param newDelegate new value for delegate.
+ */
+- (void)setDelegate:(id<BMScriptDelegateProtocol>)newDelegate;
+
+
 // MARK: Initializer Methods
 
 /**
- * Initialize a new BMScript instance. If no options are specified calls 
+ * Initialize a new BMScript instance. If no options are specified calls the subclass' 
+ * implementations of defaultScriptSourceForLanguage and defaultOptionsForLanguage.
+ * BMScript.init on the other hand defaults to <span class="stringliteral">@"/bin/bash", @"-c"</span>, 
+ * and <span class="stringliteral">@"echo \<script placeholder\>"</span>.
+ */
+- (id) init;
+/**
+ * Initialize a new BMScript instance with a script source. If no options are specified calls 
  * the subclass' or BMScript's  implementation of defaultOptionsForLanguage.
  * @param scriptSource a string containing commands to execute
  */
 - (id) initWithScriptSource:(NSString *)scriptSource;
 /**
- * Initialize a new BMScript instance. The designated initializer.
+ * Initialize a new BMScript instance with a script source. This is the designated initializer.
  * @param scriptSource a string containing commands to execute
  * @param scriptOptions a dictionary containing the task options
  */
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions;     /* designated initializer */
 /**
- * Initialize a new BMScript instance. 
+ * Initialize a new BMScript instance with a template source. 
+ * A template needs to be saturated ("filling in the blanks") before it can be used. 
+ * @see #saturateTemplateWithArgument and variants.
+ * @param templateSource a string containing a template with magic tokens (@see mainpage) to saturate resulting in commands to execute.
+ * @param scriptOptions a dictionary containing the task options
+ */
+- (id) initWithTemplateSource:(NSString *)templateSource options:(NSDictionary *)scriptOptions;
+/**
+ * Initialize a new BMScript instance with contents of a file. 
  * @param path a string pointing to a file on disk. The contents of this file will be used as source script.
  */
 - (id) initWithContentsOfFile:(NSString *)path;
@@ -541,20 +649,14 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @param result a pointer to an NSString where the result should be written to
  * @return YES if the execution was successful, NO on error
  */
-- (BOOL) executeAndReturnResult:(NSString **)result;
-/**
- * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
- * @param error a pointer to an NSError where any errors should be written to
- * @return YES if the execution was successful, NO on error
- */
-- (BOOL) executeAndReturnError:(NSError **)error;
+- (BOOL) executeAndReturnResult:(NSString **)results;
 /**
  * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
  * @param result a pointer to an NSString where the result should be written to
  * @param error a pointer to an NSError where errors should be written to
  * @return YES if the execution was successful, NO on error
  */
-- (BOOL) executeAndReturnResult:(NSString **)result error:(NSError **)error;
+- (BOOL) executeAndReturnResult:(NSString **)results error:(NSError **)error;
 /**
  * Executes the script with a asynchroneous (non-blocking) task. The result will be posted with the help of a notifcation item.
  * @see @link bmScriptNotificationExample.m @endlink
@@ -595,50 +697,9 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (BOOL) isEqualToScript:(BMScript *)other;
 
-// MARK: Accessors
-
-/**
- * Returns the script instance variable. Uses copy/autorelease.
- */
-- (NSString *)script;
-/**
- * Sets the script instance variable. Uses release/copy.
- * @param newScript new value for script.
- */
-- (void)setScript:(NSString *)newScript;
-/**
- * Returns the options instance variable. Uses retain/autorelease.
- */
-- (NSDictionary *)options;
-/**
- * Sets the options instance variable. Uses release/retain.
- * @param newOptions new value for options.
- */
-- (void)setOptions:(NSDictionary *)newOptions;
-/**
- * Returns the lastResult instance variable. Uses copy/autorelease.
- */
-- (NSString *)lastResult;
-/**
- * Returns the history instance variable. Uses retain/autorelease.
- * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
- */
-- (NSMutableArray *)history;
-
-// MARK: Protected Accessors
-
-/**
- * Returns the script instance variable. Uses simple assignment.
- */
-- (id)delegate;
-/**
- * Sets the delegate instance variable. Uses simple assignment.
- * Wraps access with a pthread_mutex_lock if BMSCRIPT_THREAD_SAFE is 1.
- * @param newDelegate new value for delegate.
- */
-- (void)setDelegate:(id)newDelegate;
-
 @end
+
+
 
 /** 
  * A category on BMScript adding default factory methods for Ruby, Python and Perl.

@@ -32,15 +32,10 @@ typedef struct {
   NSUInteger length;
 } NSRange;
 
-/* 
- * TODO: Change probes so they are more atomic.
- * So that their names reflect more the methods they are attached to. 
- * This allows us to define instruments that mix and match these probes 
- * and bundle many probes for one statistic or very fine-grained for multiple stats. 
- */
 provider BMScript {
 
     /* Atomic Probes */
+    
     probe enter_execute(char * scriptSource, char * isTemplate, char * launchPath);
     probe  exit_execute(char * result);
     
@@ -49,9 +44,6 @@ provider BMScript {
     
     probe enter_execute_and_return_result_error(char * scriptSource, char * isTemplate, char * launchPath);
     probe  exit_execute_and_return_result_error(char * result);
-    
-    probe enter_execute_and_return_error(char * scriptSource, char * isTemplate, char * launchPath);
-    probe  exit_execute_and_return_error(char * result);
     
     probe enter_setup_task(char * taskIsRunning);
     probe  exit_setup_task(char * taskIsRunning);
@@ -62,8 +54,11 @@ provider BMScript {
     probe enter_setup_and_launch_background_task(char * bgTaskIsRunning, char * lastResult);
     probe  exit_setup_and_launch_background_task(char * bgTaskIsRunning, char * lastResult);
     
-    probe enter_data_ready();
-    probe  exit_data_ready();
+    probe enter_stop_task();
+    probe  exit_stop_task(char * bgTaskIsRunning, char * lastResult);
+    
+    probe enter_data_received();
+    probe  exit_data_received();
     
     probe enter_data_complete();
     probe  exit_data_complete(char * lastResult);
@@ -71,10 +66,11 @@ provider BMScript {
     probe enter_append_data();
     probe  exit_append_data(char * partialResult);
     
-    probe enter_task_terminated(char * userInfo);
+    probe enter_task_terminated();
     probe  exit_task_terminated(char * lastResult, char * partialResult);
         
     /* Execution */
+    
     probe start_net_execute(char * scriptSource, char * isTemplate, char * launchPath);
     probe end_net_execute(char * result);
     
@@ -85,6 +81,7 @@ provider BMScript {
     probe end_task_launch(TerminationStatus status, char * statusText);
     
     /* Templates */
+    
     probe start_saturate_with_argument(char * theArg);
     probe end_saturate_with_argument(char * saturatedScript);
     
@@ -109,6 +106,7 @@ provider BMScript {
     probe  exit_last_result_from_history(char * result, int historySize);
     
     /* Locking */
+    
     probe acquire_lock_start(char * usesPthread);
     probe acquire_lock_end(char * usesPthread);
 

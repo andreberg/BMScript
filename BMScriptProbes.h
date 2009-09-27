@@ -95,14 +95,14 @@ do { \
 } while (0)
 #define	BMSCRIPT_ENTER_DATA_COMPLETE_ENABLED() \
 	__dtrace_isenabled$BMScript$enter_data_complete$v1()
-#define	BMSCRIPT_ENTER_DATA_READY() \
+#define	BMSCRIPT_ENTER_DATA_RECEIVED() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_data_ready$v1(); \
+	__dtrace_probe$BMScript$enter_data_received$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_ENTER_DATA_READY_ENABLED() \
-	__dtrace_isenabled$BMScript$enter_data_ready$v1()
+#define	BMSCRIPT_ENTER_DATA_RECEIVED_ENABLED() \
+	__dtrace_isenabled$BMScript$enter_data_received$v1()
 #define	BMSCRIPT_ENTER_EXECUTE(arg0, arg1, arg2) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -111,14 +111,6 @@ do { \
 } while (0)
 #define	BMSCRIPT_ENTER_EXECUTE_ENABLED() \
 	__dtrace_isenabled$BMScript$enter_execute$v1()
-#define	BMSCRIPT_ENTER_EXECUTE_AND_RETURN_ERROR(arg0, arg1, arg2) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_execute_and_return_error$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_ENTER_EXECUTE_AND_RETURN_ERROR_ENABLED() \
-	__dtrace_isenabled$BMScript$enter_execute_and_return_error$v1()
 #define	BMSCRIPT_ENTER_EXECUTE_AND_RETURN_RESULT(arg0, arg1, arg2) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -191,10 +183,18 @@ do { \
 } while (0)
 #define	BMSCRIPT_ENTER_SETUP_TASK_ENABLED() \
 	__dtrace_isenabled$BMScript$enter_setup_task$v1()
-#define	BMSCRIPT_ENTER_TASK_TERMINATED(arg0) \
+#define	BMSCRIPT_ENTER_STOP_TASK() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_task_terminated$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$enter_stop_task$v1(); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_ENTER_STOP_TASK_ENABLED() \
+	__dtrace_isenabled$BMScript$enter_stop_task$v1()
+#define	BMSCRIPT_ENTER_TASK_TERMINATED() \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$enter_task_terminated$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
 #define	BMSCRIPT_ENTER_TASK_TERMINATED_ENABLED() \
@@ -215,14 +215,14 @@ do { \
 } while (0)
 #define	BMSCRIPT_EXIT_DATA_COMPLETE_ENABLED() \
 	__dtrace_isenabled$BMScript$exit_data_complete$v1()
-#define	BMSCRIPT_EXIT_DATA_READY() \
+#define	BMSCRIPT_EXIT_DATA_RECEIVED() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$exit_data_ready$v1(); \
+	__dtrace_probe$BMScript$exit_data_received$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_EXIT_DATA_READY_ENABLED() \
-	__dtrace_isenabled$BMScript$exit_data_ready$v1()
+#define	BMSCRIPT_EXIT_DATA_RECEIVED_ENABLED() \
+	__dtrace_isenabled$BMScript$exit_data_received$v1()
 #define	BMSCRIPT_EXIT_EXECUTE(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -231,14 +231,6 @@ do { \
 } while (0)
 #define	BMSCRIPT_EXIT_EXECUTE_ENABLED() \
 	__dtrace_isenabled$BMScript$exit_execute$v1()
-#define	BMSCRIPT_EXIT_EXECUTE_AND_RETURN_ERROR(arg0) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$exit_execute_and_return_error$v1$63686172202a(arg0); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_EXIT_EXECUTE_AND_RETURN_ERROR_ENABLED() \
-	__dtrace_isenabled$BMScript$exit_execute_and_return_error$v1()
 #define	BMSCRIPT_EXIT_EXECUTE_AND_RETURN_RESULT(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -311,6 +303,14 @@ do { \
 } while (0)
 #define	BMSCRIPT_EXIT_SETUP_TASK_ENABLED() \
 	__dtrace_isenabled$BMScript$exit_setup_task$v1()
+#define	BMSCRIPT_EXIT_STOP_TASK(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$exit_stop_task$v1$63686172202a$63686172202a(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_EXIT_STOP_TASK_ENABLED() \
+	__dtrace_isenabled$BMScript$exit_stop_task$v1()
 #define	BMSCRIPT_EXIT_TASK_TERMINATED(arg0, arg1) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -389,12 +389,10 @@ extern void __dtrace_probe$BMScript$enter_append_data$v1(void);
 extern int __dtrace_isenabled$BMScript$enter_append_data$v1(void);
 extern void __dtrace_probe$BMScript$enter_data_complete$v1(void);
 extern int __dtrace_isenabled$BMScript$enter_data_complete$v1(void);
-extern void __dtrace_probe$BMScript$enter_data_ready$v1(void);
-extern int __dtrace_isenabled$BMScript$enter_data_ready$v1(void);
+extern void __dtrace_probe$BMScript$enter_data_received$v1(void);
+extern int __dtrace_isenabled$BMScript$enter_data_received$v1(void);
 extern void __dtrace_probe$BMScript$enter_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
 extern int __dtrace_isenabled$BMScript$enter_execute$v1(void);
-extern void __dtrace_probe$BMScript$enter_execute_and_return_error$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
-extern int __dtrace_isenabled$BMScript$enter_execute_and_return_error$v1(void);
 extern void __dtrace_probe$BMScript$enter_execute_and_return_result$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
 extern int __dtrace_isenabled$BMScript$enter_execute_and_return_result$v1(void);
 extern void __dtrace_probe$BMScript$enter_execute_and_return_result_error$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
@@ -413,18 +411,18 @@ extern void __dtrace_probe$BMScript$enter_setup_and_launch_background_task$v1$63
 extern int __dtrace_isenabled$BMScript$enter_setup_and_launch_background_task$v1(void);
 extern void __dtrace_probe$BMScript$enter_setup_task$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$enter_setup_task$v1(void);
-extern void __dtrace_probe$BMScript$enter_task_terminated$v1$63686172202a(char *);
+extern void __dtrace_probe$BMScript$enter_stop_task$v1(void);
+extern int __dtrace_isenabled$BMScript$enter_stop_task$v1(void);
+extern void __dtrace_probe$BMScript$enter_task_terminated$v1(void);
 extern int __dtrace_isenabled$BMScript$enter_task_terminated$v1(void);
 extern void __dtrace_probe$BMScript$exit_append_data$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$exit_append_data$v1(void);
 extern void __dtrace_probe$BMScript$exit_data_complete$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$exit_data_complete$v1(void);
-extern void __dtrace_probe$BMScript$exit_data_ready$v1(void);
-extern int __dtrace_isenabled$BMScript$exit_data_ready$v1(void);
+extern void __dtrace_probe$BMScript$exit_data_received$v1(void);
+extern int __dtrace_isenabled$BMScript$exit_data_received$v1(void);
 extern void __dtrace_probe$BMScript$exit_execute$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$exit_execute$v1(void);
-extern void __dtrace_probe$BMScript$exit_execute_and_return_error$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$exit_execute_and_return_error$v1(void);
 extern void __dtrace_probe$BMScript$exit_execute_and_return_result$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$exit_execute_and_return_result$v1(void);
 extern void __dtrace_probe$BMScript$exit_execute_and_return_result_error$v1$63686172202a(char *);
@@ -443,6 +441,8 @@ extern void __dtrace_probe$BMScript$exit_setup_and_launch_background_task$v1$636
 extern int __dtrace_isenabled$BMScript$exit_setup_and_launch_background_task$v1(void);
 extern void __dtrace_probe$BMScript$exit_setup_task$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$exit_setup_task$v1(void);
+extern void __dtrace_probe$BMScript$exit_stop_task$v1$63686172202a$63686172202a(char *, char *);
+extern int __dtrace_isenabled$BMScript$exit_stop_task$v1(void);
 extern void __dtrace_probe$BMScript$exit_task_terminated$v1$63686172202a$63686172202a(char *, char *);
 extern int __dtrace_isenabled$BMScript$exit_task_terminated$v1(void);
 extern void __dtrace_probe$BMScript$start_bg_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);

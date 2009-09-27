@@ -28,7 +28,7 @@
     BOOL taskHasEnded;
     BOOL bgTaskHasEnded;
     
-    BOOL shouldSetLastResultCalled;
+    BOOL shouldSetResultCalled;
     BOOL shouldSetScriptCalled;
 }
 
@@ -38,16 +38,16 @@
 - (void) bgTaskFinished:(NSNotification *)aNotification;
 - (NSString *) debugDescription;
 
-@property (nonatomic, retain) BMScript * script;
-@property (nonatomic, retain) BMScript * bgScript;
-@property (nonatomic, copy) NSString * results;
-@property (nonatomic, copy) NSString * bgResults;
-@property (nonatomic, assign) TerminationStatus status;
-@property (nonatomic, assign) TerminationStatus bgStatus;
-@property (nonatomic, assign) BOOL taskHasEnded;
-@property (nonatomic, assign) BOOL bgTaskHasEnded;
-@property (nonatomic, assign) BOOL shouldSetLastResultCalled;
-@property (nonatomic, assign) BOOL shouldSetScriptCalled;
+@property (retain) BMScript * script;
+@property (retain) BMScript * bgScript;
+@property (copy) NSString * results;
+@property (copy) NSString * bgResults;
+@property (assign) TerminationStatus status;
+@property (assign) TerminationStatus bgStatus;
+@property (assign) BOOL taskHasEnded;
+@property (assign) BOOL bgTaskHasEnded;
+@property (assign) BOOL shouldSetResultCalled;
+@property (assign) BOOL shouldSetScriptCalled;
 
 @end
 

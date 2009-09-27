@@ -1,6 +1,6 @@
 - (BOOL) shouldAddItemToHistory:(id)anItem;
 - (BOOL) shouldReturnItemFromHistory:(id)anItem;
-- (BOOL) shouldSetLastResult:(NSString *)aString;
+- (BOOL) shouldSetResult:(NSString *)aString;
 - (BOOL) shouldAppendPartialResult:(NSString *)string;
 - (BOOL) shouldSetScript:(NSString *)aScript;
 - (BOOL) shouldSetOptions:(NSDictionary *)opts;
