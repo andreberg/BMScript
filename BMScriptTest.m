@@ -20,7 +20,7 @@
     #endif
 #define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
-#define DEBUG 0
+#define DEBUG 1
 
 // ---------------------------------------------------------------------------------------- 
 // MARK: MAIN
@@ -77,10 +77,10 @@ int main (int argc, const char * argv[]) {
     
     // ---------------------------------------------------------------------------------------- 
 
-    BMScript * script1 = [[BMScript alloc] init];
-    [script1 execute];
-    NSString * result1 = [script1 lastResult];
-    NSLog(@"script1 result = %@", result1);
+     BMScript * script1 = [[BMScript alloc] init];
+     [script1 execute];
+     NSString * result1 = [script1 lastResult];
+     NSLog(@"script1 result = %@", result1);
     
     // ---------------------------------------------------------------------------------------- 
     
@@ -112,7 +112,7 @@ int main (int argc, const char * argv[]) {
     
     NSString * path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/Convert To Oct.rb";
     
-    BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
+    BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path options:nil];
     [script3 saturateTemplateWithArgument:@"100"];
     [script3 execute];
     
@@ -124,7 +124,7 @@ int main (int argc, const char * argv[]) {
     
     path = @"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTest/Multiple Tokens Template.rb";
     
-    BMRubyScript * script4 = [BMRubyScript scriptWithContentsOfTemplateFile:path];
+    BMRubyScript * script4 = [BMRubyScript scriptWithContentsOfTemplateFile:path options:nil];
     [script4 saturateTemplateWithArguments:@"template", @"1", @"tokens"];
     [script4 execute];
     
@@ -174,7 +174,7 @@ int main (int argc, const char * argv[]) {
     // ---------------------------------------------------------------------------------------- 
     
     BMAssertLog([sr.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"]);
-    // [sr release];
+    [sr release];
     
     // ---------------------------------------------------------------------------------------- 
     

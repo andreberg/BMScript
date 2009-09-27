@@ -29,6 +29,12 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
+    // need to tell BMScript that we no longer wish to be its delegate
+    // since it only has a weak reference to us it may be sending messages
+    // to the delegate property even after we deallocate
+    script.delegate = nil;
+    bgScript.delegate = nil;
+    
     [script release], script = nil;
     [bgScript release], bgScript = nil;
     [results release], results = nil;
@@ -40,13 +46,20 @@
 - (id) init {
     self = [super init];
     if (self != nil) {
+        NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
         
         NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", nil);
-        script = [[BMScript alloc] initWithScriptSource:@"this is ScriptRunner's script calling..." options:opts];
-        [script setDelegate:self];
-        bgScript = [BMScript pythonScriptWithSource:@"print 3**100"];
-        [bgScript setDelegate:self];
+        BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"this is ScriptRunner's script calling..." options:opts];
+        [aScript setDelegate:self];
+        script = [aScript retain];
+        [aScript release];
         
+        BMScript * anotherScript = [BMScript pythonScriptWithSource:@"print 3**100"];
+        [anotherScript setDelegate:self];
+        bgScript = [anotherScript retain];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bgTaskFinished:) name:BMScriptTaskDidEndNotification object:nil];
+
         results = nil;
         status = BMScriptNotExecutedTerminationStatus;
         
@@ -59,7 +72,7 @@
         shouldSetLastResultCalled = NO;
         shouldSetScriptCalled = NO;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bgTaskFinished:) name:BMScriptTaskDidEndNotification object:nil];
+        [pool drain];
     }
     return self;
 }
@@ -73,7 +86,7 @@
     self.bgStatus = stats;
     self.bgTaskHasEnded = YES;
     
-    NSLog(@"Inside %s: bgTask finished with bgStatus = %ld, bgResult = '%@'", __PRETTY_FUNCTION__, self.bgStatus, [self.bgResults quote]);
+    NSLog(@"Inside %s: bgTask finished with bgStatus = %ld, bgResult = '%@'", __PRETTY_FUNCTION__, bgStatus, [bgResults quote]);
     NSLog(@"Inside %s: [self debugDescription]: \n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
@@ -86,11 +99,14 @@
 
 - (void) launch {
     NSError * err;
-    self.status = [script executeAndReturnResult:&results error:&err];
+    NSString * res;
+    self.status = [self.script executeAndReturnResult:&res error:&err];
+    self.results = res;
     if (err) {
         NSLog(@"Inside %s: err = %@", __PRETTY_FUNCTION__, err);
     }
     self.taskHasEnded = YES;
+    NSLog(@"Inside %s: self = %@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
 - (void) launchBackground {

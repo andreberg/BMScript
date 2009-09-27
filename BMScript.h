@@ -415,16 +415,15 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /**
  * A decorator class to NSTask providing elegant and easy access to the shell.
  */
-@interface BMScript : NSObject <NSCopying, NSCoding, BMScriptDelegateProtocol> {
+@interface BMScript : NSObject <NSCopying, NSMutableCopying, NSCoding, BMScriptDelegateProtocol> {
 @public
     NSString * script;
     NSDictionary * options;
 @protected
     id<BMScriptDelegateProtocol> delegate;
-@private
     NSString * lastResult;
     NSString * partialResult;
-    __strong BOOL isTemplate;
+    BOOL isTemplate;
     NSMutableArray * history;
     NSTask * task;
     NSPipe * pipe;
@@ -479,7 +478,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
  */
-+ (id) scriptWithSource:(NSString *)scriptSource;
+//+ (id) scriptWithSource:(NSString *)scriptSource;
 /**
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
@@ -489,7 +488,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
  */
-+ (id) scriptWithContentsOfFile:(NSString *)path;
+//+ (id) scriptWithContentsOfFile:(NSString *)path;
 /**
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
@@ -499,7 +498,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
  */
-+ (id) scriptWithContentsOfTemplateFile:(NSString *)path;
+//+ (id) scriptWithContentsOfTemplateFile:(NSString *)path;
 /**
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.

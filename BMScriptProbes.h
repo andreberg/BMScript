@@ -79,14 +79,22 @@ do { \
 } while (0)
 #define	BMSCRIPT_END_TASK_LAUNCH_ENABLED() \
 	__dtrace_isenabled$BMScript$end_task_launch$v1()
-#define	BMSCRIPT_ENTER_APPEND_DATA(arg0) \
+#define	BMSCRIPT_ENTER_APPEND_DATA() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_append_data$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$enter_append_data$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
 #define	BMSCRIPT_ENTER_APPEND_DATA_ENABLED() \
 	__dtrace_isenabled$BMScript$enter_append_data$v1()
+#define	BMSCRIPT_ENTER_DATA_COMPLETE() \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$enter_data_complete$v1(); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_ENTER_DATA_COMPLETE_ENABLED() \
+	__dtrace_isenabled$BMScript$enter_data_complete$v1()
 #define	BMSCRIPT_ENTER_DATA_READY() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -199,6 +207,14 @@ do { \
 } while (0)
 #define	BMSCRIPT_EXIT_APPEND_DATA_ENABLED() \
 	__dtrace_isenabled$BMScript$exit_append_data$v1()
+#define	BMSCRIPT_EXIT_DATA_COMPLETE(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$exit_data_complete$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_EXIT_DATA_COMPLETE_ENABLED() \
+	__dtrace_isenabled$BMScript$exit_data_complete$v1()
 #define	BMSCRIPT_EXIT_DATA_READY() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -369,8 +385,10 @@ extern void __dtrace_probe$BMScript$end_saturate_with_dictionary$v1$63686172202a
 extern int __dtrace_isenabled$BMScript$end_saturate_with_dictionary$v1(void);
 extern void __dtrace_probe$BMScript$end_task_launch$v1$5465726d696e6174696f6e537461747573$63686172202a(TerminationStatus, char *);
 extern int __dtrace_isenabled$BMScript$end_task_launch$v1(void);
-extern void __dtrace_probe$BMScript$enter_append_data$v1$63686172202a(char *);
+extern void __dtrace_probe$BMScript$enter_append_data$v1(void);
 extern int __dtrace_isenabled$BMScript$enter_append_data$v1(void);
+extern void __dtrace_probe$BMScript$enter_data_complete$v1(void);
+extern int __dtrace_isenabled$BMScript$enter_data_complete$v1(void);
 extern void __dtrace_probe$BMScript$enter_data_ready$v1(void);
 extern int __dtrace_isenabled$BMScript$enter_data_ready$v1(void);
 extern void __dtrace_probe$BMScript$enter_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
@@ -399,6 +417,8 @@ extern void __dtrace_probe$BMScript$enter_task_terminated$v1$63686172202a(char *
 extern int __dtrace_isenabled$BMScript$enter_task_terminated$v1(void);
 extern void __dtrace_probe$BMScript$exit_append_data$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$exit_append_data$v1(void);
+extern void __dtrace_probe$BMScript$exit_data_complete$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$exit_data_complete$v1(void);
 extern void __dtrace_probe$BMScript$exit_data_ready$v1(void);
 extern int __dtrace_isenabled$BMScript$exit_data_ready$v1(void);
 extern void __dtrace_probe$BMScript$exit_execute$v1$63686172202a(char *);

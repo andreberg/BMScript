@@ -65,7 +65,10 @@ provider BMScript {
     probe enter_data_ready();
     probe  exit_data_ready();
     
-    probe enter_append_data(char * data);
+    probe enter_data_complete();
+    probe  exit_data_complete(char * lastResult);
+    
+    probe enter_append_data();
     probe  exit_append_data(char * partialResult);
     
     probe enter_task_terminated(char * userInfo);

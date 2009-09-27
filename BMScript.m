@@ -100,15 +100,13 @@
 #endif
 
 
-
+NSString * const BMScriptOptionsTaskLaunchPathKey = @"BMScriptOptionsTaskLaunchPathKey";
+NSString * const BMScriptOptionsTaskArgumentsKey  = @"BMScriptOptionsTaskArgumentsKey";
+NSString * const BMScriptOptionsRubyVersionKey    = @"BMScriptOptionsRubyVersionKey"; /* currently unused */
 
 NSString * const BMScriptTaskDidEndNotification                   = @"BMScriptTaskDidEndNotification";
 NSString * const BMScriptNotificationInfoTaskResultsKey           = @"BMScriptNotificationInfoTaskResultsKey";
 NSString * const BMScriptNotificationInfoTaskTerminationStatusKey = @"BMScriptNotificationInfoTaskTerminationStatusKey";
-
-NSString * const BMScriptOptionsTaskLaunchPathKey = @"BMScriptOptionsTaskLaunchPathKey";
-NSString * const BMScriptOptionsTaskArgumentsKey  = @"BMScriptOptionsTaskArgumentsKey";
-NSString * const BMScriptOptionsRubyVersionKey    = @"BMScriptOptionsRubyVersionKey"; /* currently unused */
 
 NSString * const BMScriptTemplateArgumentMissingException  = @"BMScriptTemplateArgumentMissingException";
 NSString * const BMScriptTemplateArgumentsMissingException = @"BMScriptTemplateArgumentsMissingException";
@@ -135,7 +133,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (void) dataComplete:(NSNotification *)aNotification;
 - (void) dataReady:(NSNotification *)aNotification;
 
-// MARK: Private Accessors
+// MARK: Protected Accessors
 
 - (NSTask *) task;
 - (void) setTask:(NSTask *)newTask;
@@ -158,13 +156,13 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 @implementation BMScript
 
-// MARK: Accessors
+// MARK: Accessor Definitions
 
 //=========================================================== 
 //  script 
 //=========================================================== 
 - (NSString *)script {
-    return [[script copy] autorelease]; 
+    return [[script retain] autorelease]; 
 }
 
 - (void)setScript:(NSString *)newScript {
@@ -172,11 +170,11 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         if ([[self delegate] respondsToSelector:@selector(shouldSetScript:)]) {
             if ([[self delegate] shouldSetScript:newScript]) {
                 [script release];
-                script = [newScript copy];
+                script = [newScript retain];
             }
         } else {
             [script release];
-            script = [newScript copy];
+            script = [newScript retain];
         }
     }
 }
@@ -367,7 +365,6 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         delegate = newDelegate;
     }
     BMSCRIPT_UNLOCK
-    
 }
 
 //=========================================================== 
@@ -408,6 +405,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     [pipe release], pipe = nil;
     [bgTask release], bgTask = nil;
     [bgPipe release], bgPipe = nil;
+            
     [super dealloc];
 }
 
@@ -525,25 +523,25 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 // MARK: Factory Methods
 
-+ (id) scriptWithSource:(NSString *)scriptSource { 
-    return [[[self alloc] initWithScriptSource:scriptSource options:nil] autorelease]; 
-}
+// + (id) scriptWithSource:(NSString *)scriptSource { 
+//     return [[[self alloc] initWithScriptSource:scriptSource options:nil] autorelease]; 
+// }
 
 + (id) scriptWithSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions { 
     return [[[self alloc] initWithScriptSource:scriptSource options:scriptOptions] autorelease]; 
 }
 
-+ (id) scriptWithContentsOfFile:(NSString *)path {
-    return [[[self alloc] initWithContentsOfFile:path options:nil] autorelease];
-}
+// + (id) scriptWithContentsOfFile:(NSString *)path {
+//     return [[[self alloc] initWithContentsOfFile:path options:nil] autorelease];
+// }
 
 + (id) scriptWithContentsOfFile:(NSString *)path options:(NSDictionary *)scriptOptions {
     return [[[self alloc] initWithContentsOfFile:path options:scriptOptions] autorelease];
 }
 
-+ (id) scriptWithContentsOfTemplateFile:(NSString *)path {
-    return [[[self alloc] initWithContentsOfTemplateFile:path options:nil] autorelease];
-}
+// + (id) scriptWithContentsOfTemplateFile:(NSString *)path {
+//     return [[[self alloc] initWithContentsOfTemplateFile:path options:nil] autorelease];
+// }
 
 + (id) scriptWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions {
     return [[[self alloc] initWithContentsOfTemplateFile:path options:scriptOptions] autorelease];
@@ -629,6 +627,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         self.lastResult = string;
     }
     
+    [task terminate];
+    [task release], task = nil;
+    [pipe release], pipe = nil;
     [string release];
 
     BM_PROBE(EXIT_LAUNCH_TASK_AND_STORE_LAST_RESULT, 
@@ -660,7 +661,8 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             
             // If BMSynthesizeOptions is called with "nil" as second argument 
             // that effectively sets up BMScriptOptionsTaskArgumentsKey as 
-            // [NSArray arrayWithObjects:nil] which in turn becomes a "__NSArray0"
+            // [NSArray arrayWithObjects:nil] which in turn becomes an opaque 
+            // object named "__NSArray0"
             if (!args || [NSStringFromClass([args class]) isEqualToString:@"__NSArray0"]) {
                 //NSLog(@"args = %@, args class = %@", args, NSStringFromClass([args class]));
                 args = [NSArray arrayWithObject:script];
@@ -683,15 +685,15 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             // is posted. Then, the partialResult is simply mirrored over to lastResult.
             // This gives the user the advantage for long running scripts to check partialResult
             // periodically and see if the task needs to be aborted.
-            [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                     selector:@selector(dataReady:) 
-                                                         name:NSFileHandleReadCompletionNotification 
-                                                       object:nil];
-            
 //             [[NSNotificationCenter defaultCenter] addObserver:self 
-//                                                      selector:@selector(dataComplete:) 
-//                                                          name:NSFileHandleReadToEndOfFileCompletionNotification 
+//                                                      selector:@selector(dataReady:) 
+//                                                          name:NSFileHandleReadCompletionNotification 
 //                                                        object:nil];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(dataComplete:) 
+                                                         name:NSFileHandleReadToEndOfFileCompletionNotification 
+                                                       object:nil];
             
             [[NSNotificationCenter defaultCenter] addObserver:self 
                                                      selector:@selector(taskTerminated:) 
@@ -713,6 +715,8 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (void) dataComplete:(NSNotification *)aNotification {
     
+    BM_PROBE(ENTER_DATA_COMPLETE);
+
     NSData * data = [[aNotification userInfo] objectForKey:NSFileHandleNotificationDataItem];
     // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
     if (data) {
@@ -720,16 +724,19 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         if (string) {
             if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
                 if ([[self delegate] shouldSetLastResult:string]) {
-                    self.lastResult = [self.lastResult stringByAppendingString:string];
+                    self.lastResult = [lastResult stringByAppendingString:string];
                 }
             } else {
-                self.lastResult = [self.lastResult stringByAppendingString:string];
+                self.lastResult = [lastResult stringByAppendingString:string];
             }
         } else {
             NSLog(@"*** Warning: -[appendData:] attempted but could not append to self.lastResult. Data maybe lost!");
         }
         [string release];
     }
+    
+    BM_PROBE(EXIT_DATA_COMPLETE, 
+             (char *) [lastResult UTF8String]);
 }
 
 - (void) dataReady:(NSNotification *)aNotification {
@@ -738,8 +745,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
 	NSData * data = [[aNotification userInfo] valueForKey:NSFileHandleNotificationDataItem];
     // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
-    
-    if (data) {
+    if ([data length]) {
         [self appendData:data];
     }
     
@@ -750,21 +756,26 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 }
 
 - (void) appendData:(NSData *)data {
-    
+
+    BM_PROBE(ENTER_APPEND_DATA);
+
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    BM_PROBE(ENTER_APPEND_DATA, (char *) [[string quote] UTF8String]);
     if (string) {
-        self.partialResult = [self.partialResult stringByAppendingString:string];
+        self.partialResult = [partialResult stringByAppendingString:string];
     } else {
         NSLog(@"*** Warning: -[appendData:] attempted but could not append to self.partialResult. Data maybe lost!");
     }
+    
     [string release];
-    BM_PROBE(EXIT_APPEND_DATA, (char *) [[partialResult quote] UTF8String]);
+    
+    BM_PROBE(EXIT_APPEND_DATA, 
+             (char *) [[partialResult quote] UTF8String]);
 }
 
 - (void) taskTerminated:(NSNotification *)aNotification {
     
-    BM_PROBE(ENTER_TASK_TERMINATED, (char *) [[[[aNotification userInfo] descriptionInStringsFileFormat] quote] UTF8String]);
+    BM_PROBE(ENTER_TASK_TERMINATED, 
+             (char *) [[[[aNotification userInfo] descriptionInStringsFileFormat] quote] UTF8String]);
 
     // read out remaining data, as the pipes have a limited buffer size 
     // and may stall on subsequent calls if full
@@ -773,15 +784,16 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         [self appendData:dataInPipe];
     }
     
-    BM_PROBE(END_BG_EXECUTE, (char *) [[lastResult quote] UTF8String]);
+    BM_PROBE(END_BG_EXECUTE, 
+             (char *) [[lastResult quote] UTF8String]);
     
     // task is finished, copy over the accumulated partialResults into lastResult
     if ([[self delegate] respondsToSelector:@selector(shouldSetLastResult:)]) {
-        if ([[self delegate] shouldSetLastResult:self.partialResult]) {
-            self.lastResult = self.partialResult;
+        if ([[self delegate] shouldSetLastResult:partialResult ]) {
+            self.lastResult = partialResult;
         }
     } else {
-        self.lastResult = [self.lastResult stringByAppendingString:self.partialResult];
+        self.lastResult = [lastResult stringByAppendingString:partialResult ];
     }
     
     
@@ -793,7 +805,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
                            [NSNumber numberWithInt:s_bgTaskStatus], BMScriptNotificationInfoTaskTerminationStatusKey, 
                            [self lastResult], BMScriptNotificationInfoTaskResultsKey, nil];
     
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:BMScriptTaskDidEndNotification object:self.bgTask userInfo:info]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:BMScriptTaskDidEndNotification object:nil userInfo:info]];
     
     NSArray * historyItem = [NSArray arrayWithObjects:[self script], [self lastResult], nil];
     [[self history] addObject:historyItem];
@@ -805,14 +817,18 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSTaskDidTerminateNotification object:nil];
     
-    BM_PROBE(EXIT_TASK_TERMINATED, (char *) [[lastResult quote] UTF8String], (char *) [[partialResult quote] UTF8String]);
+    BM_PROBE(EXIT_TASK_TERMINATED, 
+             (char *) [[lastResult quote] UTF8String], 
+             (char *) [[partialResult quote] UTF8String]);
 }
 
 // MARK: Templates
 
+// TODO: add probes for template system
+
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg {
-    if (self.isTemplate) {
-        self.script = [NSString stringWithFormat:[self script], tArg];
+    if (isTemplate) {
+        self.script = [NSString stringWithFormat:script, tArg];
         self.isTemplate = NO;
         return YES;
     }
@@ -821,7 +837,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (BOOL) saturateTemplateWithArguments:(NSString *)firstArg, ... {
     
-    if (self.isTemplate) {
+    if (isTemplate) {
         // determine how many replacements we need to make
         NSInteger numTokens = [script countOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN];
         if (numTokens == NSNotFound) {
@@ -862,7 +878,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 }
 
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary {
-    if (self.isTemplate) {
+    if (isTemplate) {
         
         NSString * accumulator = [self script];
         
@@ -892,12 +908,12 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_PROBE(ENTER_EXECUTE, 
              (char *) [[[self script] quote] UTF8String], 
-             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
              (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
     
     BOOL success = NO;
     
-    if (self.isTemplate) {
+    if (isTemplate) {
         @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
                                        reason:@"please define all replacement values for the current template "
                                               @"by calling one of the -[saturateTemplate...] methods prior to execution" 
@@ -909,20 +925,20 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         }
     }
     
-    BM_PROBE(EXIT_EXECUTE, (char *) [[self.lastResult quote] UTF8String]);
+    BM_PROBE(EXIT_EXECUTE, (char *) [[lastResult quote] UTF8String]);
     return success;
 }
 
 - (BOOL) executeAndReturnResult:(NSString **)result {
     
     BM_PROBE(ENTER_EXECUTE_AND_RETURN_RESULT, 
-             (char *) [[[self script] quote] UTF8String], 
-             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
-             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [[script quote] UTF8String], 
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
+             (char *) [[options objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
     
     BOOL success = NO;
     
-    if (self.isTemplate) {
+    if (isTemplate) {
         @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
                                        reason:@"please define all replacement values for the current template "
                                               @"by calling one of the -[saturateTemplate...] methods prior to execution" 
@@ -933,7 +949,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         }
     }
     
-    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, (char *) [[self.lastResult quote] UTF8String]);
+    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, 
+             (char *) [[lastResult quote] UTF8String]);
+    
     return success;
 }
 
@@ -941,12 +959,12 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_PROBE(ENTER_EXECUTE_AND_RETURN_ERROR, 
              (char *) [[[self script] quote] UTF8String], 
-             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
-             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
+             (char *) [[task launchPath] UTF8String]);
     
     BOOL success = NO;
     
-    if (self.isTemplate) {
+    if (isTemplate) {
         if (error) {
             NSDictionary * errorDict = 
                 [NSDictionary dictionaryWithObject:@"please define all replacement values for the current template "
@@ -964,7 +982,9 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
             success = YES;
         }
     }
-    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, (char *) [[self.lastResult quote] UTF8String]);
+    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, 
+             (char *) [[lastResult quote] UTF8String]);
+    
     return success;
 }
 
@@ -972,13 +992,13 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_PROBE(ENTER_EXECUTE_AND_RETURN_RESULT_ERROR,
              (char *) [[[self script] quote] UTF8String], 
-             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
-             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
+             (char *) [[bgTask launchPath] UTF8String]);
     
     BM_PROBE(START_NET_EXECUTE, 
              (char *) [[[self script] quote] UTF8String], 
-             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
-             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
+             (char *) [[bgTask launchPath] UTF8String]);
     
     BOOL success = NO;
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
@@ -986,7 +1006,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     s_taskStatus = status;
     BMSCRIPT_UNLOCK
     
-    if (self.isTemplate) {
+    if (isTemplate) {
         if (error) {
             NSDictionary * errorDict = 
                 [NSDictionary dictionaryWithObject:@"please define all replacement values for the current template "
@@ -1034,8 +1054,11 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
         }
     }
     
-    BM_PROBE(END_NET_EXECUTE, (char *) [[[self lastResult] quote] UTF8String]);
-    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT_ERROR, (char *) [[[self lastResult] quote] UTF8String]);
+    BM_PROBE(END_NET_EXECUTE, 
+             (char *) [[[self lastResult] quote] UTF8String]);
+
+    BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT_ERROR, 
+             (char *) [[[self lastResult] quote] UTF8String]);
 
     return success;
 }
@@ -1046,7 +1069,7 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
     s_bgTaskStatus = status;
     
-    if (self.isTemplate) {
+    if (isTemplate) {
             @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
                                            reason:@"please define all replacement values for the current template "
                                                   @"by calling one of the -[saturateTemplate...] methods prior to execution" 
@@ -1055,14 +1078,16 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_PROBE(START_BG_EXECUTE, 
              (char *) [[[self script] quote] UTF8String], 
-             (char *) [BMStringFromBOOL(self.isTemplate) UTF8String], 
-             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
+             (char *) [[bgTask launchPath] UTF8String]);
     
     [self setupAndLaunchBackgroundTask];
     
 }
 
 // MARK: History
+
+// TODO: add probes for history system
 
 - (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index {
     
@@ -1184,6 +1209,12 @@ static TerminationStatus s_bgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
+    return [self retain];
+}
+
+// MARK: NSMutableCopying
+
+- (id) mutableCopyWithZone:(NSZone *)zone {
     id copy = [[[self class] allocWithZone:zone] initWithScriptSource:[self script] 
                                                               options:[self options]];
     return copy;
