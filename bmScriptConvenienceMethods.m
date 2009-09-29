@@ -1,4 +1,4 @@
-// these use default paths and parameters for 10.5 and 10.6
+// these use OS default paths and arguments
 + (id) rubyScriptWithSource:(NSString *)scriptSource;
 + (id) rubyScriptWithContentsOfFile:(NSString *)path;
 + (id) rubyScriptWithContentsOfTemplateFile:(NSString *)path;

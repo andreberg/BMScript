@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = BMScript
-PROJECT_NUMBER         = "0.1 (r23)"
+PROJECT_NUMBER         = "0.2 (r24)"
 OUTPUT_DIRECTORY       = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/BMScript.docset
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -22,7 +22,7 @@ ABBREVIATE_BRIEF       = "The $name class" \
                          a \
                          an \
                          the
-ALWAYS_DETAILED_SEC    = NO
+ALWAYS_DETAILED_SEC    = YES
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
 STRIP_FROM_PATH        = 
@@ -32,7 +32,7 @@ JAVADOC_AUTOBRIEF      = YES
 QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = NO
-INHERIT_DOCS           = YES
+INHERIT_DOCS           = NO
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 6
 ALIASES                = 
@@ -44,7 +44,7 @@ BUILTIN_STL_SUPPORT    = NO
 CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
 IDL_PROPERTY_SUPPORT   = NO
-DISTRIBUTE_GROUP_DOC   = NO
+DISTRIBUTE_GROUP_DOC   = YES
 SUBGROUPING            = YES
 TYPEDEF_HIDES_STRUCT   = YES
 #---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ TYPEDEF_HIDES_STRUCT   = YES
 #---------------------------------------------------------------------------
 EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
-EXTRACT_STATIC         = YES
+EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = NO
 EXTRACT_LOCAL_METHODS  = NO
 EXTRACT_ANON_NSPACES   = NO
@@ -74,7 +74,7 @@ GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
-MAX_INITIALIZER_LINES  = 30
+MAX_INITIALIZER_LINES  = 0
 SHOW_USED_FILES        = YES
 SHOW_DIRECTORIES       = NO
 SHOW_FILES             = YES
@@ -100,7 +100,6 @@ FILE_PATTERNS          = *.c \
                          *.cxx \
                          *.cpp \
                          *.c++ \
-                         *.d \
                          *.java \
                          *.ii \
                          *.ixx \
@@ -126,10 +125,11 @@ FILE_PATTERNS          = *.c \
                          *.f \
                          *.vhd \
                          *.vhdl \
-                         *.sample
+                         *.include
 RECURSIVE              = NO
-EXCLUDE                = BMScriptProbes.h
-EXCLUDE_SYMLINKS       = NO
+EXCLUDE                = BMScriptProbes.h \
+                         *.d
+EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/
@@ -142,7 +142,7 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
 #---------------------------------------------------------------------------
-SOURCE_BROWSER         = YES
+SOURCE_BROWSER         = NO
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = YES
@@ -170,7 +170,7 @@ GENERATE_HTMLHELP      = NO
 GENERATE_DOCSET        = YES
 DOCSET_FEEDNAME        = BMScript
 DOCSET_BUNDLE_ID       = com.bergmedia.BMScript
-HTML_DYNAMIC_SECTIONS  = NO
+HTML_DYNAMIC_SECTIONS  = YES
 CHM_FILE               = 
 HHC_LOCATION           = 
 GENERATE_CHI           = NO
@@ -240,8 +240,7 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
-INCLUDE_FILE_PATTERNS  = *.mm \
-                         *.h
+INCLUDE_FILE_PATTERNS  = *.h
 PREDEFINED             = 
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
@@ -251,19 +250,19 @@ SKIP_FUNCTION_MACROS   = YES
 TAGFILES               = 
 GENERATE_TAGFILE       = 
 ALLEXTERNALS           = NO
-EXTERNAL_GROUPS        = YES
+EXTERNAL_GROUPS        = NO
 PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            = /Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/
-HIDE_UNDOC_RELATIONS   = YES
+HIDE_UNDOC_RELATIONS   = NO
 HAVE_DOT               = YES
 DOT_FONTNAME           = FreeSans
 DOT_FONTPATH           = 
 CLASS_GRAPH            = YES
-COLLABORATION_GRAPH    = YES
+COLLABORATION_GRAPH    = NO
 GROUP_GRAPHS           = YES
 UML_LOOK               = NO
 TEMPLATE_RELATIONS     = NO

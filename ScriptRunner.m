@@ -5,9 +5,17 @@
 //  Created by Andre Berg on 24.09.09.
 //  Copyright 2009 Berg Media. All rights reserved.
 //
-//  For license details see end of this file.
-//  Short version: licensed under the MIT license.
-//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//    http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 #import "ScriptRunner.h"
 
@@ -49,7 +57,7 @@
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
         
         //NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", nil);
-        BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"\"this is ScriptRunner\'s script calling...\"" options:BMSynthesizeOptions()];
+        BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"\"this is ScriptRunner\'s script calling...\"" options:BMSynthesizeOptions(@"/bin/echo", nil)];
         [aScript setDelegate:self];
         script = [aScript retain];
         [aScript release];
@@ -89,27 +97,35 @@
     self.bgStatus = stats;
     self.bgTaskHasEnded = YES;
     
-    NSLog(@"Inside %s: bgTask finished with bgStatus = %ld, bgResult = '%@'", __PRETTY_FUNCTION__, bgStatus, [bgResults quote]);
-    NSLog(@"Inside %s: [self debugDescription]: \n%@", __PRETTY_FUNCTION__, [self debugDescription]);
+    NSLog(@"Inside %s\n bgTask finished with bgStatus = %ld, bgResult = '%@'\n", __PRETTY_FUNCTION__, bgStatus, [bgResults quote]);
+    NSLog(@"Inside %s\n [self debugDescription] = %@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
 
 - (NSString *) debugDescription {
-    return [NSString stringWithFormat:@"%@: taskHasEnded? %@, status = '%@', results = '%@', bgTaskHasEnded? %@, bgStatus = '%@', bgResults = '%@', shouldSetResultCalled? %@, shouldSetScriptCalled? %@", 
-            [self description], BMStringFromBOOL(taskHasEnded), BMStringFromTerminationStatus(status), [results quote], BMStringFromBOOL(bgTaskHasEnded), BMStringFromTerminationStatus(bgStatus), [bgResults quote], BMStringFromBOOL(shouldSetResultCalled), BMStringFromBOOL(shouldSetScriptCalled) ];
+    return [NSString stringWithFormat:@"%@:\n"
+            @"   taskHasEnded? %3s |    status = '%-32s' |   results = '%@',\n"
+            @" bgTaskHasEnded? %3s |  bgStatus = '%-32s' | bgResults = '%@',\n"
+            @" shouldSetResultCalled? %@\n"
+            @" shouldSetScriptCalled? %@", 
+            [self description], 
+            [BMStringFromBOOL(taskHasEnded) UTF8String], [BMStringFromTerminationStatus(status) UTF8String], [results quote], 
+            [BMStringFromBOOL(bgTaskHasEnded) UTF8String], [BMStringFromTerminationStatus(bgStatus) UTF8String], [bgResults quote], 
+            BMStringFromBOOL(shouldSetResultCalled), BMStringFromBOOL(shouldSetScriptCalled)
+            ];
 }
 
 
 - (void) launch {
-    NSError * err;
-    NSString * res;
+    NSError * err = nil;
+    NSString * res = nil;
     self.status = [script executeAndReturnResult:&res error:&err];
     self.results = res;
     if (err) {
-        NSLog(@"Inside %s: err = %@", __PRETTY_FUNCTION__, err);
+        NSLog(@"Inside %s: err = %@", __PRETTY_FUNCTION__, [err description]);
     }
     self.taskHasEnded = YES;
-    NSLog(@"Inside %s: self = %@", __PRETTY_FUNCTION__, [self debugDescription]);
+    NSLog(@"Inside %s:\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
 - (void) launchBackground {
@@ -120,39 +136,17 @@
 // MARK: BMScript Delegate Methods
 
 - (BOOL) shouldSetResult:(NSString *)aString {
+    #pragma unused(aString)
     self.shouldSetResultCalled = YES;
     // NSLog(@"Inside %s aString = %@", __PRETTY_FUNCTION__, aString);
     return YES;
 }
 
 - (BOOL) shouldSetScript:(NSString *)aScript {
+#pragma unused(aScript)
     self.shouldSetScriptCalled = YES;
     //NSLog(@"Inside %s", __PRETTY_FUNCTION__);
     return YES;
 }
 
 @end
-
-/*
- * Copyright (c) 2009 Andre Berg (Berg Media)
- * 
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */

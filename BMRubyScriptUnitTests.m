@@ -291,7 +291,7 @@
                                                @"   print str\\n"
                                                @"end"], @"but is '%@'", quotedString);
     
-    // if truncate length unspecifified uses a default of 20 or NSSTRING_TRUNCATE_LENGTH if defined
+    // if truncate length unspecifified uses a default of 20 or BM_NSSTRING_TRUNCATE_LENGTH if defined
     NSString * truncatedQuotedString = [quotedString truncate];
     
     STAssertTrue([truncatedQuotedString isEqualToString:@"str = %%{}\\n"

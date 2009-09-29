@@ -264,7 +264,7 @@
     NSError * error;
     
     [script1 setScript:rubyDecScript];
-    [script1 executeAndReturnError:&error];
+    [script1 executeAndReturnResult:nil error:&error];
     
     STAssertTrue([[script1 lastResult] isEqualToString:@"255"], @"but is '%@'", [script1 lastResult]);
 }
@@ -315,7 +315,7 @@
                   @"   print str\\n"
                   @"end"], @"but is '%@'", quotedString);
     
-    // if truncate length unspecifified uses a default of 20 or NSSTRING_TRUNCATE_LENGTH if defined
+    // if truncate length unspecifified uses a default of 20 or BM_NSSTRING_TRUNCATE_LENGTH if defined
     NSString * truncatedQuotedString = [quotedString truncate];
     
     STAssertTrue([truncatedQuotedString isEqualToString:@"str = %%{}\\n"

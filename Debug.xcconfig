@@ -1,12 +1,9 @@
 //
-//  Documentation.xcconfig
+//  Debug.xcconfig
 //  BMScriptTest
 //
-//  Created by Andre Berg on 24.09.09.
+//  Created by Andre Berg on 28.09.09.
 //  Copyright 2009 Berg Media. All rights reserved.
-//
-//  This file contains general settings that are used in various Run Script build phases.
-//  May need to be changed by the developer from machine to machine.
 //  
 //  Redistribution and use in source and binary forms, with or without modification, 
 //  are permitted provided that the following conditions are met:
@@ -32,9 +29,6 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-// path to the doxygen utility
-DOXYGEN_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/doxygen
-// name of the config file
-DOXYFILE=Doxyfile
-// name of the generated docset
-DOCSETFULLNAME=BMScript.docset
+DEBUGSH = 1
+WARNING_CFLAGS = $(inhibited) -Winit-self -Wnonnull -Wformat=2 -Wsequence-point -Wstrict-aliasing -Wstrict-aliasing=2 -Wsign-compare -Wall -Wextra -Wdiv-by-zero -Wmissing-field-initializers -Wno-format-nonliteral -Wshorten-64-to-32
+RUN_CLANG_STATIC_ANALYZER = YES

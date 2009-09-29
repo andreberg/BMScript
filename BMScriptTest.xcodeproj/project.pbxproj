@@ -103,6 +103,8 @@
 		08FB7796FE84155DC02AAC07 /* BMScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
+		652085F01071634600BA57EC /* debug.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = debug.sh; sourceTree = "<group>"; };
+		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 1; };
 		653A09A41067C5CC0027DF98 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
 		653A0A021067CECA0027DF98 /* bmScriptOptionsDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptOptionsDictionary.m; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
 		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
 		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; };
+		659D40EA1071003100051C57 /* BMAtomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMAtomic.h; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BMScriptTest.1; sourceTree = "<group>"; };
@@ -227,6 +230,7 @@
 		6542958A105FE1B80037E0C8 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				652085F01071634600BA57EC /* debug.sh */,
 				6542958B105FE1B80037E0C8 /* Convert To Oct.rb */,
 			);
 			name = Scripts;
@@ -246,21 +250,14 @@
 		65429594105FE1D00037E0C8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				659D40E81071001500051C57 /* Defines, Macros, etc. */,
 				65BA2D2D106776E5000B5D3B /* Helper Classes */,
-				6583FB79106FA7C30073983C /* BMDefines.h */,
 				654295CF105FE2A90037E0C8 /* BMScript.h */,
 				654295D0105FE2A90037E0C8 /* BMScript.m */,
 				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
 				65429596105FE1D00037E0C8 /* BMRubyScript.m */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
-		};
-		654548D81069FD3F00E03140 /* Output */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Output;
 			sourceTree = "<group>";
 		};
 		6547BCCC10698F2400B3A390 /* Probes */ = {
@@ -275,6 +272,7 @@
 		654E9CE4106BEFBF008CC673 /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				652085F4107163DC00BA57EC /* Debug.xcconfig */,
 				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
 			);
 			name = Config;
@@ -286,6 +284,15 @@
 				32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */,
 			);
 			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		659D40E81071001500051C57 /* Defines, Macros, etc. */ = {
+			isa = PBXGroup;
+			children = (
+				6583FB79106FA7C30073983C /* BMDefines.h */,
+				659D40EA1071003100051C57 /* BMAtomic.h */,
+			);
+			name = "Defines, Macros, etc.";
 			sourceTree = "<group>";
 		};
 		65B45BD110696CE10015DF1B /* Samples */ = {
@@ -303,6 +310,7 @@
 				653A0B6B1067E9440027DF98 /* bmScriptHistory.m */,
 				653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */,
 			);
+			includeInIndex = 0;
 			name = Samples;
 			sourceTree = "<group>";
 		};
@@ -319,7 +327,6 @@
 			isa = PBXGroup;
 			children = (
 				65B45BD110696CE10015DF1B /* Samples */,
-				654548D81069FD3F00E03140 /* Output */,
 				653A09A41067C5CC0027DF98 /* Doxyfile */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
 				65454AB6106A00E100E03140 /* doxygen.css */,
@@ -353,7 +360,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "BMScriptTest" */;
 			buildPhases = (
-				6547BD221069943B00B3A390 /* Generate dtrace header files */,
+				6520F82B1071706C00683038 /* Source debug.sh */,
+				6547BD221069943B00B3A390 /* Generate DTrace Header Files */,
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
 				8DD76F9E0486AA7600D96B5E /* CopyFiles */,
@@ -407,6 +415,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6520F82B1071706C00683038 /* Source debug.sh */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Source debug.sh";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo source debug.sh\nif [[ $DEBUGSH==\"1\" ]]; then\n\tif [ -x \"debug.sh\" ]; then\n  \t\tsource \"debug.sh\"\n\tfi\nfi";
+		};
 		654295A0105FE22B0037E0C8 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -434,14 +456,14 @@
 			shellPath = /bin/sh;
 			shellScript = "\nif [[ -e \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\" ]]; then\n\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\"\nfi\n\nif [[ -e \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\nfi\n\nif [[ -e \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\nfi";
 		};
-		6547BD221069943B00B3A390 /* Generate dtrace header files */ = {
+		6547BD221069943B00B3A390 /* Generate DTrace Header Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Generate dtrace header files";
+			name = "Generate DTrace Header Files";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -560,14 +582,14 @@
 		};
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 			};
 			name = Debug;
 		};
@@ -656,7 +678,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = "Debug w Profiling Code";
@@ -720,6 +744,7 @@
 		};
 		657323EA1067BF6A001E9123 /* Debug w Profiling Code */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
@@ -727,6 +752,7 @@
 		};
 		657323EB1067BF6A001E9123 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
@@ -753,6 +779,7 @@
 		};
 		65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
@@ -760,10 +787,14 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-ftest-coverage",
+					"-fprofile-arcs",
+				);
 				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = "Debug w Profiling Code (LLVM)";
@@ -829,6 +860,7 @@
 				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = "Debug w Profiling Code (GC LLVM)";
@@ -893,12 +925,14 @@
 		65EEC18F106A340B00E2E451 /* Debug w Profiling Code */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = All;
 			};
 			name = "Debug w Profiling Code";
 		};
 		65EEC190106A340B00E2E451 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = All;
 			};
