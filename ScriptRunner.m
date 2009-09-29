@@ -138,14 +138,12 @@
 - (BOOL) shouldSetResult:(NSString *)aString {
     #pragma unused(aString)
     self.shouldSetResultCalled = YES;
-    // NSLog(@"Inside %s aString = %@", __PRETTY_FUNCTION__, aString);
     return YES;
 }
 
 - (BOOL) shouldSetScript:(NSString *)aScript {
-#pragma unused(aScript)
+    #pragma unused(aScript)
     self.shouldSetScriptCalled = YES;
-    //NSLog(@"Inside %s", __PRETTY_FUNCTION__);
     return YES;
 }
 

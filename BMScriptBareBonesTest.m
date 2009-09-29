@@ -39,6 +39,7 @@ int main (int argc, const char * argv[]) {
     BM_DEBUG_RETAIN_SWIZZLE([BMScript class])
     BM_DEBUG_RETAIN_SWIZZLE([ScriptRunner class])
     
+    //NSLog(@"BM_STRONG_REF = %s", (BM_STRONG_REF ? "" : BM_STRONG_REF));
     ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] init];    
     [scriptRunner1 launch];
     

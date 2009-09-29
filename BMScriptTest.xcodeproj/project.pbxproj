@@ -26,7 +26,6 @@
 			buildPhases = (
 			);
 			dependencies = (
-				65EEC194106A341200E2E451 /* PBXTargetDependency */,
 				65EEC196106A341400E2E451 /* PBXTargetDependency */,
 				65EEC198106A341600E2E451 /* PBXTargetDependency */,
 			);
@@ -36,17 +35,15 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		653CCFD310729C7500BA75C3 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295AB105FE24F0037E0C8 /* Convert To Oct.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958B105FE1B80037E0C8 /* Convert To Oct.rb */; };
 		654295AC105FE24F0037E0C8 /* Convert To Hex Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */; };
 		654295AD105FE24F0037E0C8 /* Convert To Decimal Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */; };
 		654295AE105FE24F0037E0C8 /* Multiple Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958F105FE1B80037E0C8 /* Multiple Tokens Template.rb */; };
-		654295AF105FE2540037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295D1105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
-		654295D2105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */ = {isa = PBXBuildFile; fileRef = 6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */; };
 		654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
-		654E9D59106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
 		65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */; };
 		6583F842106F5D2B0073983C /* BMScriptBareBonesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */; };
 		65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
@@ -57,13 +54,6 @@
 
 /* Begin PBXContainerItemProxy section */
 		6581A39210675DA300558062 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
-			remoteInfo = BMScriptTest;
-		};
-		65EEC193106A341200E2E451 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
@@ -104,7 +94,7 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* debug.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = debug.sh; sourceTree = "<group>"; };
-		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 1; };
+		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 0; };
 		653A09A41067C5CC0027DF98 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
 		653A0A021067CECA0027DF98 /* bmScriptOptionsDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptOptionsDictionary.m; sourceTree = "<group>"; };
@@ -117,6 +107,8 @@
 		653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptDelegateMethods.m; sourceTree = "<group>"; };
 		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
 		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
+		653CCED61072814600BA75C3 /* BMScriptExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptExamples1.m; sourceTree = "<group>"; };
+		653CCEDF1072820B00BA75C3 /* BMScriptExampleSubclassing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptExampleSubclassing.m; sourceTree = "<group>"; };
 		6542958B105FE1B80037E0C8 /* Convert To Oct.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Oct.rb"; sourceTree = "<group>"; };
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
@@ -127,7 +119,7 @@
 		654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BMScriptUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		654295A3105FE22B0037E0C8 /* BMScriptUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BMScriptUnitTests-Info.plist"; sourceTree = "<group>"; };
 		654295A8105FE2410037E0C8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 1; };
+		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		654548181069F4E900E03140 /* BMScriptProbes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptProbes.h; sourceTree = "<group>"; };
 		65454AB6106A00E100E03140 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = doxygen.css; sourceTree = "<group>"; };
@@ -208,6 +200,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		653CCEE11072831E00BA75C3 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				653CCEDF1072820B00BA75C3 /* BMScriptExampleSubclassing.m */,
+				653CCED61072814600BA75C3 /* BMScriptExamples1.m */,
+			);
+			name = Examples;
+			sourceTree = "<group>";
+		};
 		65429588105FE1B80037E0C8 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,7 +231,6 @@
 		6542958A105FE1B80037E0C8 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
-				652085F01071634600BA57EC /* debug.sh */,
 				6542958B105FE1B80037E0C8 /* Convert To Oct.rb */,
 			);
 			name = Scripts;
@@ -281,6 +281,7 @@
 		65731F961067771B001E9123 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				652085F01071634600BA57EC /* debug.sh */,
 				32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -295,7 +296,7 @@
 			name = "Defines, Macros, etc.";
 			sourceTree = "<group>";
 		};
-		65B45BD110696CE10015DF1B /* Samples */ = {
+		65B45BD110696CE10015DF1B /* Includes */ = {
 			isa = PBXGroup;
 			children = (
 				653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */,
@@ -311,7 +312,7 @@
 				653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */,
 			);
 			includeInIndex = 0;
-			name = Samples;
+			name = Includes;
 			sourceTree = "<group>";
 		};
 		65BA2D2D106776E5000B5D3B /* Helper Classes */ = {
@@ -326,7 +327,8 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				65B45BD110696CE10015DF1B /* Samples */,
+				65B45BD110696CE10015DF1B /* Includes */,
+				653CCEE11072831E00BA75C3 /* Examples */,
 				653A09A41067C5CC0027DF98 /* Doxyfile */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
 				65454AB6106A00E100E03140 /* doxygen.css */,
@@ -427,7 +429,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo source debug.sh\nif [[ $DEBUGSH==\"1\" ]]; then\n\tif [ -x \"debug.sh\" ]; then\n  \t\tsource \"debug.sh\"\n\tfi\nfi";
+			shellScript = "# returns 1 if $1 contains $2\n# and 0 if it does not\nstrcont() {\n    result=\"${1//*$2*/#}\"\n    result=\"${result//#/$2}\"\n    if [[ \"$result\" == \"$2\" ]]; then\n        echo 1\n    else\n        echo 0\n    fi\n}\n\n# source debug.sh if our $BUILD_STYLE contains the word \"Debug\"\n\nDEBUGSH=`strcont \"$BUILD_STYLE\" \"Debug\"`\nif [[ $DEBUGSH == 1 ]]; then\n\tif [ -x \"debug.sh\" ]; then\n\t\techo source debug.sh\n  \t\tsource \"debug.sh\"\n\tfi\nfi";
 		};
 		654295A0105FE22B0037E0C8 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -505,10 +507,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				654295AF105FE2540037E0C8 /* BMRubyScript.m in Sources */,
-				654295D2105FE2A90037E0C8 /* BMScript.m in Sources */,
+				653CCFD310729C7500BA75C3 /* BMScript.m in Sources */,
 				65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */,
-				654E9D59106C2082008CC673 /* ScriptRunner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,11 +532,6 @@
 			target = 8DD76F960486AA7600D96B5E /* BMScriptTest */;
 			targetProxy = 6581A39210675DA300558062 /* PBXContainerItemProxy */;
 		};
-		65EEC194106A341200E2E451 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8DD76F960486AA7600D96B5E /* BMScriptTest */;
-			targetProxy = 65EEC193106A341200E2E451 /* PBXContainerItemProxy */;
-		};
 		65EEC196106A341400E2E451 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 654295A1105FE22B0037E0C8 /* BMScriptUnitTests */;
@@ -552,6 +547,7 @@
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -582,7 +578,6 @@
 		};
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -596,7 +591,7 @@
 		1DEB927A08733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -607,6 +602,7 @@
 		};
 		654295A4105FE22C0037E0C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -678,7 +674,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "";
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -687,6 +682,7 @@
 		};
 		6542ED5E1061DDBC009DF7DF /* Debug w Profiling Code */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -768,6 +764,7 @@
 		};
 		657323ED1067BF6A001E9123 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -779,7 +776,6 @@
 		};
 		65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
@@ -789,10 +785,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-ftest-coverage",
-					"-fprofile-arcs",
-				);
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -801,6 +793,7 @@
 		};
 		65C57D19106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -817,8 +810,10 @@
 		};
 		65C57D1A106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BMScriptTest";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -867,6 +862,7 @@
 		};
 		65C57EF010673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -883,8 +879,10 @@
 		};
 		65C57EF110673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BMScriptTest";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -940,7 +938,9 @@
 		};
 		65EEC191106A340B00E2E451 /* Debug w Profiling Code (GC LLVM) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
+				GCC_ENABLE_OBJC_GC = required;
 				PRODUCT_NAME = All;
 			};
 			name = "Debug w Profiling Code (GC LLVM)";

@@ -27,7 +27,9 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <objc/objc.h>
 #import <objc/objc-runtime.h>
+#include <TargetConditionals.h>
 
 /// @cond HIDDEN
 #ifdef __cplusplus

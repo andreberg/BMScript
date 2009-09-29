@@ -69,6 +69,11 @@
  * will default to <span class="stringliteral">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
  * and the script source will default to <span class="stringliteral">@"echo '<script source placeholder>'"</span>.
  *
+ * @attention If you let your end-users, the consumers of your application, supply the 
+ * script source without defining exact task options this can be very dangerous as anything
+ * passed to /bin/sh is not checked by default! This might be a good reason to subclass BMScript
+ * instead of using it directly.
+ *
  * There are also convenience methods for the most common scripting languages, which have
  * their options set to OS default values:
  *
@@ -125,7 +130,8 @@
  *
  * If you subclass BMScript and do not use the designated initializer through which 
  * you supply options and script source yourself, the BMScriptLanguageProtocol-p.defaultOptionsForLanguage 
- * method will be called on your subclass. If it is missing an exception is thrown:
+ * method will be called on your subclass. If it is missing an exception of type 
+ * #BMScriptLanguageProtocolMethodMissingException is thrown.
  *
  * @par Execution
  *
@@ -135,7 +141,7 @@
  * @include bmScriptExecution.m
  *
  * Using the blocking execution model you can either pass a pointer to NSString where the result will be
- * written to (including NSError if needed), or just use plain BMScript.execute followed by BMScript::lastResult.
+ * written to (including NSError if needed), or just use plain BMScript.execute followed by BMScript.lastResult.
  * 
  * The non-blocking execution model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="code">notifications</a>.
  * You register your class as observer with the default notification center for a notification called 
@@ -146,8 +152,8 @@
  * Then you tell the BMScript instance to BMScript.executeInBackgroundAndNotify. When execution finishes and your
  * selector is called it will be passed an NSNotification object which encapsulates an NSDictionary with two keys:
  *
- * -# #BMScriptNotificationTaskResults: contains the results returned by the execution as NSString.
- * -# #BMScriptNotificationTaskTerminationStatus: contains the termination status (aka return/exit code)
+ * -# #BMScriptNotificationTaskResults              contains the results returned by the execution as NSString.
+ * -# #BMScriptNotificationTaskTerminationStatus    contains the termination status (aka return/exit code)
  * 
  * To make that clearer here's an example with the relevant parts thrown together:
  *
@@ -179,10 +185,26 @@
  *
  * @include bmScriptHistory.m
  *
- * @example BMRubyScript.m
- * Example of subclassing BMScript.
+ * @example BMScriptExampleSubclassing.m
+ * Example of subclassing BMScript. 
+ * This subclass provides specifics about executing Ruby scripts. 
+ * Of course this example is a bit of a moot point because BMScript 
+ * already comes with convenience constructors for all the major 
+ * scripting languages. Nevertheless, it nicely illustrates the bare minimum 
+ * needed to subclass BMScript. From a somewhat more realistic 
+ * and practical point of view, reasons to subclass BMScript may include:
+ *
+ * - You need to give your end-users the ability to supply script sources
+ *   and want to implement much more robust error checking in order to do so.
+ *
+ * - You want to be able to also support NSTask's environment dictionary
+ *   as this is currently not recognized by BMScript.
+ *
+ * - You want to initialize BMScript's ivars based on different criteria.
  * 
- * This subclass provides specifics about executing Ruby scripts.
+ * @example BMScriptExamples1.m
+ * Assorted usage examples.
+ *
  */
 
 /*!
@@ -471,11 +493,11 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
     NSString * script;
     NSDictionary * options;
     NSString * lastResult;
-    id delegate; 
+    __weak id delegate; 
  @private
     NSString * result;
     NSString * partialResult;
-    BOOL isTemplate;
+    __strong BOOL isTemplate;
     NSMutableArray * history;
     NSTask * task;
     NSPipe * pipe;

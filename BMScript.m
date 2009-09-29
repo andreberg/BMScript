@@ -43,7 +43,7 @@
     #define BMSCRIPT_DEBUG_INIT    0
 #endif
 #ifndef BMSCRIPT_DEBUG_DELEGATE_METHODS
-    #define BMSCRIPT_DEBUG_DELEGATE_METHODS 1
+    #define BMSCRIPT_DEBUG_DELEGATE_METHODS 0
 #endif
 
 #if (BMSCRIPT_DEBUG_DELEGATE_METHODS)
@@ -125,7 +125,7 @@ static TerminationStatus gBGTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 @property (BM_ATOMIC copy) NSString * result;
 @property (BM_ATOMIC copy) NSString * partialResult;
-@property (BM_ATOMIC assign) BOOL isTemplate;
+@property (BM_ATOMIC assign) __strong BOOL isTemplate;
 @property (BM_ATOMIC retain) NSTask * task;
 @property (BM_ATOMIC retain) NSPipe * pipe;
 @property (BM_ATOMIC retain) NSTask * bgTask;
