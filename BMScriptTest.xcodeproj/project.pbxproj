@@ -200,15 +200,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		653CCEE11072831E00BA75C3 /* Examples */ = {
-			isa = PBXGroup;
-			children = (
-				653CCEDF1072820B00BA75C3 /* BMScriptExampleSubclassing.m */,
-				653CCED61072814600BA75C3 /* BMScriptExamples1.m */,
-			);
-			name = Examples;
-			sourceTree = "<group>";
-		};
 		65429588105FE1B80037E0C8 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -327,8 +318,9 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				653CCEDF1072820B00BA75C3 /* BMScriptExampleSubclassing.m */,
+				653CCED61072814600BA75C3 /* BMScriptExamples1.m */,
 				65B45BD110696CE10015DF1B /* Includes */,
-				653CCEE11072831E00BA75C3 /* Examples */,
 				653A09A41067C5CC0027DF98 /* Doxyfile */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
 				65454AB6106A00E100E03140 /* doxygen.css */,
