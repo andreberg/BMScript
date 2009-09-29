@@ -93,6 +93,7 @@
 		08FB7796FE84155DC02AAC07 /* BMScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
+		6503F08810729F9A00B260F7 /* bmScriptExampleSubclassing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptExampleSubclassing.m; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* debug.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = debug.sh; sourceTree = "<group>"; };
 		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 0; };
 		653A09A41067C5CC0027DF98 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
@@ -107,8 +108,7 @@
 		653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptDelegateMethods.m; sourceTree = "<group>"; };
 		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
 		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
-		653CCED61072814600BA75C3 /* BMScriptExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptExamples1.m; sourceTree = "<group>"; };
-		653CCEDF1072820B00BA75C3 /* BMScriptExampleSubclassing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptExampleSubclassing.m; sourceTree = "<group>"; };
+		653CCED61072814600BA75C3 /* bmScriptExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptExamples1.m; sourceTree = "<group>"; };
 		6542958B105FE1B80037E0C8 /* Convert To Oct.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Oct.rb"; sourceTree = "<group>"; };
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
@@ -198,6 +198,15 @@
 				654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6503F09010729FF000B260F7 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				6503F08810729F9A00B260F7 /* bmScriptExampleSubclassing.m */,
+				653CCED61072814600BA75C3 /* bmScriptExamples1.m */,
+			);
+			name = Examples;
 			sourceTree = "<group>";
 		};
 		65429588105FE1B80037E0C8 /* Unit Tests */ = {
@@ -318,8 +327,7 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				653CCEDF1072820B00BA75C3 /* BMScriptExampleSubclassing.m */,
-				653CCED61072814600BA75C3 /* BMScriptExamples1.m */,
+				6503F09010729FF000B260F7 /* Examples */,
 				65B45BD110696CE10015DF1B /* Includes */,
 				653A09A41067C5CC0027DF98 /* Doxyfile */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
