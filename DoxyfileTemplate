@@ -6,7 +6,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = BMScript
 PROJECT_NUMBER         = "0.2 (r24)"
-OUTPUT_DIRECTORY       = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/BMScript.docset
+OUTPUT_DIRECTORY       = $OUTPUT_DIRECTORY
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -93,7 +93,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/
+INPUT                  = $SRCROOT
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -132,7 +132,7 @@ EXCLUDE                = BMScriptProbes.h \
 EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        = 
-EXAMPLE_PATH           = /Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/
+EXAMPLE_PATH           = $SRCROOT
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = 
@@ -164,12 +164,12 @@ HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
-HTML_STYLESHEET        = 
+HTML_STYLESHEET        = $HTML_STYLESHEET
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 GENERATE_DOCSET        = YES
 DOCSET_FEEDNAME        = BMScript
-DOCSET_BUNDLE_ID       = com.bergmedia.BMScript
+DOCSET_BUNDLE_ID       = $DOCSET_BUNDLE_ID
 HTML_DYNAMIC_SECTIONS  = YES
 CHM_FILE               = 
 HHC_LOCATION           = 
@@ -256,7 +256,7 @@ PERL_PATH              = /usr/bin/perl
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = YES
-MSCGEN_PATH            = /Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources/
+MSCGEN_PATH            = $DOXYGEN_RES_PATH
 HIDE_UNDOC_RELATIONS   = NO
 HAVE_DOT               = YES
 DOT_FONTNAME           = FreeSans
@@ -273,7 +273,7 @@ CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
-DOT_PATH               = /opt/local/bin
+DOT_PATH               = $DOT_PATH
 DOTFILE_DIRS           = 
 DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 1000

@@ -185,8 +185,15 @@
  *
  * @include bmScriptHistory.m
  *
- * @example BMScriptExampleSubclassing.m
+ */
+
+// MARK: Docs: Examples
+
+/*!
+ * @example SubclassingExample.m
+ *
  * Example of subclassing BMScript. 
+ *
  * This subclass provides specifics about executing Ruby scripts. 
  * Of course this example is a bit of a moot point because BMScript 
  * already comes with convenience constructors for all the major 
@@ -195,16 +202,19 @@
  * and practical point of view, reasons to subclass BMScript may include:
  *
  * - You need to give your end-users the ability to supply script sources
- *   and want to implement much more robust error checking in order to do so.
+ *   and want to employ much more robust error checking than the delegation
+ *   system around BMScriptDelegateProtocol-p can provide to you.
  *
- * - You want to be able to also support NSTask's environment dictionary
- *   as this is currently not recognized by BMScript.
+ * - You want to be able to also make use of NSTask's environment dictionary
+ *   as this is currently unused by BMScript.
  *
  * - You want to initialize BMScript's ivars based on different criteria.
- * 
- * @example BMScriptExamples1.m
- * Assorted usage examples.
  *
+ */
+
+/*!
+ * @example BlockingExecutionExamples.m
+ * Usage examples for the blocking execution model.
  */
 
 /*!
