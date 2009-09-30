@@ -213,7 +213,7 @@ extern "C" {
  * @def BM_DEBUG_RETAIN_INIT
  * ￼Defines a macro which supplies replacement methods for -[retain] and -[release].
  * This macro is normally used in a global context (e.g. outside main) and followed by BM_DEBUG_RETAIN_SWIZZLE(className) in a local context, which then actually registers the replacement for the Class 'className' with the runtime.
- * @attention This is only intended for <b>debugging purposes</b>
+ * @attention This is only intended for <b>debugging purposes</b>. Has no effect if Garbage Collection is enabled.
  */
 #define BM_DEBUG_RETAIN_INIT \
     IMP oldRetain;\
@@ -235,7 +235,7 @@ extern "C" {
  * @def BM_DEBUG_RETAIN_SWIZZLE(className)
  * ￼Swizzles (or replaces) the methods defined by #BM_DEBUG_RETAIN_INIT for className.
  * This macro is normally used in a (function) local scope, provided a #BM_DEBUG_RETAIN_INIT declaration at the beginning of the file (in global context). BM_DEBUG_RETAIN_SWIZZLE(className) then actually registers the replacements defined by #BM_DEBUG_RETAIN_INIT for the Class 'className' with the runtime.
- * @attention This is only intended for <b>debugging purposes</b>
+ * @attention This is only intended for <b>debugging purposes</b>. Has no effect if Garbage Collection is enabled.
  * @param className the name of the class to replace the methods for (e.g. <span class="stringliteral">[SomeClass class]</span>).
  */
 #define BM_DEBUG_RETAIN_SWIZZLE(className) \

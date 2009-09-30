@@ -26,23 +26,32 @@
 // on your own system, there's a very big chance that you will have to modify
 // these settings to fit your own build environment.
 
+#include "Version.xcconfig"
 
 // path to the doxygen resources folder in its .app bundle
 DOXYGEN_RES_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources
+
 // path to the doxygen executable
 DOXYGEN_PATH=$(DOXYGEN_RES_PATH)/doxygen
+
 // name of the config file
 DOXYFILE=Doxyfile
+
 // doxyfile template - will be used to generate the real Doxyfile
 // after filling in all the environment vars from here
 DOXYFILE_TEMPLATE=DoxyfileTemplate
+
 // name of the generated docset
 DOCSET_NAME=BMScript.docset
+
 // docset bundle id
 DOCSET_BUNDLE_ID=com.bergmedia.BMScript
+
 // css for docs
 HTML_STYLESHEET=$(SRCROOT)/doxygen.css
+
 // path to Graphviz "dot" executable, default is "...Doxygen.app/Contents/Resources"
 DOT_PATH=/opt/local/bin
+
 // doxygen out dir
 OUTPUT_DIRECTORY=$(SRCROOT)/$(DOCSET_NAME)

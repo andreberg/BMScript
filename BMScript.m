@@ -148,7 +148,7 @@ static TerminationStatus gBGTaskStatus = BMScriptNotExecutedTerminationStatus;
 @synthesize options;
 @synthesize partialResult;
 @synthesize result;
-@synthesize delegate;
+@dynamic delegate;
 @synthesize isTemplate;
 @synthesize history;
 @synthesize task;
@@ -249,17 +249,17 @@ static TerminationStatus gBGTaskStatus = BMScriptNotExecutedTerminationStatus;
 //=========================================================== 
 //  delegate 
 //=========================================================== 
-// - (id<BMScriptDelegateProtocol>)delegate {
-//     return delegate; 
-// }
-// 
-// - (void)setDelegate:(id<BMScriptDelegateProtocol>)newDelegate {
-//     BM_LOCK
-//     if (delegate != newDelegate) {
-//         delegate = newDelegate;
-//     }
-//     BM_UNLOCK
-// }
+- (id<BMScriptDelegateProtocol>)delegate {
+    return delegate; 
+}
+
+- (void)setDelegate:(id<BMScriptDelegateProtocol>)newDelegate {
+    BM_LOCK(delegate)
+    if (delegate != newDelegate) {
+        delegate = newDelegate;
+    }
+    BM_UNLOCK(delegate)
+}
 
 //=========================================================== 
 //  history 

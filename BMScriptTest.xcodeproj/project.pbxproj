@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 657323F21067BFA4001E9123 /* Build configuration list for PBXAggregateTarget "BMScriptDocumentation" */;
 			buildPhases = (
-				6503F10A1072ACD000B260F7 /* Replace ENVs in DOXYFILE */,
+				6503F10A1072ACD000B260F7 /* Saturate ENVs in DoxyfileTemplate */,
 				657323E71067BF6A001E9123 /* Run Doxygen */,
 				65454AB8106A015800E03140 /* Overwrite doxygen.css Copies (disabled) */,
 				655D7B78106A1CA500B4B907 /* Import DocSet into Xcode */,
@@ -97,8 +97,12 @@
 		6503F08810729F9A00B260F7 /* SubclassingExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubclassingExample.m; sourceTree = "<group>"; };
 		6503F0A11072A05F00B260F7 /* BlockingExecutionExamples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples.m; sourceTree = "<group>"; };
 		6503F16A1072BAD900B260F7 /* DoxyfileTemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DoxyfileTemplate; sourceTree = "<group>"; };
+		6503F1BA1072D16300B260F7 /* Version.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples1.m; sourceTree = "<group>"; };
+		6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples2.m; sourceTree = "<group>"; };
+		6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples3.m; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* debug.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = debug.sh; sourceTree = "<group>"; };
-		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 0; };
+		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 1; };
 		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
 		653A0A021067CECA0027DF98 /* bmScriptOptionsDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptOptionsDictionary.m; sourceTree = "<group>"; };
 		653A0A031067CF7C0027DF98 /* bmScriptSynthesizeOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptSynthesizeOptions.m; sourceTree = "<group>"; };
@@ -206,6 +210,9 @@
 			children = (
 				6503F08810729F9A00B260F7 /* SubclassingExample.m */,
 				6503F0A11072A05F00B260F7 /* BlockingExecutionExamples.m */,
+				6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */,
+				6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */,
+				6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */,
 			);
 			name = Examples;
 			sourceTree = "<group>";
@@ -273,6 +280,7 @@
 		654E9CE4106BEFBF008CC673 /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				6503F1BA1072D16300B260F7 /* Version.xcconfig */,
 				652085F4107163DC00BA57EC /* Debug.xcconfig */,
 				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
 			);
@@ -418,19 +426,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6503F10A1072ACD000B260F7 /* Replace ENVs in DOXYFILE */ = {
+		6503F10A1072ACD000B260F7 /* Saturate ENVs in DoxyfileTemplate */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Replace ENVs in DOXYFILE";
+			name = "Saturate ENVs in DoxyfileTemplate";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby -wKu";
-			shellScript = "XCODE = true\n\nif XCODE\n   puts \"Running Replace ENVs in DOXYFILE\"\n   doxyfile_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE']}\"\n   doxyfile_template_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}\"\nelse\n   doxyfile_template_path = \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/DoxyfileTemplate\"\nend\ndoxyfile_contents = File.read(doxyfile_template_path)\n\nputs \"doxyfile_template_path = \\\"#{doxyfile_template_path}\\\"\" if $DEBUG\n\nif XCODE\n   # a hash table is perfect for storying what need to be unique symbols\n   # a symbol on this case is one build setting shell variable (i.e. $SRCROOT)\n   # which must be replaced\n   symbols = Hash.new()\n   \n   doxyfile_contents.each_line do |line|\n      if /\\$([A-Z_]+)/.match(line)\n         matchdata = $~\n         symbols[\"$#{matchdata[1]}\"] = ENV[matchdata[1]]\n      end\n   end\n   \nelse\n   symbols = {\"$SRCROOT\" => \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk\", \"$DOXYGEN_RES_PATH\" => \"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources\", \"$DOT_PATH\" => \"/opt/local/bin\"}\nend\n\nputs \"symbols = '#{symbols.inspect}'\" if $DEBUG\n\nsymbols.each_pair do |key, value|\n   if value\n      doxyfile_contents.gsub!(key, value)\n   else\n      doxyfile_contents.gsub!(\"#{key}\", \"#{key}\")\n   end\nend\n\nif $DEBUG\n   puts \"doxyfile_contents = '#{doxyfile_contents}'\" \nelse\n   doxyfile_new = File.open(\"#{doxyfile_path}\", \"w\")\n   doxyfile_new.write(doxyfile_contents)\n   doxyfile_new.close\nend";
+			shellScript = "# \n#  Saturate Doxygen Template\n#  Xcode Build Scripts\n#  \n#  Created by Andre Berg on 2009-09-30.\n#  Copyright 2009 Berg Media. All rights reserved.\n# \n#  Saturates a Doxyfile template with values \n#  from .xcconfig files.\n#\n\nXCODE = true\n\n# these should be set from the .xcconfig files but I did not succeed in\n# getting the needed inline shell script output. So we set those from here...\n\nENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!\nENV['BMSCRIPT_VERSION'] = \"%.1f\" % (ENV['SVN_REVISION'].to_i / 150.0)\nENV['PROJECT_NUMBER'] = \"#{ENV['BMSCRIPT_VERSION']} (#{ENV['SVN_REVISION']})\"\n\nif XCODE\n   puts \"Running Replace ENVs in DOXYFILE\"\n   doxyfile_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE']}\"\n   doxyfile_template_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}\"\nelse\n   doxyfile_template_path = \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/DoxyfileTemplate\"\nend\ndoxyfile_contents = File.read(doxyfile_template_path)\n\nputs \"doxyfile_template_path = \\\"#{doxyfile_template_path}\\\"\" if $DEBUG\n\nif XCODE\n   # a hash table is perfect for storying what need to be unique symbols\n   # a symbol on this case is one build setting shell variable (i.e. $SRCROOT)\n   # which must be replaced\n   symbols = Hash.new()\n   \n   doxyfile_contents.each_line do |line|\n      if /\\$([A-Z_]+)/.match(line)\n         matchdata = $~\n         symbols[\"$#{matchdata[1]}\"] = ENV[matchdata[1]]\n      end\n   end\n   \nelse\n   symbols = {\"$SRCROOT\" => \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk\", \"$DOXYGEN_RES_PATH\" => \"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources\", \"$DOT_PATH\" => \"/opt/local/bin\"}\nend\n\nputs \"symbols = '#{symbols.inspect}'\" if $DEBUG\n\nsymbols.each_pair do |key, value|\n   if value\n      doxyfile_contents.gsub!(key, value)\n   else\n      doxyfile_contents.gsub!(\"#{key}\", \"#{key}\")\n   end\nend\n\nif $DEBUG\n   puts \"doxyfile_contents = '#{doxyfile_contents}'\" \nelse\n   doxyfile_new = File.open(\"#{doxyfile_path}\", \"w\")\n   doxyfile_new.write(doxyfile_contents)\n   doxyfile_new.close\nend";
 		};
 		6520F82B1071706C00683038 /* Source debug.sh */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -499,7 +507,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSETFULLNAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"\tload documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\narch -i386 osascript \"$TEMP_DIR/loadDocSet.scpt\"";
+			shellScript = "#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSET_NAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"\tload documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\narch -i386 osascript \"$TEMP_DIR/loadDocSet.scpt\"";
 		};
 		657323E71067BF6A001E9123 /* Run Doxygen */ = {
 			isa = PBXShellScriptBuildPhase;

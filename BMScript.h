@@ -71,7 +71,8 @@
  *
  * @attention If you let your end-users, the consumers of your application, supply the 
  * script source without defining exact task options this can be very dangerous as anything
- * passed to /bin/sh is not checked by default! This might be a good reason to subclass BMScript
+ * passed to /bin/sh is not checked by default! This is a good reason to use the 
+ * BMScriptDelegateProtocol methods for error/security checking or to subclass BMScript
  * instead of using it directly.
  *
  * There are also convenience methods for the most common scripting languages, which have
@@ -213,9 +214,30 @@
  */
 
 /*!
- * @example BlockingExecutionExamples.m
+ * @example BlockingExecutionExamples3.m
  * Usage examples for the blocking execution model.
+ * 
+ * This is the default way of using BMScript:
+ * Initialize with the designated initializer and supply script and options
+ * 
+ * @include BlockingExecutionExamples1.m
+ * 
+ * Here are a couple of other examples of the blocking execution model:
+ * 
+ * @include BlockingExecutionExamples2.m
+ * 
+ * You can of course change the script source of an instance after the fact.
+ * Normally NSTasks are one-shot (not for re-use), so it is convenient that
+ * BMScript handles all the boilerplate setup for you in an opaque way.
+ *
+ * Any execution and its corresponding result are stored in the instance local
+ * execution cache, also called its history. 
+ * 
+ * See the (TODO: history) example on the history if you would like to know 
+ * more about that.
  */
+
+
 
 /*!
  * @file BMScript.h
@@ -269,7 +291,8 @@
 /*!
  * @def BMSynthesizeOptions(path, ...)
  * Used to synthesize a valid options dictionary. 
- * You can use this convenience macro to generate the boilerplate code for the options dictionary containing both the BMScriptOptionsTaskLaunchPathKey and BMScriptOptionsTaskArgumentsKey keys.
+ * You can use this convenience macro to generate the boilerplate code for the options dictionary 
+ * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
  */
 #define BMSynthesizeOptions(path, ...) \
     [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
@@ -557,7 +580,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Initialize a new BMScript instance with a template source. 
  * A template needs to be saturated ("filling in the blanks") before it can be used. 
  * @see saturateTemplateWithArgument: and variants.
- * @param templateSource a string containing a template with magic tokens (@see mainpage) to saturate resulting in commands to execute.
+ * @param templateSource a string containing a template with magic tokens to saturate resulting in commands to execute.
  * @param scriptOptions a dictionary containing the task options
  */
 - (id) initWithTemplateSource:(NSString *)templateSource options:(NSDictionary *)scriptOptions;

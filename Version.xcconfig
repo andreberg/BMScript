@@ -1,10 +1,10 @@
 //
-//  Debug.xcconfig
+//  Version.xcconfig
 //  BMScriptTest
 //
-//  Created by Andre Berg on 28.09.09.
+//  Created by Andre Berg on 30.09.09.
 //  Copyright 2009 Berg Media. All rights reserved.
-//  
+//
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
 //  You may obtain a copy of the License at
@@ -17,11 +17,14 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-// In this config file shall be put settings intended for all Debugging
-// targets. It may then be included from the "based-on" dropdown.
+// This config file lists major versions and SVN revisions to be inbcluded
+// by other config files and/or build phases
 
-RUN_CLANG_STATIC_ANALYZER = YES
+// The Ruby script sets the following settings:
 
-GENERATE_PROFILING_CODE = YES
+// ENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!
+// ENV['BMSCRIPT_VERSION'] = "%.1f" % (ENV['SVN_REVISION'].to_i / 150.0)
+// ENV['PROJECT_NUMBER'] = "#{ENV['BMSCRIPT_VERSION']} (#{ENV['SVN_REVISION']})"
 
-WARNING_CFLAGS = -Winit-self -Wnonnull -Wformat=2 -Wsequence-point -Wstrict-aliasing -Wstrict-aliasing=2 -Wsign-compare -Wall -Wextra -Wdiv-by-zero -Wmissing-field-initializers -Wno-format-nonliteral -Wshorten-64-to-32
+// INTENTIONALLY LEFT BLANK 
+// Reserved space

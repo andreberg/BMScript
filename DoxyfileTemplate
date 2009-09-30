@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = BMScript
-PROJECT_NUMBER         = "0.2 (r24)"
+PROJECT_NUMBER         = "$PROJECT_NUMBER"
 OUTPUT_DIRECTORY       = $OUTPUT_DIRECTORY
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
