@@ -44,7 +44,7 @@
                                            newArgs, BMScriptOptionsTaskArgumentsKey, nil];
     
     return defaultOpts;
-    // or return BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e", nil);
+    // or return BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e");
 }
 
 @end

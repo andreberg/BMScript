@@ -72,9 +72,9 @@
    </div>
  *
  * If you initialize BMScript directly without specifying options and script source 
- * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
- * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
- * and the script source will default to <span class="sourcecode">@"echo '<script source placeholder>'"</span>.
+ * (e.g. using <span class="sourcecode darkgray">[[%BMScript alloc] init]</span>) the options
+ * will default to <span class="sourcecode darkgray">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
+ * and the script source will default to <span class="sourcecode darkgray">@"echo '<script source placeholder>'"</span>.
  *
  * <div class="box warning">
         <div class="table">
@@ -334,9 +334,22 @@
  * You can use this convenience macro to generate the boilerplate code for the options dictionary 
  * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
  *
- * The variadic (...) argument is passed directly to <span class="sourcecode">[NSArray arrayWithObjects:...]</span>
- * which is why it is important that it will always be terminated with a <b>nil</b> even if no task 
- * arguments need to be set (e.g. <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", nil)</span>)
+ * <div class="box important">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Important:</div>
+                <div class="message cell">
+                    The variadic parameter (...) is passed directly to <span class="sourcecode darkgray">[NSArray arrayWithObjects:...]</span>
+                    The macro will terminate the variadic parameter with <b>nil</b>, which means you need to make sure
+                    you always pass some value for it. <br>
+                    If you don't, you will create <span class="sourcecode darkgray">__NSArray0</span> pseudo objects which are 
+                    not released in a Garbage Collection enabled environment. If you do not want to set any task args 
+                    simply pass an empty string, e.g. <span class="sourcecode darkgray">BMSynthesizeOptions(@"/bin/echo", @"")</span>
+                </div>
+            </div>
+        </div>
+ * </div>
+ * 
  */
 #define BMSynthesizeOptions(path, ...) \
     [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
@@ -345,6 +358,11 @@
 /*! 
  * @} 
  */
+
+
+/// @cond HIDDEN
+#define BMSCRIPT_UNIT_TEST (int) (getenv("BMScriptUnitTestsEnabled") || getenv("BMSCRIPT_UNIT_TEST_ENABLED"))
+/// @endcond
 
 /*! Provides a clearer indication of the task's termination status than simple integers.￼￼ */
 typedef NSInteger TerminationStatus;
@@ -415,7 +433,7 @@ OBJC_EXPORT NSString * const BMScriptNotificationTaskTerminationStatus;
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
 /*! Key incorporated by the options dictionary. Contains the arguments array for the task */
 OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
-/*! currently unused */
+/*! Currently unused. */
 OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
 
 /*!
@@ -575,7 +593,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  @private
     NSString * result;
     NSString * partialResult;
-    __strong BOOL isTemplate;
+    BOOL isTemplate;
     NSMutableArray * history;
     NSTask * task;
     NSPipe * pipe;
@@ -634,9 +652,11 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * the subclass' or BMScript's  implementation of BMScriptLanguageProtocol-p.defaultOptionsForLanguage.
  * @param scriptSource a string containing commands to execute
  */
-- (id) initWithScriptSource:(NSString *)scriptSource;
+//- (id) initWithScriptSource:(NSString *)scriptSource;
 /*!
  * Initialize a new BMScript instance with a script source. This is the designated initializer.
+ * @throw BMScriptLanguageProtocolDoesNotConformException Thrown when a subclass of BMScript does not conform to the BMScriptLanguageProtocol
+ * @throw BMScriptLanguageProtocolMethodMissingException Thrown when a subclass of BMScript does not implement all required methods of the BMScriptLanguageProtocol
  * @param scriptSource a string containing commands to execute
  * @param scriptOptions a dictionary containing the task options
  */
@@ -653,7 +673,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Initialize a new BMScript instance with contents of a file. 
  * @param path a string pointing to a file on disk. The contents of this file will be used as source script.
  */
-- (id) initWithContentsOfFile:(NSString *)path;
+//- (id) initWithContentsOfFile:(NSString *)path;
 /*!
  * Initialize a new BMScript instance. 
  * @param path a string pointing to a file on disk. The contents of this file will be used as source script.
@@ -666,7 +686,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * The contents of this file will be used as template which must be <b>saturated</b> before calling BMScript.execute or one of its variants.
  * @see #saturateTemplateWithArgument: et al.
  */
-- (id) initWithContentsOfTemplateFile:(NSString *)path;
+//- (id) initWithContentsOfTemplateFile:(NSString *)path;
 /*!
  * Initialize a new BMScript instance. 
  * @param path a string pointing to a <i>template</i> file on disk. 
@@ -914,4 +934,21 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @return the modified dictionary
  */
 - (NSDictionary *) dictionaryByAddingObject:(id)object forKey:(id)key;
+@end
+
+/*! A ctegory on NSObject. Provides introspection and utility methods. */
+@interface NSObject (BMScriptUtilities)
+
+/*!
+ * Returns YES if self is a descendant of another class.
+ * This differs from <span class="sourcecode">-[NSObject isMemberOfClass:someClass]</span> 
+ * and <span class="sourcecode">-[NSObject isKindOfClass:someClass]</span> in that it
+ * excludes anotherClass (the parent) in the comparison. Normally -isKindOfClass: returns 
+ * YES for all instances, and -isMemberOfClass: for all instances plus inherited subclasses,
+ * both including their parent class anotherClass. Here we return NO if <span class="sourcecode">[self class]</span>
+ * is equal to <span class="sourcecode">[anotherClass class]</span>.
+ * @param anotherClass the class type to check against
+ */
+- (BOOL) isDescendantOfClass:(Class)anotherClass;
+
 @end

@@ -15,7 +15,6 @@
 #endif
 #define PATHFOR(_NAME_, _TYPE_) ([[NSBundle bundleForClass:[self class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
-
 @interface BMScriptUnitTests : SenTestCase {
     NSDictionary * rubyDefaultOptions;
     NSDictionary * alternativeOptions;    
@@ -96,9 +95,9 @@
 - (void) testInitializers {
     
     BMScript * script1 = [[BMScript alloc] init];
-    BMScript * script2 = [[BMScript alloc] initWithScriptSource:rubyDefaultScript];      
+    BMScript * script2 = [[BMScript alloc] initWithScriptSource:rubyDefaultScript options:nil];      
     BMScript * script3 = [[BMScript alloc] initWithScriptSource:rubyDefaultScript options:rubyDefaultOptions];
-    BMScript * script4 = [[BMScript alloc] initWithContentsOfFile:rubyConvertToOctPath];      
+    BMScript * script4 = [[BMScript alloc] initWithContentsOfFile:rubyConvertToOctPath options:nil];      
     BMScript * script5 = [[BMScript alloc] initWithContentsOfFile:rubyConvertToOctPath options:rubyDefaultOptions];
     
     STAssertNotNil(script1, @"script1 should not be nil but is %@", script1);
@@ -354,7 +353,7 @@
 }
 
 - (void) testMacros {
-    NSDictionary * opts = BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e", nil);
+    NSDictionary * opts = BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e");
     STAssertTrue([[opts descriptionInStringsFileFormat] 
                     isEqualToString:[alternativeOptions descriptionInStringsFileFormat]], 
                     @"but is '%@'", [opts descriptionInStringsFileFormat]);

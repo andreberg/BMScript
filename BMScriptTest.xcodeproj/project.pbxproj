@@ -36,7 +36,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		653CCFD310729C7500BA75C3 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295AB105FE24F0037E0C8 /* Convert To Oct.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958B105FE1B80037E0C8 /* Convert To Oct.rb */; };
 		654295AC105FE24F0037E0C8 /* Convert To Hex Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */; };
@@ -48,6 +47,7 @@
 		65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */; };
 		6583F842106F5D2B0073983C /* BMScriptBareBonesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */; };
 		65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
+		65BF535C1074C9E100F7F5A5 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* BMScriptTest.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* BMScriptTest.1 */; };
@@ -116,6 +116,7 @@
 		653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptDelegateMethods.m; sourceTree = "<group>"; };
 		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
 		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
+		653D01761074BB4400C9F7CC /* UnitTests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UnitTests.xcconfig; sourceTree = "<group>"; };
 		6542958B105FE1B80037E0C8 /* Convert To Oct.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Oct.rb"; sourceTree = "<group>"; };
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
@@ -217,6 +218,7 @@
 				6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */,
 				6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */,
 			);
+			includeInIndex = 0;
 			name = Examples;
 			sourceTree = "<group>";
 		};
@@ -312,6 +314,7 @@
 				6503F1BA1072D16300B260F7 /* Version.xcconfig */,
 				652085F4107163DC00BA57EC /* Debug.xcconfig */,
 				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
+				653D01761074BB4400C9F7CC /* UnitTests.xcconfig */,
 			);
 			name = Config;
 			sourceTree = "<group>";
@@ -480,7 +483,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# returns 1 if $1 contains $2\n# and 0 if it does not\nstrcont() {\n    result=\"${1//*$2*/#}\"\n    result=\"${result//#/$2}\"\n    if [[ \"$result\" == \"$2\" ]]; then\n        echo 1\n    else\n        echo 0\n    fi\n}\n\n# source debug.sh if our $BUILD_STYLE contains the word \"Debug\"\n\nDEBUGSH=`strcont \"$BUILD_STYLE\" \"Debug\"`\nif [[ $DEBUGSH == 1 ]]; then\n\tif [ -x \"debug.sh\" ]; then\n\t\techo source debug.sh\n  \t\tsource \"debug.sh\"\n\tfi\nfi";
+			shellScript = "# returns 1 if $1 contains $2\n# and 0 if it does not\nstrcont() {\n    result=\"${1//*$2*/#}\"\n    result=\"${result//#/$2}\"\n    if [[ \"$result\" == \"$2\" ]]; then\n        echo 1\n    else\n        echo 0\n    fi\n}\n\n# source debug.sh if our $BUILD_STYLE contains the word \"Debug\"\n\nDEBUGSH=`strcont \"$BUILD_STYLE\" \"Debug\"`\n\tif [[ $USE_DEBUG_SCRIPT_SETUP == 1 && $DEBUGSH == 1 ]]; then\n\t\tif [ -x \"debug.sh\" ]; then\n\t\t\techo source debug.sh\n  \t\t\tsource \"debug.sh\"\n\t\tfi\n\tfi\n";
 		};
 		654295A0105FE22B0037E0C8 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -558,7 +561,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				653CCFD310729C7500BA75C3 /* BMScript.m in Sources */,
+				65BF535C1074C9E100F7F5A5 /* BMScript.m in Sources */,
 				65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -651,9 +654,52 @@
 			};
 			name = Release;
 		};
-		654295A4105FE22C0037E0C8 /* Debug */ = {
+		653D01711074BAAB00C9F7CC /* Debug GC */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+			};
+			name = "Debug GC";
+		};
+		653D01721074BAAB00C9F7CC /* Debug GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = All;
+			};
+			name = "Debug GC";
+		};
+		653D01731074BAAB00C9F7CC /* Debug GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+				SDKROOT = macosx10.5;
+			};
+			name = "Debug GC";
+		};
+		653D01741074BAAB00C9F7CC /* Debug GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -667,10 +713,45 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				OTHER_CFLAGS = (
-					"-D",
-					"BMSCRIPT_UNIT_TESTS=1",
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
 				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = "Debug GC";
+		};
+		653D01751074BAAB00C9F7CC /* Debug GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Documentation;
+			};
+			name = "Debug GC";
+		};
+		654295A4105FE22C0037E0C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -714,73 +795,9 @@
 			};
 			name = Release;
 		};
-		6542ED5D1061DDBC009DF7DF /* Debug w Profiling Code */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
-				STRIP_INSTALLED_PRODUCT = NO;
-			};
-			name = "Debug w Profiling Code";
-		};
-		6542ED5E1061DDBC009DF7DF /* Debug w Profiling Code */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = BMScriptTest;
-			};
-			name = "Debug w Profiling Code";
-		};
-		6542ED5F1061DDBC009DF7DF /* Debug w Profiling Code */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				OTHER_CFLAGS = (
-					"-D",
-					"BMSCRIPT_UNIT_TESTS=1",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Cocoa,
-					"-framework",
-					SenTestingKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = BMScriptUnitTests;
-				WRAPPER_EXTENSION = octest;
-			};
-			name = "Debug w Profiling Code";
-		};
 		657323E91067BF6A001E9123 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -789,29 +806,21 @@
 			};
 			name = Debug;
 		};
-		657323EA1067BF6A001E9123 /* Debug w Profiling Code */ = {
+		657323EB1067BF6A001E9123 /* Debug LLVM */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
-			name = "Debug w Profiling Code";
+			name = "Debug LLVM";
 		};
-		657323EB1067BF6A001E9123 /* Debug w Profiling Code (LLVM) */ = {
+		657323EC1067BF6A001E9123 /* Debug LLVM GC */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
-			name = "Debug w Profiling Code (LLVM)";
-		};
-		657323EC1067BF6A001E9123 /* Debug w Profiling Code (GC LLVM) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
-			buildSettings = {
-				PRODUCT_NAME = Documentation;
-			};
-			name = "Debug w Profiling Code (GC LLVM)";
+			name = "Debug LLVM GC";
 		};
 		657323ED1067BF6A001E9123 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -825,7 +834,7 @@
 			};
 			name = Release;
 		};
-		65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
+		65C57D18106733DA00BE26F6 /* Debug LLVM */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -840,9 +849,9 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
-			name = "Debug w Profiling Code (LLVM)";
+			name = "Debug LLVM";
 		};
-		65C57D19106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
+		65C57D19106733DA00BE26F6 /* Debug LLVM */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
@@ -857,11 +866,11 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = BMScriptTest;
 			};
-			name = "Debug w Profiling Code (LLVM)";
+			name = "Debug LLVM";
 		};
-		65C57D1A106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */ = {
+		65C57D1A106733DA00BE26F6 /* Debug LLVM */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BMScriptTest";
@@ -876,10 +885,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				OTHER_CFLAGS = (
-					"-D",
-					"BMSCRIPT_UNIT_TESTS=1",
-				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -890,10 +895,11 @@
 				PRODUCT_NAME = BMScriptUnitTests;
 				WRAPPER_EXTENSION = octest;
 			};
-			name = "Debug w Profiling Code (LLVM)";
+			name = "Debug LLVM";
 		};
-		65C57EEF10673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
+		65C57EEF10673DC900BE26F6 /* Debug LLVM GC */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
@@ -909,9 +915,9 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
-			name = "Debug w Profiling Code (GC LLVM)";
+			name = "Debug LLVM GC";
 		};
-		65C57EF010673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
+		65C57EF010673DC900BE26F6 /* Debug LLVM GC */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
@@ -926,11 +932,11 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = BMScriptTest;
 			};
-			name = "Debug w Profiling Code (GC LLVM)";
+			name = "Debug LLVM GC";
 		};
-		65C57EF110673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */ = {
+		65C57EF110673DC900BE26F6 /* Debug LLVM GC */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BMScriptTest";
@@ -945,10 +951,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				OTHER_CFLAGS = (
-					"-D",
-					"BMSCRIPT_UNIT_TESTS=1",
-				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -959,10 +961,11 @@
 				PRODUCT_NAME = BMScriptUnitTests;
 				WRAPPER_EXTENSION = octest;
 			};
-			name = "Debug w Profiling Code (GC LLVM)";
+			name = "Debug LLVM GC";
 		};
 		65EEC18E106A340B00E2E451 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -971,30 +974,22 @@
 			};
 			name = Debug;
 		};
-		65EEC18F106A340B00E2E451 /* Debug w Profiling Code */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				PRODUCT_NAME = All;
-			};
-			name = "Debug w Profiling Code";
-		};
-		65EEC190106A340B00E2E451 /* Debug w Profiling Code (LLVM) */ = {
+		65EEC190106A340B00E2E451 /* Debug LLVM */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = All;
 			};
-			name = "Debug w Profiling Code (LLVM)";
+			name = "Debug LLVM";
 		};
-		65EEC191106A340B00E2E451 /* Debug w Profiling Code (GC LLVM) */ = {
+		65EEC191106A340B00E2E451 /* Debug LLVM GC */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				GCC_ENABLE_OBJC_GC = required;
 				PRODUCT_NAME = All;
 			};
-			name = "Debug w Profiling Code (GC LLVM)";
+			name = "Debug LLVM GC";
 		};
 		65EEC192106A340B00E2E451 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1014,9 +1009,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB927508733DD40010E9CD /* Debug */,
-				6542ED5E1061DDBC009DF7DF /* Debug w Profiling Code */,
-				65C57D19106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
-				65C57EF010673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
+				653D01731074BAAB00C9F7CC /* Debug GC */,
+				65C57D19106733DA00BE26F6 /* Debug LLVM */,
+				65C57EF010673DC900BE26F6 /* Debug LLVM GC */,
 				1DEB927608733DD40010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1026,9 +1021,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
-				6542ED5D1061DDBC009DF7DF /* Debug w Profiling Code */,
-				65C57D18106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
-				65C57EEF10673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
+				653D01711074BAAB00C9F7CC /* Debug GC */,
+				65C57D18106733DA00BE26F6 /* Debug LLVM */,
+				65C57EEF10673DC900BE26F6 /* Debug LLVM GC */,
 				1DEB927A08733DD40010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1038,9 +1033,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				654295A4105FE22C0037E0C8 /* Debug */,
-				6542ED5F1061DDBC009DF7DF /* Debug w Profiling Code */,
-				65C57D1A106733DA00BE26F6 /* Debug w Profiling Code (LLVM) */,
-				65C57EF110673DC900BE26F6 /* Debug w Profiling Code (GC LLVM) */,
+				653D01741074BAAB00C9F7CC /* Debug GC */,
+				65C57D1A106733DA00BE26F6 /* Debug LLVM */,
+				65C57EF110673DC900BE26F6 /* Debug LLVM GC */,
 				654295A5105FE22C0037E0C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1050,9 +1045,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				657323E91067BF6A001E9123 /* Debug */,
-				657323EA1067BF6A001E9123 /* Debug w Profiling Code */,
-				657323EB1067BF6A001E9123 /* Debug w Profiling Code (LLVM) */,
-				657323EC1067BF6A001E9123 /* Debug w Profiling Code (GC LLVM) */,
+				653D01751074BAAB00C9F7CC /* Debug GC */,
+				657323EB1067BF6A001E9123 /* Debug LLVM */,
+				657323EC1067BF6A001E9123 /* Debug LLVM GC */,
 				657323ED1067BF6A001E9123 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1062,9 +1057,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				65EEC18E106A340B00E2E451 /* Debug */,
-				65EEC18F106A340B00E2E451 /* Debug w Profiling Code */,
-				65EEC190106A340B00E2E451 /* Debug w Profiling Code (LLVM) */,
-				65EEC191106A340B00E2E451 /* Debug w Profiling Code (GC LLVM) */,
+				653D01721074BAAB00C9F7CC /* Debug GC */,
+				65EEC190106A340B00E2E451 /* Debug LLVM */,
+				65EEC191106A340B00E2E451 /* Debug LLVM GC */,
 				65EEC192106A340B00E2E451 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

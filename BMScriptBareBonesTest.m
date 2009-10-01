@@ -20,6 +20,7 @@
 
 #include <unistd.h>
 #import <Foundation/Foundation.h>
+#import <objc/objc-auto.h>
 
 #import "BMScript.h"
 #import "BMRubyScript.h"
@@ -28,29 +29,37 @@
 #import "ScriptRunner.h"
 #import "BMAtomic.h"
 
-#define DEBUG 1
-
 BM_DEBUG_RETAIN_INIT
 
 int main (int argc, const char * argv[]) {
     #pragma unused(argc, argv)
+    // start gc thread
+    objc_startCollectorThread();
+    
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
     BM_DEBUG_RETAIN_SWIZZLE([BMScript class])
     BM_DEBUG_RETAIN_SWIZZLE([ScriptRunner class])
     
-    //NSLog(@"BM_STRONG_REF = %s", (BM_STRONG_REF ? "" : BM_STRONG_REF));
-    ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] init];    
+    ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] init]; 
     [scriptRunner1 launch];
     
-    [scriptRunner1 release];
-    
-    BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" options:BMSynthesizeOptions(@"/bin/echo", @"-n", nil)];
+    ScriptRunner * scriptRunner2 = [[ScriptRunner alloc] init];
+    [scriptRunner2 launchBackground];
+
+    BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" 
+                                                        options:BMSynthesizeOptions(@"/bin/echo", @"")];
     [script1 execute];
     
     NSLog(@"script1 result = %@\n", [[script1 lastResult] quote]);
+
+    [script1 release], script1 = nil;
+
+    NSLog(@"scriptRunner2 bgResults = %@", [scriptRunner2 bgResults]);
     
-    [script1 release];
+    [scriptRunner1 release], scriptRunner1 = nil;
+    [scriptRunner2 release], scriptRunner2 = nil;
+    
     [pool drain];
     
     if (DEBUG) {

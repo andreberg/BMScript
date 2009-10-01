@@ -20,8 +20,18 @@
 // In this config file shall be put settings intended for all Debugging
 // targets. It may then be included from the "based-on" dropdown.
 
+// source debug.sh? debug.sh sets a bunch of environment variables which 
+// are useful for debugging, such as NSZombieEnabled, CFZombieLevel etc...
+// this works in conjunction with $BUILD_STYLE_NAME, if it does not contain 
+// the word "Debug" this setting will always expand to 0.
+USE_DEBUG_SCRIPT_SETUP = 0
+
+// ahhh, how we DO love the static analyzer 
 RUN_CLANG_STATIC_ANALYZER = YES
 
+// might be nice to have
 GENERATE_PROFILING_CODE = YES
 
-WARNING_CFLAGS = -Winit-self -Wnonnull -Wformat=2 -Wsequence-point -Wstrict-aliasing -Wstrict-aliasing=2 -Wsign-compare -Wall -Wextra -Wdiv-by-zero -Wmissing-field-initializers -Wno-format-nonliteral -Wshorten-64-to-32
+WARNING_CFLAGS = $(inherited) -Winit-self -Wnonnull -Wformat=2 -Wsequence-point -Wstrict-aliasing -Wstrict-aliasing=2 -Wsign-compare -Wall -Wextra -Wdiv-by-zero -Wmissing-field-initializers -Wno-format-nonliteral -Wshorten-64-to-32
+
+GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1

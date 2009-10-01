@@ -23,7 +23,7 @@
 #import "ScriptRunner.h"
 #include <unistd.h>
 
-#if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS))
+#if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS) && DEBUG)
     #define BMAssertLog(_COND_) if (!(_COND_)) \
         NSLog(@"*** AssertionFailure: %s should be YES but is %@", #_COND_, ((_COND_) ? @"YES" : @"NO"))
     #define BMAssertThrow(_COND_, _DESC_) if (!(_COND_)) \
@@ -31,6 +31,7 @@
 #else
     #define BMAsssertLog
     #define BMAssertThrow
+    #define NS_BLOCK_ASSERTIONS 1
 #endif
 
 #ifdef PATHFOR
@@ -38,8 +39,6 @@
 #undef PATHFOR
     #endif
 #define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
-
-#define DEBUG 1
 
 // ---------------------------------------------------------------------------------------- 
 // MARK: MAIN

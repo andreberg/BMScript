@@ -2,7 +2,7 @@ BODY,H1,H2,H3,H4,H5,H6,P,CENTER,TD,TH,UL,DL,DIV {
 	font-family: Verdana, "Lucida Grande", Geneva, Helvetica, Arial, sans-serif;
 }
 BODY,TD {
-	font-size: 11px;
+	font-size: 11.5px;
 }
 H1 {
     margin-top: 25px;
@@ -509,6 +509,10 @@ HR {
 
 .red {
     color: Crimson;
+}
+
+.darkgray {
+    color: DarkSlateGray;
 }
 
 .nbsp {
