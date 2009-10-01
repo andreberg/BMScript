@@ -1,5 +1,5 @@
-- (id) initWithScriptSource:(NSString *)scriptSource;
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions;     /* designated initializer */
+- (id) initWithContentsOfFile:(NSString *)path options:(NSDictionary *)scriptOptions
 // ...
 
 + (id) scriptWithSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions;

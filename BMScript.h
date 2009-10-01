@@ -21,20 +21,24 @@
 
 /*!
  * @mainpage BMScript: Harness The Power Of Shell Scripts
- * <hr><br>
+ * <hr>
+ * @par Introduction
+ * 
  * BMScript is an Objective-C class set to make it easier to utilize the
  * power and flexibility of a whole range of scripting languages that already
  * come with modern Macs. BMScript does not favor any particular scripting
  * language or UNIX™ command line tool for that matter, instead it was written
  * as an abstraction layer to NSTask, and as such supports any command line tool, 
  * provided that it is available on the target system.
+ * 
+ * @par Usage
  *
  * BMScript can be used in two ways:
  *
  * -# Use it directly
- * -# Guided by the BMScriptLanguageProtocol, subclass it
+ * -# Guided by the BMScriptLanguageProtocol, make a subclass from it
  * 
- * The easiest way to employ BMScript is, of course, using it directly:
+ * The easiest way to use BMScript is, of course, to instanciate it directly:
  *
  * @include bmScriptCreationMethods.m
  *
@@ -46,12 +50,14 @@
  * 
  * There's two constant keys. These are the only keys you need to define values for.
  * #BMScriptOptionsTaskLaunchPathKey stores the path to the tool's executable and 
- * #BMScriptOptionsTaskArgumentsKey is a nil-terminated variadic list of parameters 
- * to be used as arguments.
+ * #BMScriptOptionsTaskArgumentsKey is a nil-terminated variable list of parameters 
+ * to be used as arguments to the task which will load and execute the tool found at 
+ * the launch path specified for the other key.
  * 
  * It is very important to note that the script source string should <b>NOT</b> be 
  * supplied in the array for the #BMScriptOptionsTaskArgumentsKey, as it will be added 
- * later by the class after performing some tests and replacements.
+ * later by the class after performing tests and delegation which could alter the script
+ * in ways needed to safely execute it. This is in the delegate object's responsibility.
  *
  * A macro function called #BMSynthesizeOptions(path, args) is available to ease 
  * the declaration of the options.<br>
@@ -334,15 +340,14 @@
  * You can use this convenience macro to generate the boilerplate code for the options dictionary 
  * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
  *
+ * The variadic parameter (...) is passed directly to <span class="sourcecode darkgray">[NSArray arrayWithObjects:...]</span>
  * <div class="box important">
         <div class="table">
             <div class="row">
                 <div class="label cell">Important:</div>
                 <div class="message cell">
-                    The variadic parameter (...) is passed directly to <span class="sourcecode darkgray">[NSArray arrayWithObjects:...]</span>
-                    The macro will terminate the variadic parameter with <b>nil</b>, which means you need to make sure
-                    you always pass some value for it. <br>
-                    If you don't, you will create <span class="sourcecode darkgray">__NSArray0</span> pseudo objects which are 
+                    The macro will terminate the variable argument list with <b>nil</b>, which means you need to make sure
+                    you always pass some value for it. If you don't, you will create <span class="sourcecode darkgray">__NSArray0</span> pseudo objects which are 
                     not released in a Garbage Collection enabled environment. If you do not want to set any task args 
                     simply pass an empty string, e.g. <span class="sourcecode darkgray">BMSynthesizeOptions(@"/bin/echo", @"")</span>
                 </div>

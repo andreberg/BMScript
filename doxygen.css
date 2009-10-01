@@ -215,7 +215,7 @@ TR.memlist {
 	background-color: #f0f0f0; 
 }
 dl.user {
-	margin-top: 40px;
+	margin-top: 2.5em;
 	margin-bottom: 15px;
     font-size: 130%;
 }
@@ -512,14 +512,15 @@ HR {
 }
 
 .darkgray {
-    color: DarkSlateGray;
+    /*color: DarkSlateGray;*/
+    /*font-size: 10px;*/
 }
 
 .nbsp {
     line-height: 00%;
 }
 
-.sourcecode { white-space: pre; white-space: pre-wrap !important; word-wrap: break-word; font: 0.9167em monaco, courier, monospace; }
+.sourcecode { white-space: pre; white-space: pre-wrap !important; word-wrap: break-word; font: 11px monaco, courier, monospace; }
 .noshadow { -webkit-box-shadow: 0px 0px 0px transparent; !important }
 
 .alt {
@@ -531,6 +532,10 @@ HR {
 
 div.box - p {
     margin-bottom: 40px;
+}
+
+dl.user {
+    margin-top: 40px;
 }
 
 /* -------------------- */

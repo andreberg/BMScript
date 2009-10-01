@@ -453,7 +453,9 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     if (BM_EXPECTED(self != nil, 1)) {
         
         if (scriptSource) {
-            script = [scriptSource retain];
+            // if scriptOptions == nil, we run with default options, namely /bin/echo so it might be better 
+            // to put quotes around the scriptSource
+            script = (scriptOptions != nil ? [scriptSource retain] : [[NSString stringWithFormat:@"'%@'", scriptSource] retain]);
         } else {
             if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
                 script = [[self performSelector:@selector(defaultScriptSourceForLanguage)] retain];
