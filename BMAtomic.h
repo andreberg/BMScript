@@ -10,8 +10,8 @@
  * @file BMAtomic.h
  * Abstraction layer to <libkern/OSAtomic.h>.
  * ￼￼Provides an interface to atomic functions originally provided by the OS. Atomic functions can be used to provide alternatives to locks in a concurrent application.
- * @sa <a href="http://developer.apple.com/mac/library/documentation/DriversKernelHardware/Reference/libkern_ref/OSAtomic_h">OSAtomic.h (ADC)</a>
- * @sa <a href="x-man-page://atomic">atomic(3)</a> (in Xcode: right-click and choose <span class="stringliteral"Open Link in Browser").
+ * @sa <a href="http://developer.apple.com/mac/library/documentation/DriversKernelHardware/Reference/libkern_ref/OSAtomic_h" class="external">OSAtomic.h (ADC)</a>
+ * @sa <a href="x-man-page://atomic" class="external">atomic(3)</a> (in Xcode: right-click and choose <span class="code"Open Link in Browser").
  */
 
 /*

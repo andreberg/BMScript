@@ -101,6 +101,8 @@
 		6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples1.m; sourceTree = "<group>"; };
 		6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples2.m; sourceTree = "<group>"; };
 		6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples3.m; sourceTree = "<group>"; };
+		6503F2CC1073754100B260F7 /* common.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = common.css; sourceTree = "<group>"; };
+		6503F2CD1073754100B260F7 /* content.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content.css; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* debug.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = debug.sh; sourceTree = "<group>"; };
 		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 1; };
 		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
@@ -110,7 +112,7 @@
 		653A0A2F1067D6B20027DF98 /* bmScriptConvenienceMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptConvenienceMethods.m; sourceTree = "<group>"; };
 		653A0A301067D8C10027DF98 /* bmScriptSaturateTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptSaturateTemplate.m; sourceTree = "<group>"; };
 		653A0B4C1067E2930027DF98 /* bmScriptExecution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptExecution.m; sourceTree = "<group>"; };
-		653A0B691067E5860027DF98 /* bmScriptNotificationExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptNotificationExample.m; sourceTree = "<group>"; };
+		653A0B691067E5860027DF98 /* NotificationExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationExample.m; sourceTree = "<group>"; };
 		653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptDelegateMethods.m; sourceTree = "<group>"; };
 		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
 		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
@@ -124,14 +126,14 @@
 		654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BMScriptUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		654295A3105FE22B0037E0C8 /* BMScriptUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BMScriptUnitTests-Info.plist"; sourceTree = "<group>"; };
 		654295A8105FE2410037E0C8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
+		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 1; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		654548181069F4E900E03140 /* BMScriptProbes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptProbes.h; sourceTree = "<group>"; };
 		65454AB6106A00E100E03140 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = doxygen.css; sourceTree = "<group>"; };
 		6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.dtrace; path = BMScriptProbes.d; sourceTree = "<group>"; };
 		654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Documentation.xcconfig; sourceTree = "<group>"; };
 		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptRunner.h; sourceTree = "<group>"; };
-		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; };
+		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; wrapsLines = 1; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
 		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
 		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 		6503F09010729FF000B260F7 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				653A0B691067E5860027DF98 /* NotificationExample.m */,
 				6503F08810729F9A00B260F7 /* SubclassingExample.m */,
 				6503F0A11072A05F00B260F7 /* BlockingExecutionExamples.m */,
 				6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */,
@@ -215,6 +218,32 @@
 				6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */,
 			);
 			name = Examples;
+			sourceTree = "<group>";
+		};
+		6503F2CA1073752000B260F7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6503F2CB1073752700B260F7 /* CSS */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		6503F2CB1073752700B260F7 /* CSS */ = {
+			isa = PBXGroup;
+			children = (
+				6503F2E11073791C00B260F7 /* Third-Party */,
+				65454AB6106A00E100E03140 /* doxygen.css */,
+			);
+			name = CSS;
+			sourceTree = "<group>";
+		};
+		6503F2E11073791C00B260F7 /* Third-Party */ = {
+			isa = PBXGroup;
+			children = (
+				6503F2CC1073754100B260F7 /* common.css */,
+				6503F2CD1073754100B260F7 /* content.css */,
+			);
+			name = "Third-Party";
 			sourceTree = "<group>";
 		};
 		65429588105FE1B80037E0C8 /* Unit Tests */ = {
@@ -315,7 +344,6 @@
 				653A0A2F1067D6B20027DF98 /* bmScriptConvenienceMethods.m */,
 				653A0A301067D8C10027DF98 /* bmScriptSaturateTemplate.m */,
 				653A0B4C1067E2930027DF98 /* bmScriptExecution.m */,
-				653A0B691067E5860027DF98 /* bmScriptNotificationExample.m */,
 				653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */,
 				653A0B6B1067E9440027DF98 /* bmScriptHistory.m */,
 				653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */,
@@ -336,11 +364,11 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				6503F2CA1073752000B260F7 /* Resources */,
 				6503F09010729FF000B260F7 /* Examples */,
 				65B45BD110696CE10015DF1B /* Includes */,
 				6503F16A1072BAD900B260F7 /* DoxyfileTemplate */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
-				65454AB6106A00E100E03140 /* doxygen.css */,
 			);
 			name = Documentation;
 			sourceTree = "<group>";
@@ -438,7 +466,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby -wKu";
-			shellScript = "# \n#  Saturate Doxygen Template\n#  Xcode Build Scripts\n#  \n#  Created by Andre Berg on 2009-09-30.\n#  Copyright 2009 Berg Media. All rights reserved.\n# \n#  Saturates a Doxyfile template with values \n#  from .xcconfig files.\n#\n\nXCODE = true\n\n# these should be set from the .xcconfig files but I did not succeed in\n# getting the needed inline shell script output. So we set those from here...\n\nENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!\nENV['BMSCRIPT_VERSION'] = \"%.1f\" % (ENV['SVN_REVISION'].to_i / 150.0)\nENV['PROJECT_NUMBER'] = \"#{ENV['BMSCRIPT_VERSION']} (#{ENV['SVN_REVISION']})\"\n\nif XCODE\n   puts \"Running Replace ENVs in DOXYFILE\"\n   doxyfile_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE']}\"\n   doxyfile_template_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}\"\nelse\n   doxyfile_template_path = \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/DoxyfileTemplate\"\nend\ndoxyfile_contents = File.read(doxyfile_template_path)\n\nputs \"doxyfile_template_path = \\\"#{doxyfile_template_path}\\\"\" if $DEBUG\n\nif XCODE\n   # a hash table is perfect for storying what need to be unique symbols\n   # a symbol on this case is one build setting shell variable (i.e. $SRCROOT)\n   # which must be replaced\n   symbols = Hash.new()\n   \n   doxyfile_contents.each_line do |line|\n      if /\\$([A-Z_]+)/.match(line)\n         matchdata = $~\n         symbols[\"$#{matchdata[1]}\"] = ENV[matchdata[1]]\n      end\n   end\n   \nelse\n   symbols = {\"$SRCROOT\" => \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk\", \"$DOXYGEN_RES_PATH\" => \"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources\", \"$DOT_PATH\" => \"/opt/local/bin\"}\nend\n\nputs \"symbols = '#{symbols.inspect}'\" if $DEBUG\n\nsymbols.each_pair do |key, value|\n   if value\n      doxyfile_contents.gsub!(key, value)\n   else\n      doxyfile_contents.gsub!(\"#{key}\", \"#{key}\")\n   end\nend\n\nif $DEBUG\n   puts \"doxyfile_contents = '#{doxyfile_contents}'\" \nelse\n   doxyfile_new = File.open(\"#{doxyfile_path}\", \"w\")\n   doxyfile_new.write(doxyfile_contents)\n   doxyfile_new.close\nend";
+			shellScript = "# \n#  Saturate Doxygen Template\n#  Xcode Build Scripts\n#  \n#  Created by Andre Berg on 2009-09-30.\n#  Copyright 2009 Berg Media. All rights reserved.\n# \n#  Saturates a Doxyfile template with values \n#  from .xcconfig files.\n#\n\nXCODE = true\n\n# these should be set from the .xcconfig files but I did not succeed in\n# getting the needed inline shell script output. So we set those from here...\n\nENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!\nENV['BMSCRIPT_VERSION'] = \"%.1f\" % (ENV['SVN_REVISION'].to_i / 150.0)\nENV['PROJECT_NUMBER'] = \"#{ENV['BMSCRIPT_VERSION']} (r#{ENV['SVN_REVISION']})\"\n\nif XCODE\n   puts \"Running Replace ENVs in DOXYFILE\"\n   doxyfile_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE']}\"\n   doxyfile_template_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}\"\nelse\n   doxyfile_template_path = \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/DoxyfileTemplate\"\nend\ndoxyfile_contents = File.read(doxyfile_template_path)\n\nputs \"doxyfile_template_path = \\\"#{doxyfile_template_path}\\\"\" if $DEBUG\n\nif XCODE\n   # a hash table is perfect for storying what need to be unique symbols\n   # a symbol on this case is one build setting shell variable (i.e. $SRCROOT)\n   # which must be replaced\n   symbols = Hash.new()\n   \n   doxyfile_contents.each_line do |line|\n      if /\\$([A-Z_]+)/.match(line)\n         matchdata = $~\n         symbols[\"$#{matchdata[1]}\"] = ENV[matchdata[1]]\n      end\n   end\n   \nelse\n   symbols = {\"$SRCROOT\" => \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk\", \"$DOXYGEN_RES_PATH\" => \"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources\", \"$DOT_PATH\" => \"/opt/local/bin\"}\nend\n\nputs \"symbols = '#{symbols.inspect}'\" if $DEBUG\n\nsymbols.each_pair do |key, value|\n   if value\n      doxyfile_contents.gsub!(key, value)\n   else\n      doxyfile_contents.gsub!(\"#{key}\", \"#{key}\")\n   end\nend\n\nif $DEBUG\n   puts \"doxyfile_contents = '#{doxyfile_contents}'\" \nelse\n   doxyfile_new = File.open(\"#{doxyfile_path}\", \"w\")\n   doxyfile_new.write(doxyfile_contents)\n   doxyfile_new.close\nend";
 		};
 		6520F82B1071706C00683038 /* Source debug.sh */ = {
 			isa = PBXShellScriptBuildPhase;

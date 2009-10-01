@@ -9,6 +9,8 @@
 
 // ...
 
+// Meanwhile, in your class...
+
 // Your selector will be called once the task has finished. 
 // You can query status and results through the NSNotification userInfo dictionary.
 - (void) taskFinished:(NSNotification *)aNotification {
@@ -17,13 +19,15 @@
     TerminationStatus status = [[infoDict objectForKey:BMScriptNotificationTaskTerminationStatus] intValue];
     NSString * results = [infoDict objectForKey:BMScriptNotificationTaskResults];
     
-    NSLog(@"inside %s: background task finished with status = %ld, result = '%@'", __PRETTY_FUNCTION__, status, [results quote]);
+    NSLog(@"Inside %s: background task finished with status = %ld, result = '%@'", 
+            __PRETTY_FUNCTION__, status, [results quote]);
 }
 
 // ...
 
-// DON'T FORGET to unregister in your class' dealloc method or your program might crash
-// if the defaultCenter continues to send messages to your dealloc'ed class!
+// DON'T FORGET to remove yourself as observer in your class' dealloc method 
+// or your program might crash if the defaultCenter continues to send messages 
+// to your dealloc'ed class!
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

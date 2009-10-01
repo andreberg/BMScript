@@ -115,6 +115,7 @@ NSString * const BMScriptLanguageProtocolDoesNotConformException = @"BMScriptLan
 NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLanguageProtocolMethodMissingException";
 NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLanguageProtocolIllegalAccessException";
 
+
 // MARK: File Statics (Globals)
 
 static TerminationStatus gTaskStatus = BMScriptNotExecutedTerminationStatus;
@@ -144,11 +145,12 @@ static TerminationStatus gBGTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 @implementation BMScript
 
+@dynamic delegate;
+
 @synthesize script;
 @synthesize options;
 @synthesize partialResult;
 @synthesize result;
-@dynamic delegate;
 @synthesize isTemplate;
 @synthesize history;
 @synthesize task;

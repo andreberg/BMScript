@@ -21,7 +21,7 @@
 
 /*!
  * @mainpage BMScript: Harness The Power Of Shell Scripts
- * 
+ * <hr><br>
  * BMScript is an Objective-C class set to make it easier to utilize the
  * power and flexibility of a whole range of scripting languages that already
  * come with modern Macs. BMScript does not favor any particular scripting
@@ -39,8 +39,7 @@
  * @include bmScriptCreationMethods.m
  *
  * You typically use the designated initializer for which you supply the script
- * source and script options yourself. 
- * 
+ * source and script options yourself.<br>
  * The options dictionary then looks like this:
  *
  * @include bmScriptOptionsDictionary.m
@@ -55,25 +54,42 @@
  * later by the class after performing some tests and replacements.
  *
  * A macro function called #BMSynthesizeOptions(path, args) is available to ease 
- * the declaration of the options. 
- * 
+ * the declaration of the options.<br>
  * Here is the definition:
  *
  * @include bmScriptSynthesizeOptions.m
  *
- * @attention Don't forget the <b><span class="stringliteral">nil</span></b> at the end even 
- * if you don't need to supply any task arguments.
+ * <div class="box important">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Important:</div>
+                <div class="message cell">
+                    Don't forget the <b>nil</b> at the end even 
+                    if you don't need to supply any task arguments.
+                </div>
+            </div>
+        </div>
+   </div>
  *
  * If you initialize BMScript directly without specifying options and script source 
- * (e.g. using <span class="stringliteral">[[BMScript alloc] init]</span>) the options
- * will default to <span class="stringliteral">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
- * and the script source will default to <span class="stringliteral">@"echo '<script source placeholder>'"</span>.
+ * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
+ * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
+ * and the script source will default to <span class="sourcecode">@"echo '<script source placeholder>'"</span>.
  *
- * @attention If you let your end-users, the consumers of your application, supply the 
- * script source without defining exact task options this can be very dangerous as anything
- * passed to /bin/sh is not checked by default! This is a good reason to use the 
- * BMScriptDelegateProtocol methods for error/security checking or to subclass BMScript
- * instead of using it directly.
+ * <div class="box warning">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Warning:</div>
+                <div class="message cell">
+                    If you let your end-users, the consumers of your application, supply the 
+                    script source without defining exact task options this can be very dangerous as anything
+                    passed to /bin/sh is not checked by default! This is a good reason to use the 
+                    BMScriptDelegateProtocol methods for error/security checking or to subclass BMScript 
+                    instead of using it directly.
+                </div>
+            </div>
+        </div>
+    </div>
  *
  * There are also convenience methods for the most common scripting languages, which have
  * their options set to OS default values:
@@ -104,10 +120,11 @@
  * 
  * If this pattern structure is empty it will be replaced in the order of occurrence. The first 
  * two saturate methods are good for this. 
- * If the magic token wraps other values, a more flexible dictionary based system can be used
- * with the third saturate method. There, the magic token must wrap names of keys defined in the
- * dictionary which will correspond to what the replacement value will be. Here is an example of a
- * Ruby script template, which converts octal or hexadecimal values to their decimal representation:
+ * If the magic tokens wrap other values, a more flexible dictionary based system can be used
+ * with the third saturate method. There, the magic tokens must wrap names of keys defined in the
+ * dictionary. The keys will correspond to what the replacement value will be. <br>
+ *
+ * Here is an example of a Ruby script template, which converts octal or hexadecimal values to their decimal representation:
  *
  * @include convertToDecimalTemplate.rb
  *
@@ -115,7 +132,7 @@
  *
  * You can also see BMScript as a sort of abstract superclass and customize its 
  * behaviour by making a subclass which knows about the details of the particular 
- * command line tool that you want to utilize. Your subclass must implement the 
+ * command line tool that you want to use. Your subclass must implement the 
  * BMScriptLanguageProtocol. It only has one required and one optional method:
  *
  * @include bmScriptLanguageProtocol.m
@@ -144,7 +161,7 @@
  * Using the blocking execution model you can either pass a pointer to NSString where the result will be
  * written to (including NSError if needed), or just use plain BMScript.execute followed by BMScript.lastResult.
  * 
- * The non-blocking execution model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="code">notifications</a>.
+ * The non-blocking execution model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="external">notifications</a>.
  * You register your class as observer with the default notification center for a notification called 
  * #BMScriptTaskDidEndNotification passing a selector to execute once the notification arrives. If you have 
  * multiple BMScript instances you can also pass the instance you want to register the notification for as
@@ -153,12 +170,20 @@
  * Then you tell the BMScript instance to BMScript.executeInBackgroundAndNotify. When execution finishes and your
  * selector is called it will be passed an NSNotification object which encapsulates an NSDictionary with two keys:
  *
- * -# #BMScriptNotificationTaskResults              contains the results returned by the execution as NSString.
- * -# #BMScriptNotificationTaskTerminationStatus    contains the termination status (aka return/exit code)
+ * <div class="box hasRows noshadow">
+        <div class="row odd firstRow">
+            <span class="cell left firstCell">#BMScriptNotificationTaskResults</span>
+            <span class="cell rightCell lastCell">contains the results returned by the execution as NSString.</span>
+        </div>
+        <div class="row even">
+            <span class="cell left firstCell">#BMScriptNotificationTaskTerminationStatus</span>
+            <span class="cell rightCell lastCell">contains the termination status (aka return/exit code)</span>
+        </div>
+   </div>
  * 
  * To make that clearer here's an example with the relevant parts thrown together:
  *
- * @include bmScriptNotificationExample.m
+ * @include NotificationExample.m
  *
  * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate instance variables.
  * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment. 
@@ -166,7 +191,7 @@
  * @par On The Topic Of Concurrency
  * 
  * All access to global data, shared variables and mutable objects has been 
- * locked with <a href="x-man-page://pthread" class="code">pthread_mutex_locks</a> 
+ * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> 
  * (in Xcode: right-click and choose "Open Link in Browser"). 
  * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not 1. 
  * Note that there haven't been enough tests yet to say that BMScript is
@@ -237,6 +262,12 @@
  * more about that.
  */
 
+/*!
+ * @example NotificationExample.m
+ * Shows how to setup the non-blocking execution model. <br>
+ * This shows just one possible way out of many to utilize the notification send from the async execution.
+ */
+
 
 
 /*!
@@ -265,12 +296,15 @@
     #ifndef BMSCRIPT_FAST_LOCK
         /*!
          * @def BMSCRIPT_FAST_LOCK
-         * Toggles usage of <span class="stringliteral">pthread_mutex_lock()</span> as opposed to <span class="stringliteral">\@synchronized(self)</span>.
+         * Toggles usage of <a href="x-man-page://pthread_mutex_lock" class="external">pthread_mutex_lock(3)</a>* as opposed to <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/ObjectiveC/Articles/ocThreading.html" class="external">\@synchronized(self)</a>.
+         *
+         %*) In Xcode right-click and choose "Open Link in Browser"
          *
          * Set this to 1 to use the pthread library directly instead of Cocoa's \@synchronized directive which is reported to live a bit on the slow side.
-         * @see <a href="http://googlemac.blogspot.com/2006/10/synchronized-swimming.html">Synchronized Swimming (Google Mac Blog)</a>
+         * @see <a href="http://googlemac.blogspot.com/2006/10/synchronized-swimming.html" class="external">Synchronized Swimming (Google Mac Blog)</a>
          * 
-         * (If the article still holds true, you'd have to evaluate that yourself)
+         * You'd have to evaluate yourself if the article still holds true. I'm mearly pointing you to it. <br>
+         * (Though utilizing the locking DTrace probes, I couldn't find much of difference between the two)
          */
         #define BMSCRIPT_FAST_LOCK 1
     #endif
@@ -279,7 +313,7 @@
 /*!
  * @def BM_ATOMIC
  * Toggles the atomicity attribute for Objective-C 2.0 properties. 
- * Will be set to <span class="stringliteral">nonatomic,</span> if #BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
+ * Will be set to <span class="code">nonatomic,</span> if #BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
  */
 #if !BMSCRIPT_THREAD_SAFE
     #define BM_ATOMIC nonatomic,
@@ -287,23 +321,26 @@
     #define BM_ATOMIC 
 #endif
 
-
-/*!
- * @def BMSynthesizeOptions(path, ...)
- * Used to synthesize a valid options dictionary. 
- * You can use this convenience macro to generate the boilerplate code for the options dictionary 
- * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
- */
-#define BMSynthesizeOptions(path, ...) \
-    [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
-               [NSArray arrayWithObjects:__VA_ARGS__], BMScriptOptionsTaskArgumentsKey, nil]
-
 /*! 
  * @def BM_PROBE(name, ...) 
  * DTrace probe macro. Combines testing if a probe is enabled and actually calling this probe. 
  */
 #define BM_PROBE(name, ...) \
     if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
+
+/*!
+ * @def BMSynthesizeOptions(path, ...)
+ * Used to synthesize a valid options dictionary. 
+ * You can use this convenience macro to generate the boilerplate code for the options dictionary 
+ * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
+ *
+ * The variadic (...) argument is passed directly to <span class="sourcecode">[NSArray arrayWithObjects:...]</span>
+ * which is why it is important that it will always be terminated with a <b>nil</b> even if no task 
+ * arguments need to be set (e.g. <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", nil)</span>)
+ */
+#define BMSynthesizeOptions(path, ...) \
+    [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
+        [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, nil] 
 
 /*! 
  * @} 
@@ -327,6 +364,8 @@ enum {
  * @{
  */
 
+// MARK: Functions
+
 /*!
  * Creates an NSString from BOOL.
  * @param b the boolean to convert
@@ -349,6 +388,12 @@ NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
             break;
     }
 }
+
+// NS_INLINE NSDictionary * NS_REQUIRES_NIL_TERMINATION BMSynthesizeOptions(NSString * path, ...) {
+//     va_list argslist;
+//     return [NSDictionary dictionaryWithObjectsAndKeys: path, BMScriptOptionsTaskLaunchPathKey, 
+//             [NSArray arrayWithObjects:...], BMScriptOptionsTaskArgumentsKey, nil];
+// }
 
 /*! 
  * @} 
@@ -545,9 +590,29 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 // to appear in the docs anyway.
 @property (BM_ATOMIC retain) NSMutableArray * history;
 
-/*! Gets and sets the script instance variable. */
+/*! Gets or sets the script to execute. It's safe to change the script after a preceeding execution. */
 @property (BM_ATOMIC copy) NSString * script;
-/*! Gets and sets the options instance variable. */
+/*! 
+ * Gets or sets options for the command line tool used to execute the script. 
+ * The options consist of a dictionary with two keys:
+ * - #BMScriptOptionsTaskLaunchPathKey which is used to set the path to the executable of the tool, and
+ * - #BMScriptOptionsTaskArgumentsKey an NSArray of strings to supply as the arguments to the tool
+ * 
+ * <div class="box important">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Important:</div>
+                <div class="message cell">
+                    <b>DO NOT</b> supply the script source as part of the task arguments, as it 
+                    will be added later by the class after the delegate has had a change to review 
+                    script and options and abort in case of problems.
+                </div>
+            </div>
+        </div>
+ * </div>
+ *
+ * @sa #BMSynthesizeOptions(path, args) 
+ */
 @property (BM_ATOMIC retain) NSDictionary * options;
 /*! Gets the last execution result. */
 @property (nonatomic, readonly, copy) NSString * lastResult;
@@ -560,8 +625,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /*!
  * Initialize a new BMScript instance. If no options are specified calls the subclass' 
  * implementations of BMScriptLanguageProtocol-p.defaultScriptSourceForLanguage and BMScriptLanguageProtocol-p.defaultOptionsForLanguage.
- * BMScript.init on the other hand defaults to <span class="stringliteral">@"/bin/sh", @"-c"</span>, 
- * and <span class="stringliteral">@"echo \<script placeholder\>"</span>.
+ * BMScript.init on the other hand defaults to <span class="code">@"/bin/sh", @"-c"</span>, 
+ * and <span class="code">@"echo \<script placeholder\>"</span>.
  */
 - (id) init;
 /*!
@@ -690,7 +755,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (BOOL) executeAndReturnResult:(NSString **)results error:(NSError **)error;
 /*!
  * Executes the script with a asynchroneous (non-blocking) task. The result will be posted with the help of a notifcation item.
- * @see @link bmScriptNotificationExample.m @endlink
+ * @see @link NotificationExample.m @endlink
  */
 - (void) executeInBackgroundAndNotify; 
 
@@ -822,7 +887,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */ 
 - (NSString *) quote;
 /*!
- * Truncates a string to 20 characters plus ellipsis. Uses BM_NSSTRING_TRUNCATE_LENGTH if defined. 
+ * Truncates a string to 20 characters and adds an ellipsis ("...").
  * @return the truncated string
  */ 
 - (NSString *) truncate;

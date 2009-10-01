@@ -82,8 +82,8 @@ extern "C" {
  * The framework dynamically picks which mode to use at run-time base on whether or not the 
  * Garbage Collection system is active.
  * 
- * @sa <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/GarbageCollection/index.html" class="code">Garbage Collection Programming Guide</a>
- * @sa <a href="http://developer.apple.com/documentation/Cocoa/Reference/NSGarbageCollector_class/index.html" class="code">NSGarbageCollector Class Reference</a>
+ * @sa <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/GarbageCollection/index.html" class="external">Garbage Collection Programming Guide</a>
+ * @sa <a href="http://developer.apple.com/documentation/Cocoa/Reference/NSGarbageCollector_class/index.html" class="external">NSGarbageCollector Class Reference</a>
  */
 #if defined(__MACOSX_RUNTIME__) && defined(MAC_OS_X_VERSION_10_5) && defined(__OBJC_GC__)
     #define ENABLE_MACOSX_GARBAGE_COLLECTION
@@ -160,6 +160,23 @@ extern "C" {
 #else
     #define BM_C99(keyword) 
 #endif
+    
+/*!
+ * @def ￼BM_REQUIRES_NIL_TERMINATION
+ * Used to mark variadic methods and functions as requiring nil termination.
+ * Nil termination means the last argument of their variable argument list must be nil.
+ */
+#if !defined(BM_REQUIRES_NIL_TERMINATION)
+    #if TARGET_OS_WIN32
+        #define BM_REQUIRES_NIL_TERMINATION
+    #else
+        #if defined(__APPLE_CC__) && (__APPLE_CC__ >= 5549)
+            #define BM_REQUIRES_NIL_TERMINATION __attribute__((sentinel(0,1)))
+        #else
+            #define BM_REQUIRES_NIL_TERMINATION __attribute__((sentinel))
+        #endif
+    #endif
+#endif
 
 /*!
  * @def ￼BM_EXTERN
@@ -181,18 +198,27 @@ extern "C" {
     
 /*!
  * @def BM_ATTRIBUTES
- * Macro wrapper around GCC <a href="http://gcc.gnu.org/onlinedocs/gcc-4.0.4/gcc/Attribute-Syntax.html#Attribute-Syntax" class="code">__attribute__</a> syntax.
+ * Macro wrapper around GCC <a href="http://gcc.gnu.org/onlinedocs/gcc-4.0.4/gcc/Attribute-Syntax.html#Attribute-Syntax" class="external">__attribute__</a> syntax.
  * @note When a compiler other than GCC 4+ is used, #BM_ATTRIBUTES evaluates to an empty string, removing itself and its arguments from the code to be compiled.</p>
  */
 /*!
  * @def BM_EXPECTED
- * Macro wrapper around GCC <a href="http://gcc.gnu.org/onlinedocs/gcc-4.0.4/gcc/Other-Builtins.html#Other-Builtins" class="code">__builtin_expect (long exp, long c)</a> syntax.
+ * Macro wrapper around GCC <a href="http://gcc.gnu.org/onlinedocs/gcc-4.0.4/gcc/Other-Builtins.html#index-g_t_005f_005fbuiltin_005fexpect-2284" class="external">__builtin_expect</a> syntax.
  * 
  * From GCC docs: "You may use __builtin_expect to provide the compiler with branch prediction information. In general, you should prefer to use actual profile feedback for this (-fprofile-arcs), as programmers are notoriously bad at predicting how their programs actually perform. However, there are applications in which this data is hard to collect.
  * 
- * The return value is the value of exp, which should be an integral expression. The value of c must be a compile-time constant. The semantics of the built-in are that it is expected that exp == c.
+ * The return value is the value of exp, which should be an integral expression. The value of c must be a compile-time constant. The semantics of the built-in are that it is expected that exp == c."
+ * 
+ * And from <a href="http://regexkit.sourceforge.net" class="external">RegexKit Framework</a> docs, from where I got this macro:
  *
- * @note When a compiler other than GCC 4+ is used, #BM_EXPECTED(cond, expect) evaluates to an empty string, removing itself and its arguments from the code to be compiled.
+ * <div class="box important"><div class="table"><div class="row"><div class="label cell">Important:</div><div class="message cell"><span class="code">BM_EXPECTED</span> should only be used when the likelihood of the prediction is nearly certain. <b><i>DO NOT GUESS</i></b>.</div></div></div></div>
+ * 
+ * BM_EXPECTED [...] is used to provide the compiler with branch prediction information for conditional statements.
+ * 
+ * An example of an appropriate use is parameter validation checks at the start of a function, such as <span class="code nobr">(aPtr == NULL)</span>. Since callers are always expected to pass a valid pointer, the likelihood of the conditional evaluating to true is extremely unlikely. This allows the compiler to schedule instructions to minimize branch miss-prediction penalties. For example:
+ <div class="sourcecode">if(BM_EXPECTED((aPtr == NULL), 0)) { abort(); }</div>
+ *
+ * @note If a compiler other than GCC 4+ is used then the macro leaves the conditional expression unaltered.
  */
 #if defined (__GNUC__) && (__GNUC__ >= 4)
     #define BM_STATIC_INLINE static __inline__ __attribute__((always_inline))
@@ -236,7 +262,7 @@ extern "C" {
  * ￼Swizzles (or replaces) the methods defined by #BM_DEBUG_RETAIN_INIT for className.
  * This macro is normally used in a (function) local scope, provided a #BM_DEBUG_RETAIN_INIT declaration at the beginning of the file (in global context). BM_DEBUG_RETAIN_SWIZZLE(className) then actually registers the replacements defined by #BM_DEBUG_RETAIN_INIT for the Class 'className' with the runtime.
  * @attention This is only intended for <b>debugging purposes</b>. Has no effect if Garbage Collection is enabled.
- * @param className the name of the class to replace the methods for (e.g. <span class="stringliteral">[SomeClass class]</span>).
+ * @param className the name of the class to replace the methods for (e.g. <span class="sourcecode">[SomeClass class]</span>).
  */
 #define BM_DEBUG_RETAIN_SWIZZLE(className) \
     oldRetain = class_getMethodImplementation((className), @selector(retain));\
