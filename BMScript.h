@@ -294,11 +294,10 @@
 #ifndef BMSCRIPT_THREAD_SAFE
     /*!
      * @def BMSCRIPT_THREAD_SAFE
-     * Toggles synchronization locks. 
-     * Set this to 1 to wrap globals, shared data and immutable objects with locks. 
-     * Noop if set to 0.
+     * Enables synchronization locks and toggles the atomicity attribute of property declarations. 
+     * If set to 0, synchronization locks will be noop and properties will be nonatomic.
      */
-    #define BMSCRIPT_THREAD_SAFE 1
+    #define BMSCRIPT_THREAD_SAFE 0
     #ifndef BMSCRIPT_FAST_LOCK
         /*!
          * @def BMSCRIPT_FAST_LOCK
@@ -358,35 +357,7 @@
  */
 #define BMSynthesizeOptions(path, ...) \
     [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
-        [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, nil]
-
-/*!
- * @def BMSynthesizeFullOptions(path, term_stat_policy, ...)
- * Used to synthesize a valid options dictionary. 
- * You can use this convenience macro to generate the boilerplate code for the options dictionary 
- * containing the #BMScriptOptionsTaskLaunchPathKey, #BMScriptOptionsTaskArgumentsKey and #BMScriptOptionsStrictTerminationStatusInterpretationKey keys.
- *
- * The variadic parameter (...) is passed directly to <span class="sourcecode">[NSArray arrayWithObjects:...]</span>
- * <div class="box important">
-        <div class="table">
-            <div class="row">
-                <div class="label cell">Important:</div>
-                <div class="message cell">
-                     The macro will terminate the variable argument list with <b>nil</b>, which means you need to make sure
-                     you always pass some value for it. If you don't, you will create <span class="sourcecode">__NSArray0</span> pseudo objects which are 
-                     not released in a Garbage Collection enabled environment. If you do not want to set any task args 
-                     simply pass an empty string, e.g. <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", @"")</span>
-                </div>
-            </div>
-        </div>
- * </div>
- * 
- */
-#define BMSynthesizeFullOptions(path, term_stat_policy, ...) \
-    [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
-          [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, \
-                                   (term_stat_policy), BMScriptOptionsStrictTerminationStatusInterpretationKey, nil] 
-
+          [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, nil]
 /*! 
  * @} 
  */
@@ -400,12 +371,13 @@ typedef NSInteger TerminationStatus;
 
 enum {
     /*! task not executed yet */
-    BMScriptNotExecutedTerminationStatus = -(NSIntegerMax),
+    BMScriptNotExecutedTerminationStatus = -(NSIntegerMax-1),
     /*! task finished successfully */
     BMScriptFinishedSuccessfullyTerminationStatus = 0,
     /*! task failed */
-    BMScriptFailedTerminationStatus
-    /* all else indicates erroneous termination status as returned by the task */
+    BMScriptFailedTerminationStatus,
+    /*! task failed with an exception */
+    BMScriptExceptionTerminationStatus = (NSIntegerMax-1)
 };
 
 /*!
@@ -416,12 +388,12 @@ enum {
 // MARK: Functions
 
 /*!
- * Creates an NSString from BOOL.
+ * Creates an NSString representaton from a BOOL.
  * @param b the boolean to convert
  */
 NS_INLINE NSString * BMStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
 /*!
- * Creates an NSString from TerminationStatus.
+ * Converts a TerminationStatus to a human-readable form.
  * @param status the TerminationStatus to convert
  */
 NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
@@ -432,17 +404,14 @@ NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
         case BMScriptFinishedSuccessfullyTerminationStatus:
             return @"task finished successfully";
             break;
+        case BMScriptExceptionTerminationStatus:
+            return @"task failed with an exception. check if launch path and/or arguments are appropriate";
+            break;
         default:
             return [NSString stringWithFormat:@"task finished with return code %d", status];
             break;
     }
 }
-
-// NS_INLINE NSDictionary * NS_REQUIRES_NIL_TERMINATION BMSynthesizeOptions(NSString * path, ...) {
-//     va_list argslist;
-//     return [NSDictionary dictionaryWithObjectsAndKeys: path, BMScriptOptionsTaskLaunchPathKey, 
-//             [NSArray arrayWithObjects:...], BMScriptOptionsTaskArgumentsKey, nil];
-// }
 
 /*! 
  * @} 
@@ -464,15 +433,6 @@ OBJC_EXPORT NSString * const BMScriptNotificationTaskTerminationStatus;
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
 /*! Key incorporated by the options dictionary. Contains the arguments array for the task */
 OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
-/*! Key incorporated by the options dictionary. Defines the policy used for interpreting the termination status of a task.
- *
- * If YES, only a TerminationStatus of 0 is interpreted as corresponding to a successfully finished task. 
- * If NO,  any number >= 0 is seen as corresponding to a successfully finished task. Unfortunately many command line tools 
- * have a very mixed set of rules about what their termination status is in case of success and error. 
- *
- * @note Don't forget to wrap the BOOL in an NSNumber object to be able to put it into the options dictionary.
- */
-OBJC_EXPORT NSString * const BMScriptOptionsStrictTerminationStatusInterpretationKey;
 /*! Currently unused. */
 OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
 
@@ -662,8 +622,9 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
                 <div class="label cell">Important:</div>
                 <div class="message cell">
                     <b>DO NOT</b> supply the script source as part of the task arguments, as it 
-                    will be added later by the class after the delegate has had a change to review 
-                    script and options and abort in case of problems.
+                    will be added later by the class. If you add the script source directly with
+                    the task arguments you rob the delegate of a chance to review the script and
+                    change it or abort in case of problems.
                 </div>
             </div>
         </div>
@@ -680,19 +641,13 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 // MARK: Initializer Methods
 
+
 /*!
- * Initialize a new BMScript instance. If no options are specified calls the subclass' 
- * implementations of BMScriptLanguageProtocol-p.defaultScriptSourceForLanguage and BMScriptLanguageProtocol-p.defaultOptionsForLanguage.
- * BMScript.init on the other hand defaults to <span class="code">@"/bin/sh", @"-c"</span>, 
- * and <span class="code">@"echo \<script placeholder\>"</span>.
+ * Initialize a new BMScript instance. If no options are specified and the class is a descendant of BMScript it will call the class' 
+ * implementations of BMScriptLanguageProtocol-p.defaultOptionsForLanguage and, if implemented, BMScriptLanguageProtocol-p.defaultScriptSourceForLanguage.
+ * BMScript on the other hand defaults to <span class="sourcecode">@"/bin/echo"</span> and <span class="sourcecode">@"<script source placeholder>"</span>.
  */
 - (id) init;
-/*!
- * Initialize a new BMScript instance with a script source. If no options are specified calls 
- * the subclass' or BMScript's  implementation of BMScriptLanguageProtocol-p.defaultOptionsForLanguage.
- * @param scriptSource a string containing commands to execute
- */
-//- (id) initWithScriptSource:(NSString *)scriptSource;
 /*!
  * Initialize a new BMScript instance with a script source. This is the designated initializer.
  * @throw BMScriptLanguageProtocolDoesNotConformException Thrown when a subclass of BMScript does not conform to the BMScriptLanguageProtocol
@@ -703,17 +658,12 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions;     /* designated initializer */
 /*!
  * Initialize a new BMScript instance with a template source. 
- * A template needs to be saturated ("filling in the blanks") before it can be used. 
- * @see saturateTemplateWithArgument: and variants.
+ * A template needs to be saturated before it can be used. 
  * @param templateSource a string containing a template with magic tokens to saturate resulting in commands to execute.
  * @param scriptOptions a dictionary containing the task options
+ * @see saturateTemplateWithArgument: and variants.
  */
 - (id) initWithTemplateSource:(NSString *)templateSource options:(NSDictionary *)scriptOptions;
-/*!
- * Initialize a new BMScript instance with contents of a file. 
- * @param path a string pointing to a file on disk. The contents of this file will be used as source script.
- */
-//- (id) initWithContentsOfFile:(NSString *)path;
 /*!
  * Initialize a new BMScript instance. 
  * @param path a string pointing to a file on disk. The contents of this file will be used as source script.
@@ -724,25 +674,15 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Initialize a new BMScript instance. 
  * @param path a string pointing to a <i>template</i> file on disk. 
  * The contents of this file will be used as template which must be <b>saturated</b> before calling BMScript.execute or one of its variants.
- * @see #saturateTemplateWithArgument: et al.
- */
-//- (id) initWithContentsOfTemplateFile:(NSString *)path;
-/*!
- * Initialize a new BMScript instance. 
- * @param path a string pointing to a <i>template</i> file on disk. 
- * The contents of this file will be used as template which must be <b>saturated</b> before calling BMScript.execute or one of its variants.
  * @param scriptOptions a dictionary containing the task options
  * @see #saturateTemplateWithArgument: et al.
  */
 - (id) initWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions;
 
+
 // MARK: Factory Methods
 
-/*!
- * Returns an autoreleased instance of BMScript.
- * @see #initWithScriptSource:options: et al.
- */
-//+ (id) scriptWithSource:(NSString *)scriptSource;
+
 /*!
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
@@ -752,24 +692,49 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns an autoreleased instance of BMScript.
  * @see #initWithScriptSource:options: et al.
  */
-//+ (id) scriptWithContentsOfFile:(NSString *)path;
-/*!
- * Returns an autoreleased instance of BMScript.
- * @see #initWithScriptSource:options: et al.
- */
 + (id) scriptWithContentsOfFile:(NSString *)path options:(NSDictionary *)scriptOptions;
 /*!
- * Returns an autoreleased instance of BMScript.
- * @see #initWithScriptSource:options: et al.
- */
-//+ (id) scriptWithContentsOfTemplateFile:(NSString *)path;
-/*!
- * Returns an autoreleased instance of BMScript.
+ * Returns an autoreleased instance of BMScript. 
+ * 
+ * If you use this method you need to saturate the script template with values in order to 
+ * turn it into an executable script source.
+ * 
+ * @see #saturateTemplateWithArgument: at al.
  * @see #initWithScriptSource:options: et al.
  */
 + (id) scriptWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions;
 
+
+// MARK: Execution
+
+
+/*!
+ * Executes the script with a synchroneous (blocking) task. You get the result with BMScript.lastResult.
+ * @return YES if the execution was successful, NO on error
+ */
+- (TerminationStatus) execute;
+/*!
+ * Executes the script with a synchroneous (blocking) task and stores the result in &result.
+ * @param result a pointer to an NSString where the result should be written to
+ * @return YES if the execution was successful, NO on error
+ */
+- (TerminationStatus) executeAndReturnResult:(NSString **)results;
+/*!
+ * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
+ * @param result a pointer to an NSString where the result should be written to
+ * @param error a pointer to an NSError where errors should be written to
+ * @return YES if the execution was successful, NO on error
+ */
+- (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error;
+/*!
+ * Executes the script with a asynchroneous (non-blocking) task. The result will be posted with the help of a notifcation item.
+ * @see @link NotificationExample.m @endlink
+ */
+- (void) executeInBackgroundAndNotify; 
+
+
 // MARK: Templates
+
 
 /*!
  * Replaces a single %{} construct in the template.
@@ -778,7 +743,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg;
 /*!
- * Replaces multiple %{} constructs in the template.
+ * Replaces multiple %{} constructs in the template in the order of occurrence.
  * @param firstArg the first value which should be inserted
  * @param ... the remaining values to be inserted in order of occurrence
  * @return YES if the replacements were successful, NO on error
@@ -792,32 +757,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @return YES if the replacements were successful, NO on error
  */
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary;
-
-// MARK: Execution
-
-/*!
- * Executes the script with a synchroneous (blocking) task. You get the result with BMScript.lastResult.
- * @return YES if the execution was successful, NO on error
- */
-- (BOOL) execute;
-/*!
- * Executes the script with a synchroneous (blocking) task and stores the result in &result.
- * @param result a pointer to an NSString where the result should be written to
- * @return YES if the execution was successful, NO on error
- */
-- (BOOL) executeAndReturnResult:(NSString **)results;
-/*!
- * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
- * @param result a pointer to an NSString where the result should be written to
- * @param error a pointer to an NSError where errors should be written to
- * @return YES if the execution was successful, NO on error
- */
-- (BOOL) executeAndReturnResult:(NSString **)results error:(NSError **)error;
-/*!
- * Executes the script with a asynchroneous (non-blocking) task. The result will be posted with the help of a notifcation item.
- * @see @link NotificationExample.m @endlink
- */
-- (void) executeInBackgroundAndNotify; 
 
 // MARK: History
 
@@ -845,11 +784,11 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 // MARK: Equality
 
 /*!
- * Returns YES if the source script is equal.
+ * Returns YES if the source script and launch path are equal.
  */
 - (BOOL) isEqual:(BMScript *)other;
 /*!
- * Returns YES if the source script and launch path are equal.
+ * Returns YES if both script sources are equal.
  */
 - (BOOL) isEqualToScript:(BMScript *)other;
 

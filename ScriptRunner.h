@@ -22,41 +22,39 @@
 #import <Cocoa/Cocoa.h>
 #import "BMScript.h"
 
+enum {
+    SRBlockingExecutionMode = 0,
+    SRNonBlockingExecutionMode
+};
+typedef NSUInteger SRExecutionMode;
+
 
 @interface ScriptRunner : NSObject <BMScriptDelegateProtocol> {
-    
-    BMScript * script;
-    BMScript * bgScript;
-    
+    id script;
     NSString * results;
-    NSString * bgResults;
-    
     TerminationStatus status;
-    TerminationStatus bgStatus;
-    
     BOOL taskHasEnded;
-    BOOL bgTaskHasEnded;
-    
+    // delegation methods
     BOOL shouldSetResultCalled;
     BOOL shouldSetScriptCalled;
+    BOOL willSetResultCalled;
+    BOOL willSetScriptCalled;
 }
 
-- (void) launch;
-- (void) launchBackground;
-
-- (void) bgTaskFinished:(NSNotification *)aNotification;
+- (void) run;
+- (void) taskFinished:(NSNotification *)aNotification;
 - (NSString *) debugDescription;
 
-@property (retain) BMScript * script;
-@property (retain) BMScript * bgScript;
+- (id) initWithExecutionMode:(SRExecutionMode)mode; /* designated initializer */
+
+@property (retain) id script;
 @property (copy) NSString * results;
-@property (copy) NSString * bgResults;
 @property (assign) TerminationStatus status;
-@property (assign) TerminationStatus bgStatus;
 @property (assign) BOOL taskHasEnded;
-@property (assign) BOOL bgTaskHasEnded;
 @property (assign) BOOL shouldSetResultCalled;
 @property (assign) BOOL shouldSetScriptCalled;
+@property (assign) BOOL willSetResultCalled;
+@property (assign) BOOL willSetScriptCalled;
 
 @end
 

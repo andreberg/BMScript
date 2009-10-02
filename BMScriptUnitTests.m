@@ -190,19 +190,9 @@
     
 }
 
-
-// - (void) testAvailability {
-//     if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5 && MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5) {
-//         STAssertTrue([BMRS_ACCESSORS isEqualToString:@"conventional accessors"], @"but is %@", BMRS_ACCESSORS);
-//     }
-//     if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5 && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5) {
-//         STAssertTrue([BMRS_ACCESSORS isEqualToString:@"synthesized properties"], @"but is %@", BMRS_ACCESSORS);
-//     }
-// }
-
 - (void) testExecution {
     
-    BOOL success;
+    TerminationStatus success;
     
     // Case 1: 
     // test initalizer for default values
@@ -210,7 +200,7 @@
     BMScript * script1 = [[BMScript alloc] init];
     success = [script1 execute];
     
-    STAssertTrue(success == YES, @"script1 execution should return YES, but returned %@", (success ? @"YES" : @"NO"));
+    STAssertTrue(success != BMScriptExceptionTerminationStatus && success != BMScriptNotExecutedTerminationStatus, @"script1 execution should return YES, but returned %@", (success ? @"YES" : @"NO"));
     STAssertFalse([[script1 lastResult] isEqualToString:@""], @"script1's lastResult shouldn't be equal to an empty string");
     
     [script1 release];    
@@ -244,16 +234,6 @@
     [script3 release];
 
 }
-- (void) testBackgroundExecution {
-    // Unfortunately SenTestingKit is too weak to test async execution.
-    // I tried different methods from facades to distributed objects to proxies etc.
-    // Right now I have reasonable test coverage by testing in main
-//     STAssertTrue([to.bgResults isEqualToString:@"515377520732011331036461129765621272702107522001\n"], @"but is %@", to.bgResults);
-//     STAssertTrue(to.bgStatus == BMScriptFinishedSuccessfullyTerminationStatus, @"but is %d", to.bgStatus);
-//     STAssertFalse(to.bgStatus == BMScriptFailedTerminationStatus, @"but is %d", to.bgStatus);
-
-}
-
 
 - (void) testStateChangeAfterExecution {
     BMScript * script1 = [BMScript rubyScriptWithSource:rubyHexScript];

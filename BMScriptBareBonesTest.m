@@ -30,36 +30,32 @@
 #import "BMAtomic.h"
 #import "NSObject_MemoryLogger.h"
 
-//BM_DEBUG_RETAIN_INIT
-
 int main (int argc, const char * argv[]) {
     #pragma unused(argc, argv)
+    
     // start gc thread
     objc_startCollectorThread();
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
-//     BM_DEBUG_RETAIN_SWIZZLE([BMScript class])
-//     BM_DEBUG_RETAIN_SWIZZLE([ScriptRunner class])
+    ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] initWithExecutionMode:SRBlockingExecutionMode];
+    if (DEBUG && !objc_collectingEnabled()) [scriptRunner1 startLogging];
+    [scriptRunner1 run];
     
-    ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] init];
-    if (DEBUG) [scriptRunner1 startLogging];
-    [scriptRunner1 launch];
-    
-    ScriptRunner * scriptRunner2 = [[ScriptRunner alloc] init];
-    if (DEBUG) [scriptRunner2 startLogging];
-    [scriptRunner2 launchBackground];
+    ScriptRunner * scriptRunner2 = [[ScriptRunner alloc] initWithExecutionMode:SRNonBlockingExecutionMode];
+    if (DEBUG && !objc_collectingEnabled()) [scriptRunner2 startLogging];
+    [scriptRunner2 run];
 
-    // options:nil == BMSynthesizeOptions(@"/bin/echo", @"")
-    BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" options:nil];
-    if (DEBUG) [script1 startLogging];
+    BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" options:nil]; // options:nil == BMSynthesizeOptions(@"/bin/echo", @"")
+    if (DEBUG && !objc_collectingEnabled()) [script1 startLogging];
     [script1 execute];
     
-    NSLog(@"script1 result = %@\n", [[script1 lastResult] quote]);
+    NSLog(@"script1 result = '%@'\n", [[script1 lastResult] quote]);
 
     [script1 release], script1 = nil;
-
-    NSLog(@"scriptRunner2 bgResults = %@", [scriptRunner2 bgResults]);
+    
+    NSLog(@"scriptRunner1 results = '%@'", [[scriptRunner1 results] quote]);
+    NSLog(@"scriptRunner2 results = '%@'", [[scriptRunner2 results] quote]);
     
     [scriptRunner1 release], scriptRunner1 = nil;
     [scriptRunner2 release], scriptRunner2 = nil;
@@ -67,9 +63,11 @@ int main (int argc, const char * argv[]) {
     [pool drain];
     
     if (DEBUG) {
-        [scriptRunner1 stopLogging];
-        [scriptRunner2 stopLogging];
-        [script1 stopLogging];
+        if (!objc_collectingEnabled()) {
+            [scriptRunner1 stopLogging];
+            [scriptRunner2 stopLogging];
+            [script1 stopLogging];
+        }
         NSLog(@"Press return to exit...");
         getchar();
     }

@@ -22,16 +22,13 @@
 @implementation ScriptRunner
 
 @synthesize script;
-@synthesize bgScript;
 @synthesize results;
-@synthesize bgResults;
 @synthesize status;
-@synthesize bgStatus;
 @synthesize taskHasEnded;
-@synthesize bgTaskHasEnded;
 @synthesize shouldSetResultCalled;
 @synthesize shouldSetScriptCalled;
-
+@synthesize willSetResultCalled;
+@synthesize willSetScriptCalled;
 
 - (void) dealloc {
     
@@ -40,71 +37,75 @@
     // need to tell BMScript that we no longer wish to be its delegate
     // since it only has a weak reference to us it may be sending messages
     // to the delegate property even after we deallocate
-    script.delegate = nil;
-    bgScript.delegate = nil;
+    [script setDelegate:nil];
     
     [script release], script = nil;
-    [bgScript release], bgScript = nil;
     [results release], results = nil;
-    [bgResults release], bgResults = nil;
     
     [super dealloc];
 }
 
 - (void) finalize {
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    script.delegate = nil;
-    bgScript.delegate = nil;
-    
+    [script setDelegate:nil];
+    [script release], script = nil;
+    [results release], results = nil;
     [super finalize];
 }
 
 
-- (id) init {
+- (id) init { 
+    return [self initWithExecutionMode:SRBlockingExecutionMode];
+}
+
+
+- (id) initWithExecutionMode:(SRExecutionMode)mode {
     self = [super init];
-    if (self != nil) {        
-        //NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", @"");
-        BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"\"this is ScriptRunner\'s script calling...\"" 
-                                                            options:BMSynthesizeOptions(@"/bin/echo", @"")];
-        script = [aScript retain];
-        [script setDelegate:self];
-        [aScript release];
+    if (self != nil) {
+        if (mode == SRNonBlockingExecutionMode) {
+            
+            script = [[BMScript pythonScriptWithSource:@"print 3**100"] retain];
+            
+            [script setDelegate:self];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(taskFinished:) 
+                                                         name:BMScriptTaskDidEndNotification 
+                                                       object:script];
+        }
+        else {
+            BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"\"this is ScriptRunner\'s script calling...\"" 
+                                                                options:BMSynthesizeOptions(@"/bin/echo", @"")];
+            script = [aScript retain];
+            [script setDelegate:self];
+            [aScript release];
+        }
         
-        bgScript = [[BMScript pythonScriptWithSource:@"print 3**100"] retain];
-        [bgScript setDelegate:self];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                 selector:@selector(bgTaskFinished:) 
-                                                     name:BMScriptTaskDidEndNotification 
-                                                   object:bgScript];
-
         results = nil;
         status = BMScriptNotExecutedTerminationStatus;
         
-        bgResults = nil;
-        bgStatus = BMScriptNotExecutedTerminationStatus;
-        
         taskHasEnded = NO;
-        bgTaskHasEnded = NO;
         
+        willSetResultCalled   = NO;
+        willSetScriptCalled   = NO;
         shouldSetResultCalled = NO;
         shouldSetScriptCalled = NO;
-        
     }
     return self;
 }
 
-- (void) bgTaskFinished:(NSNotification *)aNotification {
+
+- (void) taskFinished:(NSNotification *)aNotification {
     
     TerminationStatus stats = [[[aNotification userInfo] objectForKey:BMScriptNotificationTaskTerminationStatus] intValue];
     NSString * result = [[aNotification userInfo] objectForKey:BMScriptNotificationTaskResults];
     
-    self.bgResults = result;
-    self.bgStatus = stats;
-    self.bgTaskHasEnded = YES;
+    self.results = result;
+    self.status = stats;
+    self.taskHasEnded = YES;
     
-    NSLog(@"Inside %s: bgTask finished with bgStatus = %ld, bgResult = '%@'\n", __PRETTY_FUNCTION__, bgStatus, [bgResults quote]);
+    NSLog(@"Inside %s: task finished with status = %ld, result = '%@'\n", __PRETTY_FUNCTION__, status, [results quote]);
     NSLog(@"Inside %s\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
@@ -112,18 +113,20 @@
 - (NSString *) debugDescription {
     return [NSString stringWithFormat:@"%@:\n"
                 @"   taskHasEnded? %3s |    status = '%-32s' |   results = '%@',\n"
-                @" bgTaskHasEnded? %3s |  bgStatus = '%-32s' | bgResults = '%@',\n"
+                @" willSetResultCalled?   %@\n"
+                @" willSetScriptCalled?   %@\n"
                 @" shouldSetResultCalled? %@\n"
                 @" shouldSetScriptCalled? %@", 
                 [self description], 
                 [BMStringFromBOOL(taskHasEnded) UTF8String], [BMStringFromTerminationStatus(status) UTF8String], [results quote], 
-                [BMStringFromBOOL(bgTaskHasEnded) UTF8String], [BMStringFromTerminationStatus(bgStatus) UTF8String], [bgResults quote], 
-                BMStringFromBOOL(shouldSetResultCalled), BMStringFromBOOL(shouldSetScriptCalled)
-            ];
+                BMStringFromBOOL(willSetResultCalled), 
+                BMStringFromBOOL(willSetScriptCalled), 
+                BMStringFromBOOL(shouldSetResultCalled), 
+                BMStringFromBOOL(shouldSetScriptCalled)];
 }
 
 
-- (void) launch {
+- (void) run {
     NSError * err = nil;
     NSString * res = nil;
     self.status = [script executeAndReturnResult:&res error:&err];
@@ -135,21 +138,29 @@
     NSLog(@"Inside %s\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
-- (void) launchBackground {
-    [bgScript executeInBackgroundAndNotify];
-}
-
 
 // MARK: BMScript Delegate Methods
 
+- (NSString *) willSetResult:(NSString *)aString {
+    NSLog(@"%s called! aString = %@", __PRETTY_FUNCTION__, aString);
+    self.willSetResultCalled = YES;
+    return [NSString stringWithFormat:@"%@ CHANGED", aString];
+}
+
+- (NSString *) willSetScript:(NSString *)aScript {
+    NSLog(@"%s called! aScript = %@", __PRETTY_FUNCTION__, aScript);
+    self.willSetScriptCalled = YES;
+    return aScript;
+}
+
 - (BOOL) shouldSetResult:(NSString *)aString {
-    #pragma unused(aString)
+    NSLog(@"%s called! aString = %@", __PRETTY_FUNCTION__, aString);
     self.shouldSetResultCalled = YES;
     return YES;
 }
 
 - (BOOL) shouldSetScript:(NSString *)aScript {
-    #pragma unused(aScript)
+    NSLog(@"%s called! aScript = %@", __PRETTY_FUNCTION__, aScript);
     self.shouldSetScriptCalled = YES;
     return YES;
 }

@@ -24,7 +24,7 @@
 // are useful for debugging, such as NSZombieEnabled, CFZombieLevel etc...
 // this works in conjunction with $BUILD_STYLE_NAME, if it does not contain 
 // the word "Debug" this setting will always expand to 0.
-USE_DEBUG_SCRIPT_SETUP = 1
+USE_DEBUG_SCRIPT_SETUP = 0
 
 // ahhh, how we DO love the static analyzer 
 RUN_CLANG_STATIC_ANALYZER = YES
