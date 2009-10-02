@@ -28,8 +28,9 @@
 
 #import "ScriptRunner.h"
 #import "BMAtomic.h"
+#import "NSObject_MemoryLogger.h"
 
-BM_DEBUG_RETAIN_INIT
+//BM_DEBUG_RETAIN_INIT
 
 int main (int argc, const char * argv[]) {
     #pragma unused(argc, argv)
@@ -38,17 +39,20 @@ int main (int argc, const char * argv[]) {
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
-    BM_DEBUG_RETAIN_SWIZZLE([BMScript class])
-    BM_DEBUG_RETAIN_SWIZZLE([ScriptRunner class])
+//     BM_DEBUG_RETAIN_SWIZZLE([BMScript class])
+//     BM_DEBUG_RETAIN_SWIZZLE([ScriptRunner class])
     
-    ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] init]; 
+    ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] init];
+    if (DEBUG) [scriptRunner1 startLogging];
     [scriptRunner1 launch];
     
     ScriptRunner * scriptRunner2 = [[ScriptRunner alloc] init];
+    if (DEBUG) [scriptRunner2 startLogging];
     [scriptRunner2 launchBackground];
 
-    BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" 
-                                                        options:BMSynthesizeOptions(@"/bin/echo", @"")];
+    // options:nil == BMSynthesizeOptions(@"/bin/echo", @"")
+    BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" options:nil];
+    if (DEBUG) [script1 startLogging];
     [script1 execute];
     
     NSLog(@"script1 result = %@\n", [[script1 lastResult] quote]);
@@ -63,6 +67,9 @@ int main (int argc, const char * argv[]) {
     [pool drain];
     
     if (DEBUG) {
+        [scriptRunner1 stopLogging];
+        [scriptRunner2 stopLogging];
+        [script1 stopLogging];
         NSLog(@"Press return to exit...");
         getchar();
     }

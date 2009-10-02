@@ -8,6 +8,7 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "BMScript.h"
+#import "BMRubyScript.h"
 
 #ifdef PATHFOR
     #define OLD_PATHFOR PATHFOR
@@ -340,6 +341,9 @@
     
     STAssertTrue(numAUmlautChars == NSNotFound, @"but is %i", numAUmlautChars);
     
+    STAssertTrue([@"'test'" isEqualToString:[@"test" wrapSingleQuotes]], @"but is %i", [@"'test'" isEqualToString:[@"test" wrapSingleQuotes]]);
+    
+    STAssertTrue([@"\"test\"" isEqualToString:[@"test" wrapDoubleQuotes]], @"but is %i", [@"'test'" isEqualToString:[@"test" wrapDoubleQuotes]]);    
 }
 
 - (void) testDictionaryUtilities {
@@ -352,13 +356,29 @@
     STAssertTrue([[someDict objectForKey:@"3key"] isEqualToString:@"3"], @"but is %@", [[someDict objectForKey:@"3key"] isEqualToString:@"3"]);
 }
 
+- (void) testObjectUtilities {
+    STAssertFalse([self isDescendantOfClass:[BMScriptUnitTests class]], 
+                 @"but is '%@'", BMStringFromBOOL([self isDescendantOfClass:[BMScriptUnitTests class]]));
+    
+    // test instance method
+    BMRubyScript * rbScript = [BMRubyScript new];
+    STAssertTrue([rbScript isDescendantOfClass:[BMScript class]], 
+                 @"but is '%@'", BMStringFromBOOL([rbScript isDescendantOfClass:[BMScript class]]));
+    
+    [rbScript release], rbScript = nil;
+    
+    // test class method
+    STAssertTrue([BMRubyScript isDescendantOfClass:[BMScript class]], 
+                  @"but is '%@'", BMStringFromBOOL([BMRubyScript isDescendantOfClass:[BMScript class]]));
+}
+
+
 - (void) testMacros {
     NSDictionary * opts = BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e");
     STAssertTrue([[opts descriptionInStringsFileFormat] 
                     isEqualToString:[alternativeOptions descriptionInStringsFileFormat]], 
                     @"but is '%@'", [opts descriptionInStringsFileFormat]);
 }
-
 
 @end
 

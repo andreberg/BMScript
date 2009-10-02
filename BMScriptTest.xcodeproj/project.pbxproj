@@ -36,6 +36,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		651406BF10757A7D00AB47BA /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
+		651407DF10758BDA00AB47BA /* NSObject_MemoryLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */; };
+		651407E010758BDA00AB47BA /* NSObject_MemoryLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */; };
 		65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295AB105FE24F0037E0C8 /* Convert To Oct.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958B105FE1B80037E0C8 /* Convert To Oct.rb */; };
 		654295AC105FE24F0037E0C8 /* Convert To Hex Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */; };
@@ -103,6 +106,8 @@
 		6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples3.m; sourceTree = "<group>"; };
 		6503F2CC1073754100B260F7 /* common.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = common.css; sourceTree = "<group>"; };
 		6503F2CD1073754100B260F7 /* content.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content.css; sourceTree = "<group>"; };
+		651407DD10758BDA00AB47BA /* NSObject_MemoryLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSObject_MemoryLogger.h; sourceTree = "<group>"; };
+		651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSObject_MemoryLogger.m; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* debug.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = debug.sh; sourceTree = "<group>"; };
 		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 1; };
 		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
@@ -183,6 +188,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				65349A1E1075611300376626 /* Scripts */,
 				65429594105FE1D00037E0C8 /* Classes */,
 				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
@@ -248,6 +254,23 @@
 			name = "Third-Party";
 			sourceTree = "<group>";
 		};
+		651407F710758E6B00AB47BA /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				651407DD10758BDA00AB47BA /* NSObject_MemoryLogger.h */,
+				651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		65349A1E1075611300376626 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				652085F01071634600BA57EC /* debug.sh */,
+			);
+			name = Scripts;
+			sourceTree = "<group>";
+		};
 		65429588105FE1B80037E0C8 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				659D40E81071001500051C57 /* Defines, Macros, etc. */,
+				651407F710758E6B00AB47BA /* Categories */,
 				65BA2D2D106776E5000B5D3B /* Helper Classes */,
 				654295CF105FE2A90037E0C8 /* BMScript.h */,
 				654295D0105FE2A90037E0C8 /* BMScript.m */,
@@ -322,7 +346,6 @@
 		65731F961067771B001E9123 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				652085F01071634600BA57EC /* debug.sh */,
 				32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -483,7 +506,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# returns 1 if $1 contains $2\n# and 0 if it does not\nstrcont() {\n    result=\"${1//*$2*/#}\"\n    result=\"${result//#/$2}\"\n    if [[ \"$result\" == \"$2\" ]]; then\n        echo 1\n    else\n        echo 0\n    fi\n}\n\n# source debug.sh if our $BUILD_STYLE contains the word \"Debug\"\n\nDEBUGSH=`strcont \"$BUILD_STYLE\" \"Debug\"`\n\tif [[ $USE_DEBUG_SCRIPT_SETUP == 1 && $DEBUGSH == 1 ]]; then\n\t\tif [ -x \"debug.sh\" ]; then\n\t\t\techo source debug.sh\n  \t\t\tsource \"debug.sh\"\n\t\tfi\n\tfi\n";
+			shellScript = "# returns 1 if $1 contains $2\n# and 0 if it does not\nstrcont() {\n    result=\"${1//*$2*/#}\"\n    result=\"${result//#/$2}\"\n    if [[ \"$result\" == \"$2\" ]]; then\n        echo 1\n    else\n        echo 0\n    fi\n}\n\n# source debug.sh if our $BUILD_STYLE contains the word \"Debug\"\n\nDEBUGSH=`strcont \"$BUILD_STYLE\" \"Debug\"`\nif [[ $USE_DEBUG_SCRIPT_SETUP == 1 && $DEBUGSH == 1 ]]; then\n\tif [ -x \"debug.sh\" ]; then\n\t\techo source debug.sh\n \t\tsource \"debug.sh\"\n\tfi\nfi\n";
 		};
 		654295A0105FE22B0037E0C8 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -562,7 +585,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				65BF535C1074C9E100F7F5A5 /* BMScript.m in Sources */,
+				651406BF10757A7D00AB47BA /* BMRubyScript.m in Sources */,
 				65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */,
+				651407E010758BDA00AB47BA /* NSObject_MemoryLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +600,7 @@
 				654295D1105FE2A90037E0C8 /* BMScript.m in Sources */,
 				6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */,
 				654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */,
+				651407DF10758BDA00AB47BA /* NSObject_MemoryLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -939,7 +965,6 @@
 			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BMScriptTest";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;

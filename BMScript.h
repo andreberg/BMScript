@@ -78,9 +78,9 @@
    </div>
  *
  * If you initialize BMScript directly without specifying options and script source 
- * (e.g. using <span class="sourcecode darkgray">[[%BMScript alloc] init]</span>) the options
- * will default to <span class="sourcecode darkgray">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
- * and the script source will default to <span class="sourcecode darkgray">@"echo '<script source placeholder>'"</span>.
+ * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
+ * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
+ * and the script source will default to <span class="sourcecode">@"echo '<script source placeholder>'"</span>.
  *
  * <div class="box warning">
         <div class="table">
@@ -340,16 +340,16 @@
  * You can use this convenience macro to generate the boilerplate code for the options dictionary 
  * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
  *
- * The variadic parameter (...) is passed directly to <span class="sourcecode darkgray">[NSArray arrayWithObjects:...]</span>
+ * The variadic parameter (...) is passed directly to <span class="sourcecode">[NSArray arrayWithObjects:...]</span>
  * <div class="box important">
         <div class="table">
             <div class="row">
                 <div class="label cell">Important:</div>
                 <div class="message cell">
                     The macro will terminate the variable argument list with <b>nil</b>, which means you need to make sure
-                    you always pass some value for it. If you don't, you will create <span class="sourcecode darkgray">__NSArray0</span> pseudo objects which are 
+                    you always pass some value for it. If you don't, you will create <span class="sourcecode">__NSArray0</span> pseudo objects which are 
                     not released in a Garbage Collection enabled environment. If you do not want to set any task args 
-                    simply pass an empty string, e.g. <span class="sourcecode darkgray">BMSynthesizeOptions(@"/bin/echo", @"")</span>
+                    simply pass an empty string, e.g. <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", @"")</span>
                 </div>
             </div>
         </div>
@@ -358,12 +358,38 @@
  */
 #define BMSynthesizeOptions(path, ...) \
     [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
-        [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, nil] 
+        [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, nil]
+
+/*!
+ * @def BMSynthesizeFullOptions(path, term_stat_policy, ...)
+ * Used to synthesize a valid options dictionary. 
+ * You can use this convenience macro to generate the boilerplate code for the options dictionary 
+ * containing the #BMScriptOptionsTaskLaunchPathKey, #BMScriptOptionsTaskArgumentsKey and #BMScriptOptionsStrictTerminationStatusInterpretationKey keys.
+ *
+ * The variadic parameter (...) is passed directly to <span class="sourcecode">[NSArray arrayWithObjects:...]</span>
+ * <div class="box important">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Important:</div>
+                <div class="message cell">
+                     The macro will terminate the variable argument list with <b>nil</b>, which means you need to make sure
+                     you always pass some value for it. If you don't, you will create <span class="sourcecode">__NSArray0</span> pseudo objects which are 
+                     not released in a Garbage Collection enabled environment. If you do not want to set any task args 
+                     simply pass an empty string, e.g. <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", @"")</span>
+                </div>
+            </div>
+        </div>
+ * </div>
+ * 
+ */
+#define BMSynthesizeFullOptions(path, term_stat_policy, ...) \
+    [NSDictionary dictionaryWithObjectsAndKeys:(path), BMScriptOptionsTaskLaunchPathKey, \
+          [NSArray arrayWithObjects:__VA_ARGS__, nil], BMScriptOptionsTaskArgumentsKey, \
+                                   (term_stat_policy), BMScriptOptionsStrictTerminationStatusInterpretationKey, nil] 
 
 /*! 
  * @} 
  */
-
 
 /// @cond HIDDEN
 #define BMSCRIPT_UNIT_TEST (int) (getenv("BMScriptUnitTestsEnabled") || getenv("BMSCRIPT_UNIT_TEST_ENABLED"))
@@ -438,6 +464,15 @@ OBJC_EXPORT NSString * const BMScriptNotificationTaskTerminationStatus;
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
 /*! Key incorporated by the options dictionary. Contains the arguments array for the task */
 OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
+/*! Key incorporated by the options dictionary. Defines the policy used for interpreting the termination status of a task.
+ *
+ * If YES, only a TerminationStatus of 0 is interpreted as corresponding to a successfully finished task. 
+ * If NO,  any number >= 0 is seen as corresponding to a successfully finished task. Unfortunately many command line tools 
+ * have a very mixed set of rules about what their termination status is in case of success and error. 
+ *
+ * @note Don't forget to wrap the BOOL in an NSNumber object to be able to put it into the options dictionary.
+ */
+OBJC_EXPORT NSString * const BMScriptOptionsStrictTerminationStatusInterpretationKey;
 /*! Currently unused. */
 OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
 
@@ -907,7 +942,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 @interface NSString (BMScriptStringUtilities)
 /*!
- * Replaces all occurrences of newlines, carriage returns, double quotes etc. with their escaped versions 
+ * Replaces all occurrences of newlines, carriage returns, backslashes, single/double quotes and percentage signs with their escaped versions 
  * @return the quoted string
  */ 
 - (NSString *) quote;
@@ -928,6 +963,14 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @return NSInteger with the amount of occurrences
  */
 - (NSInteger) countOccurrencesOfString:(NSString *)aString;
+/*!
+ * Returns a string wrapped with single quotes. 
+ */
+- (NSString *) wrapSingleQuotes;
+/*!
+ * Returns a string wrapped with double quotes. 
+ */
+- (NSString *) wrapDoubleQuotes;
 @end
 
 /*! A category on NSDictionary providing handy utility and convenience functions. */

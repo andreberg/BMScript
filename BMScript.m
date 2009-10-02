@@ -31,37 +31,38 @@
 #define BM_NSSTRING_TRUNCATE_LENGTH 20      /* used by -truncate, defined in NSString (BMScriptUtilities) */
 
 #ifndef BMSCRIPT_DEBUG_MEMORY
-    #define BMSCRIPT_DEBUG_MEMORY  0
+    #define BMSCRIPT_DEBUG_MEMORY   0
 #endif
+
 #ifndef BMSCRIPT_DEBUG_HISTORY
-    #define BMSCRIPT_DEBUG_HISTORY 0
+    #define BMSCRIPT_DEBUG_HISTORY  0
 #endif
+
 #ifndef BMSCRIPT_DEBUG_OBJECTS
-    #define BMSCRIPT_DEBUG_OBJECTS 0
+    #define BMSCRIPT_DEBUG_OBJECTS  0
+    #if BMSCRIPT_DEBUG_OBJECTS
+        #define BMSCRIPT_OBJECT_TRACE NSLog(@"Creating object %@", [super description]);
+    #else
+        #define BMSCRIPT_OBJECT_TRACE
+    #endif
 #endif
+
 #ifndef BMSCRIPT_DEBUG_INIT
-    #define BMSCRIPT_DEBUG_INIT    0
+    #define BMSCRIPT_DEBUG_INIT     0
+    #if BMSCRIPT_DEBUG_INIT
+        #define BMSCRIPT_INIT_TRACE NSLog(@"Initializing object %@ with:\n %@", [super description], [self debugDescription]);
+    #else
+        #define BMSCRIPT_INIT_TRACE
+    #endif
 #endif
+
 #ifndef BMSCRIPT_DEBUG_DELEGATE_METHODS
     #define BMSCRIPT_DEBUG_DELEGATE_METHODS 0
-#endif
-
-#if (BMSCRIPT_DEBUG_DELEGATE_METHODS)
-    #define BMSCRIPT_DELEGATE_METHOD_TRACE NSLog(@"Inside %s", __PRETTY_FUNCTION__);
-#else
-    #define BMSCRIPT_DELEGATE_METHOD_TRACE
-#endif
-
-#if (BMSCRIPT_DEBUG_OBJECTS)
-    #define BMSCRIPT_OBJECT_TRACE NSLog(@"Creating object %@", [super description]);
-#else
-    #define BMSCRIPT_OBJECT_TRACE
-#endif
-
-#if (BMSCRIPT_DEBUG_INIT)
-    #define BMSCRIPT_INIT_TRACE NSLog(@"Initializing object %@ with:\n %@", [super description], [self debugDescription]);
-#else
-    #define BMSCRIPT_INIT_TRACE
+    #if BMSCRIPT_DEBUG_DELEGATE_METHODS
+        #define BMSCRIPT_DELEGATE_METHOD_TRACE NSLog(@"Inside %@:%s", self, __PRETTY_FUNCTION__);
+    #else
+        #define BMSCRIPT_DELEGATE_METHOD_TRACE
+    #endif
 #endif
 
 #if BMSCRIPT_THREAD_SAFE
@@ -100,26 +101,30 @@
 #endif
 
 
-NSString * const BMScriptOptionsTaskLaunchPathKey = @"BMScriptOptionsTaskLaunchPathKey";
-NSString * const BMScriptOptionsTaskArgumentsKey  = @"BMScriptOptionsTaskArgumentsKey";
-NSString * const BMScriptOptionsRubyVersionKey    = @"BMScriptOptionsRubyVersionKey"; /* currently unused */
+NSString * const BMScriptOptionsTaskLaunchPathKey                           = @"BMScriptOptionsTaskLaunchPathKey";
+NSString * const BMScriptOptionsTaskArgumentsKey                            = @"BMScriptOptionsTaskArgumentsKey";
+NSString * const BMScriptOptionsVersionKey         /* currently unused */   = @"BMScriptOptionsVersionKey"; 
+NSString * const BMScriptOptionsStrictTerminationStatusInterpretationKey    = @"BMScriptOptionsStrictTerminationStatusInterpretationKey";
 
-NSString * const BMScriptTaskDidEndNotification            = @"BMScriptTaskDidEndNotification";
-NSString * const BMScriptNotificationTaskResults           = @"BMScriptNotificationTaskResults";
-NSString * const BMScriptNotificationTaskTerminationStatus = @"BMScriptNotificationTaskTerminationStatus";
+NSString * const BMScriptTaskDidEndNotification                             = @"BMScriptTaskDidEndNotification";
+NSString * const BMScriptNotificationTaskResults                            = @"BMScriptNotificationTaskResults";
+NSString * const BMScriptNotificationTaskTerminationStatus                  = @"BMScriptNotificationTaskTerminationStatus";
 
-NSString * const BMScriptTemplateArgumentMissingException  = @"BMScriptTemplateArgumentMissingException";
-NSString * const BMScriptTemplateArgumentsMissingException = @"BMScriptTemplateArgumentsMissingException";
+NSString * const BMScriptTemplateArgumentMissingException           = @"BMScriptTemplateArgumentMissingException";
+NSString * const BMScriptTemplateArgumentsMissingException          = @"BMScriptTemplateArgumentsMissingException";
 
-NSString * const BMScriptLanguageProtocolDoesNotConformException = @"BMScriptLanguageProtocolDoesNotConformException";
-NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLanguageProtocolMethodMissingException";
-NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLanguageProtocolIllegalAccessException";
+NSString * const BMScriptLanguageProtocolDoesNotConformException    = @"BMScriptLanguageProtocolDoesNotConformException";
+NSString * const BMScriptLanguageProtocolMethodMissingException     = @"BMScriptLanguageProtocolMethodMissingException";
+NSString * const BMScriptLanguageProtocolIllegalAccessException     = @"BMScriptLanguageProtocolIllegalAccessException";
 
 
 // MARK: File Statics (Globals)
 
 static TerminationStatus gTaskStatus = BMScriptNotExecutedTerminationStatus;
 static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
+
+//static NSLock * taskLock = [[NSLock alloc] init];
+//static NSLock * bgTaskLock = [[NSLock alloc] init];
 
 /* Empty braces means this is an "Extension" as opposed to a Category */
 @interface BMScript ()
@@ -445,23 +450,21 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     if ([self isDescendantOfClass:[BMScript class]] && ![self conformsToProtocol:@protocol(BMScriptLanguageProtocol)]) {
         @throw [NSException exceptionWithName:BMScriptLanguageProtocolDoesNotConformException 
-                                       reason:@"BMScript: Error: "
+                                       reason:@"BMScript Error: "
                                               @"Descendants of BMScript must conform to the BMScriptLanguageProtocol!" 
                                      userInfo:nil];
     }
     self = [super init];
     if (BM_EXPECTED(self != nil, 1)) {
-        
         if (scriptSource) {
             // if scriptOptions == nil, we run with default options, namely /bin/echo so it might be better 
             // to put quotes around the scriptSource
-            script = (scriptOptions != nil ? [scriptSource retain] : [[NSString stringWithFormat:@"'%@'", scriptSource] retain]);
+            script = (scriptOptions != nil ? [scriptSource retain] : [[scriptSource wrapSingleQuotes] retain]);
         } else {
             if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
                 script = [[self performSelector:@selector(defaultScriptSourceForLanguage)] retain];
             } else {
-                NSLog(@"BMScript: Warning: Initializing instance %@ with default script!"
-                      @" (\"<script source placeholder>", [super description]);
+                NSLog(@"BMScript Warning: Initializing instance %@ with default script: '<script source placeholder>'", [super description]);
                 script = @"'<script source placeholder>'";
             }
         }
@@ -471,14 +474,13 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
         } else {
             if ([self isDescendantOfClass:[BMScript class]] && ![self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
                 @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
-                                               reason:@"BMScript: Error: "
-                                                      @"Descendants of BMScript must implement "
+                                               reason:@"BMScript Error: Descendants of BMScript must implement "
                                                       @"-[<BMScriptLanguageProtocol> defaultOptionsForLanguage]." 
                                              userInfo:nil];
             } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
                 options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
             } else {
-                NSLog(@"BMScript: Warning: Initializing instance %@ with default options! (\"/bin/echo\", \"\")", [super description]);
+                NSLog(@"BMScript Warning: Initializing instance %@ with default options \"/bin/echo\", \"\"", [super description]);
                 options = [BMSynthesizeOptions(@"/bin/echo", @"") retain];
             }
             
@@ -521,7 +523,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
         BM_UNLOCK(isTemplate)
         return [self initWithScriptSource:scriptSource options:scriptOptions];
     } else {
-        NSLog(@"Error reading file at %@\n%@", path, [err localizedFailureReason]);
+        NSLog(@"BMScript Error: Reading script source from file at '%@' failed: %@", path, [err localizedFailureReason]);
     }
     return nil;
 }
@@ -536,7 +538,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     if (BM_EXPECTED(scriptSource != nil, 1)) {
         return [self initWithTemplateSource:scriptSource options:scriptOptions];
     } else {
-        NSLog(@"Error reading file at %@\n%@", path, [err localizedFailureReason]);
+        NSLog(@"BMScript Error: Reading script source from file at '%@' failed: %@", path, [err localizedFailureReason]);
     }
     return nil;
 }
@@ -564,7 +566,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
     BOOL success = NO;
     
-    if ([task isRunning]) {
+    if (BM_EXPECTED([task isRunning], 0)) {
         [task terminate];
     } else {
        task = [[NSTask alloc] init];
@@ -614,12 +616,18 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
              (char *) [BMStringFromBOOL((task == nil ? NO : [task isRunning])) UTF8String], 
              (char *) [[result quote] UTF8String]);
     
-    TerminationStatus status = BMScriptNotExecutedTerminationStatus;
+    TerminationStatus status;
     
+    BM_LOCK(task)
     [task launch];
     NSData * data = [[pipe fileHandleForReading] readDataToEndOfFile];
     [task waitUntilExit];
-    
+    [task terminate];
+    [[pipe fileHandleForReading] closeFile];
+    [task release], task = nil;
+    [pipe release], pipe = nil;
+    BM_UNLOCK(task)
+
     BM_LOCK(gTaskStatus)
     gTaskStatus = status = [task terminationStatus];
     BM_UNLOCK(gTaskStatus)
@@ -641,9 +649,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     }
     BM_UNLOCK(result)
 
-    [task terminate];
-    [task release], task = nil;
-    [pipe release], pipe = nil;
     [string release], string = nil;
 
     BM_PROBE(EXIT_LAUNCH_TASK_AND_STORE_LAST_RESULT, 
@@ -733,11 +738,12 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
     NSData * data = [[aNotification userInfo] objectForKey:NSFileHandleNotificationDataItem];
     // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
-    if (data) {
+    if (BM_EXPECTED(data != nil, 1)) {
         
         NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSString * aResult = string;
         
+        BM_LOCK(result)
         BOOL shouldSetResult = YES;
         if ([delegate respondsToSelector:@selector(shouldSetResult:)]) {
             shouldSetResult = [delegate shouldSetResult:aResult];
@@ -746,13 +752,12 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
             if ([delegate respondsToSelector:@selector(willSetResult:)]) {
                 aResult = [delegate willSetResult:string];
             }
-            BM_LOCK(result)
             self.result = aResult;
-            BM_UNLOCK(result)
         }
+        BM_UNLOCK(result)
         [string release], string = nil;
     } else {
-        NSLog(@"*** Warning: %s attempted but could not append to data because it is missing!", __PRETTY_FUNCTION__);
+        NSLog(@"BMScript Warning: %s attempted but could not append data because it is missing!", __PRETTY_FUNCTION__);
     }
     
     BM_PROBE(EXIT_DATA_COMPLETE, (char *) [result UTF8String]);
@@ -817,11 +822,11 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     gBgTaskStatus = [bgTask terminationStatus];
     BM_UNLOCK(gBgTaskStatus)
     
-    BM_LOCK(result)
     // task is finished, copy over the accumulated partialResults into lastResult
-    NSString * string = partialResult;
+    NSString * string = self.partialResult;
     NSString * aResult = string;
     
+    BM_LOCK(result)
     BOOL shouldSetResult = YES;
     if ([delegate respondsToSelector:@selector(shouldSetResult:)]) {
         shouldSetResult = [delegate shouldSetResult:aResult];
@@ -842,6 +847,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
                                                     name:NSTaskDidTerminateNotification 
                                                   object:bgTask];
     
+    [[bgPipe fileHandleForReading] closeFile];
     [bgTask release], bgTask = nil;
     [bgPipe release], bgPipe = nil;
     
@@ -875,7 +881,8 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
              (char *) [[partialResult quote] UTF8String]);
 }
 
-- (void) taskTerminated:(NSNotification *) BM_ATTRIBUTES(unused) aNotification { 
+- (void) taskTerminated:(NSNotification *) aNotification { 
+    #pragma unused(aNotification)
     [self stopTask]; 
 }
 
@@ -904,7 +911,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
             return NO;
         }
         
-        NSString * accumulator = [self script];
+        NSString * accumulator = self.script;
         NSString * arg;
         
         va_list arglist;
@@ -929,10 +936,10 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
         
         va_end(arglist);
         
-        BM_LOCK(self)
+        BM_LOCK(script)
         self.script = [accumulator stringByReplacingOccurrencesOfString:@"%%" withString:@"%"];
         self.isTemplate = NO;
-        BM_UNLOCK(self)
+        BM_UNLOCK(script)
 
         [pool drain];
         return YES;
@@ -942,7 +949,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary {
     if (self.isTemplate) {
-        
         
         NSString * accumulator = self.script;
         
@@ -956,10 +962,10 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
             i++;
         }
         
-        BM_LOCK(self)
+        BM_LOCK(script)
         self.script = [accumulator stringByReplacingOccurrencesOfString:@"%" withString:@""];
         self.isTemplate = NO;
-        BM_UNLOCK(self)
+        BM_UNLOCK(script)
         
         return YES;
     }
@@ -973,9 +979,9 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (BOOL) execute {
     
     BM_PROBE(ENTER_EXECUTE, 
-             (char *) [[[self script] quote] UTF8String], 
+             (char *) [[script quote] UTF8String], 
              (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
-             (char *) [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [[options objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
     
     BOOL success = NO;
     
@@ -986,12 +992,12 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
                                      userInfo:nil];
 
     } else {
-        if (BM_EXPECTED([self executeAndReturnResult:nil], 1)) {
+        if ([self executeAndReturnResult:nil]) {
             success = YES;
         }
     }
     
-    BM_PROBE(EXIT_EXECUTE, (char *) [[lastResult quote] UTF8String]);
+    BM_PROBE(EXIT_EXECUTE, (char *) [[result quote] UTF8String]);
     return success;
 }
 
@@ -1016,7 +1022,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     }
     
     BM_PROBE(EXIT_EXECUTE_AND_RETURN_RESULT, 
-             (char *) [[lastResult quote] UTF8String]);
+             (char *) [[result quote] UTF8String]);
     
     return success;
 }
@@ -1039,33 +1045,39 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     if (self.isTemplate) {
         if (error) {
             NSDictionary * errorDict = 
-                [NSDictionary dictionaryWithObject:@"please define all replacement values for the current template "
+                [NSDictionary dictionaryWithObject:@"BMScript Error: Please define all replacement values for the current template "
                                                    @"by calling one of the -saturateTemplate... methods prior to execution" 
                                             forKey:NSLocalizedFailureReasonErrorKey];
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:0 userInfo:errorDict];
         } else {
             @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
-                                           reason:@"please define all replacement values for the current template "
+                                           reason:@"BMScript Error: Please define all replacement values for the current template "
                                                   @"by calling one of the -saturateTemplate... methods prior to execution" 
                                          userInfo:nil];            
         }            
-    } else { 
-        // isTemplate is NO
+    } else {// isTemplate is NO
+        
         BM_LOCK(self)
         success = [self setupTask];
         BM_UNLOCK(self)
         
         if (BM_EXPECTED(success, 1)) {
             
-            BM_LOCK(gTaskStatus)
+            BM_LOCK(self)
             status = [self launchTaskAndStoreResult];
-            gTaskStatus = status;
-            BM_UNLOCK(gTaskStatus)
+            BM_UNLOCK(self)
             
-            if (BMScriptFinishedSuccessfullyTerminationStatus == status) {
-                if (BM_EXPECTED(results != nil, 1)) {
-                    *results = result;
-                }
+            BOOL strictBit = NO;
+            NSNumber * num = [options objectForKey:BMScriptOptionsStrictTerminationStatusInterpretationKey];
+            
+            if (num) strictBit = [num boolValue];
+
+            if ((strictBit && (status == BMScriptFinishedSuccessfullyTerminationStatus)) 
+                || (!strictBit && (status > BMScriptNotExecutedTerminationStatus))) {
+                
+                if (BM_EXPECTED(results != nil, 1)) *results = result;
+                
+                BM_LOCK(history)
                 NSArray * historyItem = [NSArray arrayWithObjects:script, result, nil];
                 if ([delegate respondsToSelector:@selector(shouldAddItemToHistory:)]) {
                     if ([delegate shouldAddItemToHistory:historyItem]) {
@@ -1074,14 +1086,16 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
                 } else {
                     [history addObject:historyItem];
                 }
+                BM_UNLOCK(history)
                 if (BMSCRIPT_DEBUG_HISTORY) NSLog(@"Script '%@' executed successfully.\nAdded to history = %@", [[script quote] truncate], history);
                 success = YES;
             } else {
                 if (error) {
-                    NSString * fErr = [[NSString alloc] initWithData:[[pipe fileHandleForReading] readDataToEndOfFile] 
-                                                            encoding:NSUTF8StringEncoding];
-                    NSString * reason = [NSString stringWithFormat:@"BMScript task returned with non-zero exit status: %@", fErr];
-                    [fErr release], fErr = nil;
+                    NSString * availableResults = [[NSString alloc] initWithData:[[pipe fileHandleForReading] readDataToEndOfFile] 
+                                                                        encoding:NSUTF8StringEncoding];
+                    NSString * reason = [NSString stringWithFormat:@"BMScript task returned with non-zero exit status: %@", availableResults];
+                    [availableResults release], availableResults = nil;
+                    [[pipe fileHandleForReading] closeFile];
                     
                     NSDictionary * errorDict = [NSDictionary dictionaryWithObject:reason
                                                                            forKey:NSLocalizedFailureReasonErrorKey];
@@ -1202,14 +1216,14 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: Equality
 
 - (BOOL) isEqualToScript:(BMScript *)other {
-    BOOL sameScript = [[self script] isEqualToString:[other script]];
-    BOOL sameLaunchPath = [[[self options] objectForKey:BMScriptOptionsTaskLaunchPathKey] 
-                           isEqualToString:[[other options] objectForKey:BMScriptOptionsTaskLaunchPathKey]];
-    return sameScript && sameLaunchPath;
+    return [script isEqualToString:other.script];
 }
 
 - (BOOL) isEqual:(BMScript *)other {
-    return [[self script] isEqualToString:[other script]];
+    BOOL sameScript = [script isEqualToString:other.script];
+    BOOL sameLaunchPath = [[options objectForKey:BMScriptOptionsTaskLaunchPathKey] 
+                           isEqualToString:[other.options objectForKey:BMScriptOptionsTaskLaunchPathKey]];
+    return sameScript && sameLaunchPath;
 }
 
 // MARK: BMScriptDelegate
@@ -1275,8 +1289,8 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 // MARK: NSMutableCopying
 
 - (id) mutableCopyWithZone:(NSZone *)zone {
-    id copy = [[[self class] allocWithZone:zone] initWithScriptSource:[self script] 
-                                                              options:[self options]];
+    id copy = [[[self class] allocWithZone:zone] initWithScriptSource:self.script
+                                                              options:self.options ];
     return copy;
 }
 
@@ -1402,10 +1416,19 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
        quotedResult = [quotedResult stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"];
        quotedResult = [quotedResult stringByReplacingOccurrencesOfString:@"\r" withString:@"\\r"];
        quotedResult = [quotedResult stringByReplacingOccurrencesOfString:@"\t" withString:@"\\t"];
-       quotedResult = [quotedResult stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+       quotedResult = [quotedResult stringByReplacingOccurrencesOfString:@"%"  withString:@"%%"];
     
     return quotedResult;
 }
+
+- (NSString *) wrapSingleQuotes { 
+    return [NSString stringWithFormat:@"'%@'", self]; 
+}
+
+- (NSString *) wrapDoubleQuotes {
+    return [NSString stringWithFormat:@"\"%@\"", self]; 
+}
+
 
 - (NSString *) truncate {
     #ifdef BM_NSSTRING_TRUNCATE_LENGTH
@@ -1448,8 +1471,15 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 @implementation NSObject (BMScriptUtilities)
 
++ (BOOL) isDescendantOfClass:(Class)anotherClass {
+    id instance = [self new];
+    BOOL result = [instance isDescendantOfClass:anotherClass];
+    [instance release], instance = nil;
+    return result;
+}
+
 - (BOOL) isDescendantOfClass:(Class)anotherClass {
-    return (([self class] != anotherClass) && [self isMemberOfClass:anotherClass]);
+    return (!([[self class] isEqual:anotherClass]) && [self isKindOfClass:anotherClass]);
 }
 
 @end
