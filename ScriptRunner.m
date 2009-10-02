@@ -63,9 +63,7 @@
 
 - (id) init {
     self = [super init];
-    if (self != nil) {
-        NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-        
+    if (self != nil) {        
         //NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", @"");
         BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"\"this is ScriptRunner\'s script calling...\"" 
                                                             options:BMSynthesizeOptions(@"/bin/echo", @"")];
@@ -93,7 +91,6 @@
         shouldSetResultCalled = NO;
         shouldSetScriptCalled = NO;
         
-        [pool drain];
     }
     return self;
 }

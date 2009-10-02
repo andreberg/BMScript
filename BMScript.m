@@ -123,8 +123,8 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException     = @"BMScript
 static TerminationStatus gTaskStatus = BMScriptNotExecutedTerminationStatus;
 static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
-//static NSLock * taskLock = [[NSLock alloc] init];
-//static NSLock * bgTaskLock = [[NSLock alloc] init];
+static NSLock * taskLock;
+static NSLock * bgTaskLock;
 
 /* Empty braces means this is an "Extension" as opposed to a Category */
 @interface BMScript ()

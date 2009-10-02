@@ -400,7 +400,7 @@ typedef NSInteger TerminationStatus;
 
 enum {
     /*! task not executed yet */
-    BMScriptNotExecutedTerminationStatus = -1,
+    BMScriptNotExecutedTerminationStatus = -(NSIntegerMax),
     /*! task finished successfully */
     BMScriptFinishedSuccessfullyTerminationStatus = 0,
     /*! task failed */
