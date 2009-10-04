@@ -35,7 +35,7 @@ typedef struct {
 provider BMScript {
 
     /* Atomic Probes */
-    
+    /*
     probe enter_execute(char * scriptSource, char * isTemplate, char * launchPath);
     probe  exit_execute(char * result);
     
@@ -44,9 +44,6 @@ provider BMScript {
     
     probe enter_execute_and_return_result_error(char * scriptSource, char * isTemplate, char * launchPath);
     probe  exit_execute_and_return_result_error(char * result);
-    
-    probe enter_setup_task(char * taskIsRunning);
-    probe  exit_setup_task(char * taskIsRunning);
             
     probe enter_launch_task_and_store_last_result(char * taskIsRunning, char * lastResult);
     probe  exit_launch_task_and_store_last_result(char * taskIsRunning, char * lastResult);
@@ -68,6 +65,16 @@ provider BMScript {
     
     probe enter_task_terminated();
     probe  exit_task_terminated(char * lastResult, char * partialResult);
+    */
+
+    probe setup_task_begin();
+    probe   setup_task_end();
+    
+    /* Initialization */
+    
+    probe init_begin(char * initMethodName, char * sourceOrPath, char * optionsRep);
+    probe init_self();
+    probe init_end(char * selfDebugDescription); 
         
     /* Execution */
     

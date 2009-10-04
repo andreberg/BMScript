@@ -174,7 +174,7 @@
 				654E9CE4106BEFBF008CC673 /* Config */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				65429588105FE1B80037E0C8 /* Unit Tests */,
-				6547BCCC10698F2400B3A390 /* Probes */,
+				65BDAD3D1077CA3900458E0F /* DTrace */,
 				65731F961067771B001E9123 /* Other Sources */,
 				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
@@ -386,6 +386,14 @@
 			name = "Helper Classes";
 			sourceTree = "<group>";
 		};
+		65BDAD3D1077CA3900458E0F /* DTrace */ = {
+			isa = PBXGroup;
+			children = (
+				6547BCCC10698F2400B3A390 /* Probes */,
+			);
+			name = DTrace;
+			sourceTree = "<group>";
+		};
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -395,6 +403,7 @@
 				6503F16A1072BAD900B260F7 /* DoxyfileTemplate */,
 				C6859EA3029092ED04C91782 /* BMScriptTest.1 */,
 			);
+			includeInIndex = 0;
 			name = Documentation;
 			sourceTree = "<group>";
 		};

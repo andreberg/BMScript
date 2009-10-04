@@ -477,6 +477,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Must be implemented by subclasses to provide sensible defaults for language or tool specific values.
  */
 @protocol BMScriptLanguageProtocol
+@required
 /*!
  * Returns the options dictionary. This is required.
  * @see #BMSynthesizeOptions and @link bmScriptOptionsDictionary.m @endlink
@@ -588,7 +589,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  @protected
     NSString * script;
     NSDictionary * options;
-    NSString * lastResult;
     __weak id delegate; 
  @private
     NSString * result;
@@ -633,11 +633,14 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @sa #BMSynthesizeOptions(path, args) 
  */
 @property (BM_ATOMIC retain) NSDictionary * options;
-/*! Gets the last execution result. */
-@property (nonatomic, readonly, copy) NSString * lastResult;
-/*! Gets and sets the delegate instance variable. */
+/*! 
+ * Gets and sets the delegate for BMScript. It is not enforced that the object passed to the accessor conforms 
+ * to the BMScriptLanguageProtocol. A compiler warning however should be issued. 
+ */
 @property (BM_ATOMIC assign) __weak id<BMScriptDelegateProtocol> delegate;
 
+/*! Gets the last execution result. May return nil if the script hasn't been executed yet. */
+- (NSString *)lastResult;
 
 // MARK: Initializer Methods
 
@@ -938,4 +941,12 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (BOOL) isDescendantOfClass:(Class)anotherClass;
 
+@end
+
+/*! A ctegory on NSArray. Provides introspection and utility methods. */
+@interface NSArray (BMScriptUtilities)
+/*! Returny YES if the array consists only of empty strings. */
+- (BOOL) isEmptyStringArray;
+/*! Returns YES if the array was created with no objects. <span class="sourcecode">[NSArray arrayWithObjects:nil]</span> for example can do this. */
+- (BOOL) isZeroArray;
 @end

@@ -25,9 +25,9 @@
 
 // ...
 
-// DON'T FORGET to remove yourself as observer in your class' dealloc method 
-// or your program might crash if the defaultCenter continues to send messages 
-// to your dealloc'ed class!
+// DON'T FORGET to remove yourself as observer, ideally right when you're done with BMScript
+// but at least in your class' dealloc method or your program might crash if the defaultCenter 
+// continues to send messages to your dealloc'd class!
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

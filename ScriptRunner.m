@@ -76,7 +76,7 @@
         }
         else {
             BMScript * aScript = [[BMScript alloc] initWithScriptSource:@"\"this is ScriptRunner\'s script calling...\"" 
-                                                                options:BMSynthesizeOptions(@"/bin/echo", @"")];
+                                                                options:BMSynthesizeOptions(@"/bin/echo", @"-n")];
             script = [aScript retain];
             [script setDelegate:self];
             [aScript release];
@@ -94,7 +94,6 @@
     }
     return self;
 }
-
 
 - (void) taskFinished:(NSNotification *)aNotification {
     
