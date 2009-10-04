@@ -89,9 +89,9 @@
                 <div class="message cell">
                     If you let your end-users, the consumers of your application, supply the 
                     script source without defining exact task options this can be very dangerous as anything
-                    passed to /bin/sh is not checked by default! This is a good reason to use the 
-                    BMScriptDelegateProtocol methods for error/security checking or to subclass BMScript 
-                    instead of using it directly.
+                    passed to <span class="sourcecode">/bin/echo</span> is not checked by default! This is a 
+                    good reason to use the BMScriptDelegateProtocol methods for error/security checking or to 
+                    subclass BMScript instead of using it directly.
                 </div>
             </div>
         </div>
@@ -318,7 +318,7 @@
 /*!
  * @def BM_ATOMIC
  * Toggles the atomicity attribute for Objective-C 2.0 properties. 
- * Will be set to <span class="code">nonatomic,</span> if #BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
+ * Will be set to <span class="sourcecode">nonatomic,</span> if #BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
  */
 #if !BMSCRIPT_THREAD_SAFE
     #define BM_ATOMIC nonatomic,
@@ -926,7 +926,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (NSDictionary *) dictionaryByAddingObject:(id)object forKey:(id)key;
 @end
 
-/*! A ctegory on NSObject. Provides introspection and utility methods. */
+/*! A category on NSObject. Provides introspection and other utility methods. */
 @interface NSObject (BMScriptUtilities)
 
 /*!
@@ -943,7 +943,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 @end
 
-/*! A ctegory on NSArray. Provides introspection and utility methods. */
+/*! A category on NSArray. Provides introspection and other utility methods. */
 @interface NSArray (BMScriptUtilities)
 /*! Returny YES if the array consists only of empty strings. */
 - (BOOL) isEmptyStringArray;

@@ -209,7 +209,7 @@ extern "C" {
  * 
  * The return value is the value of exp, which should be an integral expression. The value of c must be a compile-time constant. The semantics of the built-in are that it is expected that exp == c."
  * 
- * And from <a href="http://regexkit.sourceforge.net" class="external">RegexKit Framework</a> docs, from where I got this macro:
+ * And from <a href="http://regexkit.sourceforge.net" class="external">RegexKit Framework</a> docs (the origin of this macro):
  *
  * <div class="box important"><div class="table"><div class="row"><div class="label cell">Important:</div><div class="message cell"><span class="code">BM_EXPECTED</span> should only be used when the likelihood of the prediction is nearly certain. <b><i>DO NOT GUESS</i></b>.</div></div></div></div>
  * 

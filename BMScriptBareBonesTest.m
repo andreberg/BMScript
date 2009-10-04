@@ -76,7 +76,6 @@ int main (int argc, const char * argv[]) {
     [scriptRunner1 release], scriptRunner1 = nil;
     [scriptRunner2 release], scriptRunner2 = nil;
     
-    
     if (DEBUG) {
         if (!DEBUG_GC_ENABLED) {
             [scriptRunner1 stopLogging];
@@ -111,8 +110,8 @@ int main (int argc, const char * argv[]) {
                 break;
             }
         };
-        
     }
+    
     [pool drain];
     return 0;
 }
