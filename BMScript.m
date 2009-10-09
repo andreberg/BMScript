@@ -20,50 +20,18 @@
 /// @cond HIDDEN
 
 #import "BMScript.h"
-#import "BMAtomic.h"
 #import "BMScriptProbes.h"      /* dtrace probes auto-generated from .d file(s) */
 
 #include <unistd.h>             /* for usleep       */
 #include <pthread.h>            /* for pthread_*    */
 
-#define BMSCRIPT_VERSION            15      /* 10 == 1.0 */
+#define BMSCRIPT_VERSION            17      /* 10 == 1.0 */
 
 #define BMSCRIPT_INSERTION_TOKEN    @"%@"   /* used by templates to mark locations where a replacement insertions should occur */
 #define BM_NSSTRING_TRUNCATE_LENGTH 20      /* used by -truncate, defined in NSString (BMScriptUtilities) */
 
-#ifndef BMSCRIPT_DEBUG_MEMORY
-    #define BMSCRIPT_DEBUG_MEMORY   0
-#endif
-
 #ifndef BMSCRIPT_DEBUG_HISTORY
     #define BMSCRIPT_DEBUG_HISTORY  0
-#endif
-
-#ifndef BMSCRIPT_DEBUG_OBJECTS
-    #define BMSCRIPT_DEBUG_OBJECTS  0
-    #if BMSCRIPT_DEBUG_OBJECTS
-        #define BMSCRIPT_OBJECT_TRACE NSLog(@"Creating object %@", [super description]);
-    #else
-        #define BMSCRIPT_OBJECT_TRACE
-    #endif
-#endif
-
-#ifndef BMSCRIPT_DEBUG_INIT
-    #define BMSCRIPT_DEBUG_INIT     0
-    #if BMSCRIPT_DEBUG_INIT
-        #define BMSCRIPT_INIT_TRACE NSLog(@"Initializing object %@ with:\n %@", [super description], [self debugDescription]);
-    #else
-        #define BMSCRIPT_INIT_TRACE
-    #endif
-#endif
-
-#ifndef BMSCRIPT_DEBUG_DELEGATE_METHODS
-    #define BMSCRIPT_DEBUG_DELEGATE_METHODS 0
-    #if BMSCRIPT_DEBUG_DELEGATE_METHODS
-        #define BMSCRIPT_DELEGATE_METHOD_TRACE NSLog(@"Inside %@:%s", self, __PRETTY_FUNCTION__);
-    #else
-        #define BMSCRIPT_DELEGATE_METHOD_TRACE
-    #endif
 #endif
 
 #if BMSCRIPT_THREAD_SAFE
@@ -102,30 +70,26 @@
 #endif
 
 
-NSString * const BMScriptOptionsTaskLaunchPathKey                           = @"BMScriptOptionsTaskLaunchPathKey";
-NSString * const BMScriptOptionsTaskArgumentsKey                            = @"BMScriptOptionsTaskArgumentsKey";
-NSString * const BMScriptOptionsVersionKey         /* currently unused */   = @"BMScriptOptionsVersionKey"; 
-NSString * const BMScriptOptionsStrictTerminationStatusInterpretationKey    = @"BMScriptOptionsStrictTerminationStatusInterpretationKey";
+NSString * const BMScriptOptionsTaskLaunchPathKey  = @"BMScriptOptionsTaskLaunchPathKey";
+NSString * const BMScriptOptionsTaskArgumentsKey   = @"BMScriptOptionsTaskArgumentsKey";
+NSString * const BMScriptOptionsVersionKey         = @"BMScriptOptionsVersionKey"; 
 
-NSString * const BMScriptTaskDidEndNotification                             = @"BMScriptTaskDidEndNotification";
-NSString * const BMScriptNotificationTaskResults                            = @"BMScriptNotificationTaskResults";
-NSString * const BMScriptNotificationTaskTerminationStatus                  = @"BMScriptNotificationTaskTerminationStatus";
+NSString * const BMScriptTaskDidEndNotification            = @"BMScriptTaskDidEndNotification";
+NSString * const BMScriptNotificationTaskResults           = @"BMScriptNotificationTaskResults";
+NSString * const BMScriptNotificationTaskTerminationStatus = @"BMScriptNotificationTaskTerminationStatus";
 
-NSString * const BMScriptTemplateArgumentMissingException           = @"BMScriptTemplateArgumentMissingException";
-NSString * const BMScriptTemplateArgumentsMissingException          = @"BMScriptTemplateArgumentsMissingException";
+NSString * const BMScriptTemplateArgumentMissingException  = @"BMScriptTemplateArgumentMissingException";
+NSString * const BMScriptTemplateArgumentsMissingException = @"BMScriptTemplateArgumentsMissingException";
 
-NSString * const BMScriptLanguageProtocolDoesNotConformException    = @"BMScriptLanguageProtocolDoesNotConformException";
-NSString * const BMScriptLanguageProtocolMethodMissingException     = @"BMScriptLanguageProtocolMethodMissingException";
-NSString * const BMScriptLanguageProtocolIllegalAccessException     = @"BMScriptLanguageProtocolIllegalAccessException";
+NSString * const BMScriptLanguageProtocolDoesNotConformException = @"BMScriptLanguageProtocolDoesNotConformException";
+NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLanguageProtocolMethodMissingException";
+NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLanguageProtocolIllegalAccessException";
 
 
 // MARK: File Statics (Globals)
 
 static TerminationStatus gTaskStatus   = BMScriptNotExecutedTerminationStatus;
 static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
-
-static NSLock * taskLock BM_ATTRIBUTES(unused); 
-static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
 
 /* Empty braces means this is an "Extension" as opposed to a Category */
 @interface BMScript ()
@@ -146,7 +110,7 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
 - (void) taskTerminated:(NSNotification *)aNotification;
 - (void) appendData:(NSData *)d;
 - (void) dataReceived:(NSNotification *)aNotification;
-// - (void) dataComplete:(NSNotification *)aNotification;
+- (const char *) gdbDataFormatter;
 
 @end
 
@@ -173,87 +137,6 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
     return [[result copy] autorelease]; 
 }
 
-// 
-// - (void)setLastResult:(NSString *)newLastResult {
-//     BM_LOCK
-//     //NSLog(@"Inside %@ %s:", (bgTask ? [super description] : @""), __PRETTY_FUNCTION__); 
-//     if (lastResult != newLastResult) {
-//         //NSLog(@"lastResult was '%@', will set to '%@'", [[lastResult quote] truncate], [[newLastResult quote] truncate]);
-//         [lastResult release];
-//         lastResult = [newLastResult retain];
-//     }
-//     BM_UNLOCK
-//     
-// }
-
-//=========================================================== 
-//  script 
-//=========================================================== 
-
-// - (NSString *)script {
-//     return [[script retain] autorelease]; 
-// }
-// 
-// - (void)setScript:(NSString *)newScript {
-//     if (script != newScript) {
-//         if ([delegate respondsToSelector:@selector(shouldSetScript:)]) {
-//             if ([delegate shouldSetScript:newScript]) {
-//                 [script release];
-//                 script = [newScript retain];
-//             }
-//         } else {
-//             [script release];
-//             script = [newScript retain];
-//         }
-//     }
-// }
-
-//=========================================================== 
-//  options 
-//=========================================================== 
-
-// - (NSDictionary *)options {
-//     return [[options retain] autorelease]; 
-// }
-// 
-// - (void)setOptions:(NSDictionary *)newOptions {
-//     if (options != newOptions) {
-//         NSDictionary * item = [newOptions retain];
-//         if ([delegate respondsToSelector:@selector(shouldSetOptions:)]) {
-//             if ([delegate shouldSetOptions:item]) {
-//                 [options release];
-//                 options = item;
-//             }
-//         } else {
-//             [options release];
-//             options = item;
-//         }
-//     }
-//     
-// }
-
-//=========================================================== 
-//  partialResult 
-//=========================================================== 
-// - (NSString *)partialResult {
-//     return [[partialResult retain] autorelease];
-// }
-// - (void)setPartialResult:(NSString *)newPartialResult {
-//     BM_LOCK(partialResult)
-//     if (partialResult != newPartialResult) {
-//         if ([delegate respondsToSelector:@selector(shouldAppendPartialResult:)]) {
-//             if ([delegate shouldAppendPartialResult:newPartialResult]) {
-//                 [partialResult release];
-//                 partialResult = [newPartialResult retain];
-//             }
-//         } else {
-//             [partialResult release];
-//             partialResult = [newPartialResult retain];
-//         }
-//     }
-//     BM_UNLOCK(partialResult)
-// }
-
 //=========================================================== 
 //  delegate 
 //=========================================================== 
@@ -262,110 +145,12 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
 }
 
 - (void)setDelegate:(id<BMScriptDelegateProtocol>)newDelegate {
-//     if (newDelegate && ![(NSObject *)newDelegate conformsToProtocol:@protocol(BMScriptDelegateProtocol)]) {
-//         NSLog(@"BMScript Warning: New delegate does not conform to the BMScriptDelegateProtocol.");
-//     }
     BM_LOCK(delegate)
     if (delegate != newDelegate) {
         delegate = newDelegate;
     }
     BM_UNLOCK(delegate)
 }
-
-//=========================================================== 
-//  history 
-//=========================================================== 
-
-// - (NSMutableArray *)history {
-//     NSMutableArray * aHistory;
-//     BM_LOCK
-//     aHistory = [[history retain] autorelease];
-//     BM_UNLOCK
-//     return aHistory;
-// }
-// 
-// - (void)setHistory:(NSMutableArray *)newHistory {
-//     BM_LOCK
-//     if (history != newHistory) {
-//         [history release];
-//         history = [newHistory retain];
-//     }
-//     BM_UNLOCK
-//     
-// }
-
-//=========================================================== 
-//  task 
-//=========================================================== 
-// - (NSTask *)task {
-//     return [[task retain] autorelease]; 
-// }
-// 
-// - (void)setTask:(NSTask *)newTask {
-//     if (task != newTask) {
-//         [task release];
-//         task = [newTask retain];
-//     }
-//     
-// }
-
-//=========================================================== 
-//  pipe 
-//=========================================================== 
-// - (NSPipe *)pipe {
-//     return [[pipe retain] autorelease]; 
-// }
-// 
-// - (void)setPipe:(NSPipe *)newPipe {
-//     if (pipe != newPipe) {
-//         [pipe release];
-//         pipe = [newPipe retain];
-//     }
-// }
-
-//=========================================================== 
-//  bgTask 
-//=========================================================== 
-// - (NSTask *)bgTask {
-//     return [[bgTask retain] autorelease]; 
-// }
-// 
-// - (void)setBgTask:(NSTask *)newBgTask {
-//     if (bgTask != newBgTask) {
-//         [bgTask release];
-//         bgTask = [newBgTask retain];
-//     }
-//     
-// }
-
-//=========================================================== 
-//  bgPipe 
-//=========================================================== 
-// - (NSPipe *)bgPipe {
-//     return [[bgPipe retain] autorelease]; 
-// }
-// 
-// - (void)setBgPipe:(NSPipe *)newBgPipe {
-//     if (bgPipe != newBgPipe) {
-//         [bgPipe release];
-//         bgPipe = [newBgPipe retain];
-//     }
-//     
-// }
-
-//=========================================================== 
-//  isTemplate 
-//=========================================================== 
-
-// - (BOOL)isTemplate {
-//     return isTemplate;
-// }
-// 
-// - (void)setIsTemplate:(BOOL)flag {
-//     BM_LOCK(isTemplate)
-//     isTemplate = flag;
-//     BM_UNLOCK(isTemplate)
-// }
 
 // MARK: Description
 
@@ -390,6 +175,26 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
             @"  bgTask: '%@'\n"
             @"  bgPipe: '%@'\n", 
             [self description], [history count], ([history count] == 1 ? @"" : @"s"), history, task, pipe, bgTask, bgPipe ];
+}
+
+- (const char *) gdbDataFormatter {
+    
+    NSString * launchPath = [options objectForKey:BMScriptOptionsTaskLaunchPathKey];
+    NSArray * args = [options objectForKey:BMScriptOptionsTaskArgumentsKey];
+    NSMutableString * accString = [NSMutableString string];
+    if (args) {
+        for (NSString * arg in args) {
+            [accString appendFormat:@" %@%@", arg, ([arg isEqualToString:@""] ? @"" : @", ")];
+        }
+    }
+    NSString * desc = [NSString stringWithFormat:@"options = %@%@script = %@, result = %@, isTemplate = %@", 
+                       (launchPath ? launchPath : @"nil, "),
+                       (accString ? accString : @"nil, "),
+                       (script ? [[script quote] truncate] : @"nil"), 
+                       (result ? [[result quote] truncate] : @"nil"),
+                       BMStringFromBOOL(isTemplate)];
+    
+    return [desc UTF8String];
 }
 
 + (NSInteger) version {
@@ -418,25 +223,6 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
     [super dealloc];
 }
 
-// - (void) finalize {
-// 
-//     if (BM_EXPECTED([task isRunning], 0)) [task terminate];
-//     if (BM_EXPECTED([bgTask isRunning], 0)) [bgTask terminate];
-// 
-//     script = nil;
-//     history = nil;
-//     options = nil;
-//     result = nil;
-//     partialResult = nil;
-//     task = nil;
-//     pipe = nil;
-//     bgTask = nil;
-//     bgPipe = nil;
-//     
-//     [super finalize];
-// }
-
-
 // MARK: Initializer Methods
 
 - (id)init {
@@ -446,12 +232,6 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
     
     return [self initWithScriptSource:nil options:nil]; 
 }
-
-
-// - (id) initWithScriptSource:(NSString *)scriptSource {
-//     NSLog(@"Warning: Initializing BMScript instance with default options (\"/bin/sh\", \"-c\").");
-//     return [self initWithScriptSource:scriptSource options:nil]; 
-// }
 
 /* designated initializer */
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions {
@@ -507,8 +287,6 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
         
         // tasks/pipes will be allocated, initialized (and destroyed) lazily
         // on an as-needed basis because NSTasks are one-shot (not for re-use)
-        
-        BMSCRIPT_INIT_TRACE
     }
     
     BM_PROBE(INIT_END, (char *) [[[self debugDescription] wrapSingleQuotes] UTF8String]);
@@ -534,10 +312,6 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
     return nil;
 }
 
-// - (id) initWithContentsOfFile:(NSString *)path {
-//     return [self initWithContentsOfFile:path options:nil];
-// }
-
 - (id) initWithContentsOfFile:(NSString *)path options:(NSDictionary *)scriptOptions {
     
     BM_PROBE(INIT_BEGIN,
@@ -556,10 +330,6 @@ static NSLock * bgTaskLock BM_ATTRIBUTES(unused);
         NSLog(@"BMScript Error: Reading script source from file at '%@' failed: %@", path, [err localizedFailureReason]);
     }
     return nil;
-}
-
-- (id) initWithContentsOfTemplateFile:(NSString *)path {
-    return [self initWithContentsOfTemplateFile:path options:nil];
 }
 
 - (id) initWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions {
@@ -771,34 +541,6 @@ endnow:
         }
     }
 }
-
-// - (void) dataComplete:(NSNotification *)aNotification {
-// 
-//     NSData * data = [[aNotification userInfo] objectForKey:NSFileHandleNotificationDataItem];
-    // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
-//     if (BM_EXPECTED(data != nil, 1)) {
-//         
-//         NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//         NSString * aResult = string;
-//         
-//         BM_LOCK(result)
-//         BOOL shouldSetResult = YES;
-//         if ([delegate respondsToSelector:@selector(shouldSetResult:)]) {
-//             shouldSetResult = [delegate shouldSetResult:aResult];
-//         }
-//         if (shouldSetResult) {
-//             if ([delegate respondsToSelector:@selector(willSetResult:)]) {
-//                 aResult = [delegate willSetResult:string];
-//             }
-//             self.result = aResult;
-//         }
-//         BM_UNLOCK(result)
-//         [string release], string = nil;
-//     } else {
-//         NSLog(@"BMScript Warning: %s attempted but could not append data because it is missing!", __PRETTY_FUNCTION__);
-//     }
-// }
-
 
 - (void) dataReceived:(NSNotification *)aNotification {
     
@@ -1256,35 +998,35 @@ endnow:
 
 - (BOOL) shouldAddItemToHistory:(NSArray *)anItem { 
     #pragma unused(anItem)
-    BMSCRIPT_DELEGATE_METHOD_TRACE return YES; 
+    return YES; 
 }
 - (BOOL) shouldReturnItemFromHistory:(NSString *)anItem { 
     #pragma unused(anItem)
-    BMSCRIPT_DELEGATE_METHOD_TRACE return YES; 
+    return YES; 
 }
 - (BOOL) shouldAppendPartialResult:(NSString *)string { 
     #pragma unused(string)
-    BMSCRIPT_DELEGATE_METHOD_TRACE return YES; 
+    return YES; 
 }
 - (BOOL) shouldSetResult:(NSString *)aString { 
     #pragma unused(aString)
-    BMSCRIPT_DELEGATE_METHOD_TRACE return YES; 
+    return YES; 
 }
 - (BOOL) shouldSetScript:(NSString *)aScript { 
     #pragma unused(aScript)
-    BMSCRIPT_DELEGATE_METHOD_TRACE return YES; 
+    return YES; 
 }
 - (BOOL) shouldSetOptions:(NSDictionary *)opts { 
     #pragma unused(opts)
-    BMSCRIPT_DELEGATE_METHOD_TRACE return YES; 
+    return YES; 
 }
 
-- (NSString *) willAddItemToHistory:(NSString *)anItem { BMSCRIPT_DELEGATE_METHOD_TRACE return anItem; }
-- (NSString *) willReturnItemFromHistory:(NSString *)anItem { BMSCRIPT_DELEGATE_METHOD_TRACE return anItem; }
-- (NSString *) willAppendPartialResult:(NSString *)string { BMSCRIPT_DELEGATE_METHOD_TRACE return string; }
-- (NSString *) willSetResult:(NSString *)aString { BMSCRIPT_DELEGATE_METHOD_TRACE return aString; }
-- (NSString *) willSetScript:(NSString *)aScript { BMSCRIPT_DELEGATE_METHOD_TRACE return aScript; }
-- (NSDictionary *) willSetOptions:(NSDictionary *)opts { BMSCRIPT_DELEGATE_METHOD_TRACE return opts; }
+- (NSString *) willAddItemToHistory:(NSString *)anItem { return anItem; }
+- (NSString *) willReturnItemFromHistory:(NSString *)anItem { return anItem; }
+- (NSString *) willAppendPartialResult:(NSString *)string { return string; }
+- (NSString *) willSetResult:(NSString *)aString { return aString; }
+- (NSString *) willSetScript:(NSString *)aScript { return aScript; }
+- (NSDictionary *) willSetOptions:(NSDictionary *)opts { return opts; }
 
 // MARK BMScriptLanguage
 

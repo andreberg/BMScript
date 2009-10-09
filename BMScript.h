@@ -281,9 +281,8 @@
  * Class interface of BMScript.
  * Also includes the documentation mainpage.
  */
-
-#import <Cocoa/Cocoa.h>
 #import "BMDefines.h"
+#import <Cocoa/Cocoa.h>
 #include <AvailabilityMacros.h>
 
 /*!
@@ -315,6 +314,13 @@
     #endif
 #endif
 
+
+#ifndef BMSCRIPT_ENABLE_DTRACE
+    /*! Toggle for DTrace probes. */
+    #define BMSCRIPT_ENABLE_DTRACE 1
+#endif
+
+
 /*!
  * @def BM_ATOMIC
  * Toggles the atomicity attribute for Objective-C 2.0 properties. 
@@ -326,13 +332,18 @@
     #define BM_ATOMIC 
 #endif
 
+
 /*! 
  * @def BM_PROBE(name, ...) 
  * DTrace probe macro. Combines testing if a probe is enabled and actually calling this probe. 
+ * If #BMSCRIPT_ENABLE_DTRACE is not set to 1 this macro evaluates to nothing.
  */
-#define BM_PROBE(name, ...) \
-    if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
-
+#ifdef BMSCRIPT_ENABLE_DTRACE
+    #define BM_PROBE(name, ...) \
+        if (BMSCRIPT_ ## name ## _ENABLED()) BMSCRIPT_ ## name(__VA_ARGS__)
+#else
+    #define BM_PROBE(name, ...)
+#endif
 /*!
  * @def BMSynthesizeOptions(path, ...)
  * Used to synthesize a valid options dictionary. 
