@@ -25,8 +25,6 @@
 #include <unistd.h>             /* for usleep       */
 #include <pthread.h>            /* for pthread_*    */
 
-#define BMSCRIPT_VERSION            17      /* 10 == 1.0 */
-
 #define BMSCRIPT_INSERTION_TOKEN    @"%@"   /* used by templates to mark locations where a replacement insertions should occur */
 #define BM_NSSTRING_TRUNCATE_LENGTH 20      /* used by -truncate, defined in NSString (BMScriptUtilities) */
 
@@ -60,13 +58,6 @@
 #else 
     #define BM_LOCK(name)
     #define BM_UNLOCK(name)
-#endif
-
-#define ap_start NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_3
-    #define ap_end   [pool drain];
-#else
-    #define ap_end   [pool release];
 #endif
 
 
@@ -195,10 +186,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
                        BMStringFromBOOL(isTemplate)];
     
     return [desc UTF8String];
-}
-
-+ (NSInteger) version {
-    return BMSCRIPT_VERSION;
 }
 
 // MARK: Deallocation
@@ -421,15 +408,18 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_LOCK(task)
     @try {
+        BM_PROBE(TASK_LAUNCH_BEGIN, status, (char *) [BMStringFromTerminationStatus(status) UTF8String]);
         [task launch];
     }
     @catch (NSException * e) {
         BM_LOCK(gTaskStatus)
         gTaskStatus = status = BMScriptExceptionTerminationStatus;
         BM_UNLOCK(gTaskStatus)
+        BM_PROBE(TASK_LAUNCH_END, status, (char *) [BMStringFromTerminationStatus(status) UTF8String]);
         goto endnow;
     }    
     [task waitUntilExit];
+    BM_PROBE(TASK_LAUNCH_END, status, (char *) [BMStringFromTerminationStatus(status) UTF8String]);
     NSData * data = [[pipe fileHandleForReading] readDataToEndOfFile];
     if (BM_EXPECTED([task isRunning], 0)) [task terminate];
     BM_UNLOCK(task)
@@ -472,7 +462,7 @@ endnow:
     } else {
         if (!bgTask) {
             
-            BM_PROBE(SETUP_TASK_BEGIN);
+            BM_PROBE(SETUP_BG_TASK_BEGIN);
 
             // Create a task and pipe
             bgTask = [[NSTask alloc] init];
@@ -523,7 +513,7 @@ endnow:
                                                          name:NSTaskDidTerminateNotification 
                                                        object:bgTask];
             
-            BM_PROBE(SETUP_TASK_END);
+            BM_PROBE(SETUP_BG_TASK_END);
 
             @try {
                 [bgTask launch];
@@ -557,8 +547,9 @@ endnow:
 
 
 - (void) appendData:(NSData *)data {
-
+    
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    BM_PROBE(APPEND_DATA_BEGIN, (char *) [string UTF8String]);
     if (BM_EXPECTED(string != nil, 1)) {
         NSString * aPartial = string;
         BOOL shouldAppendPartial = YES;
@@ -576,12 +567,14 @@ endnow:
     } else {
         NSLog(@"BMScript: Warning: Attempted %s but could not append to self.partialResult. Data maybe lost!", __PRETTY_FUNCTION__);
     }
+    BM_PROBE(APPEND_DATA_END, (char *) [[partialResult quote] UTF8String]);
     [string release], string = nil;
 }
 
 - (void) cleanupTask:(NSTask *)whichTask {
     if (task && task == whichTask) {
         
+        BM_PROBE(CLEANUP_TASK_BEGIN);
         BM_LOCK(task)
         [task release], task = nil;
         BM_UNLOCK(task)
@@ -592,9 +585,11 @@ endnow:
             [pipe release], pipe = nil;
         }
         BM_UNLOCK(pipe)
+        BM_PROBE(CLEANUP_TASK_END);
         
     } else if (bgTask && bgTask == whichTask) {
         
+        BM_PROBE(CLEANUP_BG_TASK_BEGIN);
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:NSFileHandleReadCompletionNotification 
                                                       object:[bgPipe fileHandleForReading]];
@@ -612,11 +607,14 @@ endnow:
             [bgPipe release], bgPipe = nil;
         }
         BM_UNLOCK(bgPipe)
+        BM_PROBE(CLEANUP_BG_TASK_END);
     }
 }
 
 
 - (void) stopTask {
+    
+    BM_PROBE(STOP_BG_TASK_BEGIN);
     
     // read out remaining data, as the pipes have a limited buffer size 
     // and may stall on subsequent calls if full
@@ -650,7 +648,7 @@ endnow:
     
     [self cleanupTask:bgTask];
     
-    BM_PROBE(END_BG_EXECUTE, (char *) [[result quote] UTF8String]);
+    BM_PROBE(BG_EXECUTE_END, (char *) [[result quote] UTF8String]);
 
     NSArray * historyItem = [NSArray arrayWithObjects:script, result, nil];
     BM_LOCK(history)
@@ -668,13 +666,14 @@ endnow:
               @"Added to history = %@", [[script quote] truncate], history);
     }
     
-    BM_LOCK(self)
     NSDictionary * info = [NSDictionary dictionaryWithObjectsAndKeys:
                            [NSNumber numberWithInt:gBgTaskStatus], BMScriptNotificationTaskTerminationStatus, 
                                                            result, BMScriptNotificationTaskResults, nil];
-    
+    BM_LOCK(self)
     [[NSNotificationCenter defaultCenter] postNotificationName:BMScriptTaskDidEndNotification object:self userInfo:info];
     BM_UNLOCK(self)
+    
+    BM_PROBE(STOP_BG_TASK_END);
 }
 
 - (void) taskTerminated:(NSNotification *) aNotification { 
@@ -687,6 +686,7 @@ endnow:
 // TODO: add probes for template system
 
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg {
+    BM_PROBE(SATURATE_WITH_ARGUMENT_BEGIN, (char *) [tArg UTF8String]);
     if (self.isTemplate) {
         BM_LOCK(script)
         self.script = [NSString stringWithFormat:script, tArg];
@@ -695,16 +695,19 @@ endnow:
         return YES;
     }
     return NO;
+    BM_PROBE(SATURATE_WITH_ARGUMENT_END, (char *) [[script quote] UTF8String]);
 }
 
-- (BOOL) saturateTemplateWithArguments:(NSString *)firstArg, ... {    
+- (BOOL) saturateTemplateWithArguments:(NSString *)firstArg, ... {
+    BM_PROBE(SATURATE_WITH_ARGUMENTS_BEGIN);
+    BOOL success = NO;
     if (self.isTemplate) {
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
         // determine how many replacements we need to make
         NSInteger numTokens = [script countOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN];
         if (numTokens == NSNotFound) {
-            return NO;
+            goto endnow;
         }
         
         NSString * accumulator = self.script;
@@ -732,18 +735,21 @@ endnow:
         
         va_end(arglist);
         
-        BM_LOCK(script)
         self.script = [accumulator stringByReplacingOccurrencesOfString:@"%%" withString:@"%"];
         self.isTemplate = NO;
-        BM_UNLOCK(script)
 
         [pool drain];
-        return YES;
+        success = YES;
+        goto endnow;
     }
-    return NO;
+endnow:
+    BM_PROBE(SATURATE_WITH_ARGUMENTS_END, (char *) [[script quote] UTF8String]);
+    return success;
 }
 
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary {
+    BOOL success = NO;
+    BM_PROBE(SATURATE_WITH_DICTIONARY_BEGIN, (char *) [[[dictionary descriptionInStringsFileFormat] quote] UTF8String]);
     if (self.isTemplate) {
         
         NSString * accumulator = self.script;
@@ -763,9 +769,10 @@ endnow:
         self.isTemplate = NO;
         BM_UNLOCK(script)
         
-        return YES;
+        success = YES;
     }
-    return NO;
+    BM_PROBE(SATURATE_WITH_DICTIONARY_END, (char *) [[script quote] UTF8String]);
+    return success;
 }
 
 
@@ -799,7 +806,7 @@ endnow:
 
 - (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error {
     
-    BM_PROBE(START_NET_EXECUTE, 
+    BM_PROBE(NET_EXECUTE_BEGIN, 
              (char *) [[script quote] UTF8String], 
              (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
              (char *) [[task launchPath] UTF8String]);
@@ -882,7 +889,7 @@ endnow:
         }
     }
     
-    BM_PROBE(END_NET_EXECUTE, (char *) [[result quote] UTF8String]);
+    BM_PROBE(NET_EXECUTE_END, (char *) [[result quote] UTF8String]);
 
     return status;
 }
@@ -896,7 +903,7 @@ endnow:
                                          userInfo:nil];            
     }
     
-    BM_PROBE(START_BG_EXECUTE, 
+    BM_PROBE(BG_EXECUTE_BEGIN, 
              (char *) [[script quote] UTF8String], 
              (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
              (char *) [[options objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
@@ -911,7 +918,7 @@ endnow:
 
 - (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index {
     
-    BM_PROBE(ENTER_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX, index, (int) [history count]);
+    BM_PROBE(SCRIPT_AT_INDEX_BEGIN, index, (int) [history count]);
     NSString * aScript = nil;
     if ([history count] > 0) {
         NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:0];
@@ -923,13 +930,13 @@ endnow:
             aScript = item;
         }
     }
-    BM_PROBE(EXIT_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    BM_PROBE(SCRIPT_AT_INDEX_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
     return aScript;
 }
 
 - (NSString *) resultFromHistoryAtIndex:(NSInteger)index {
 
-    BM_PROBE(ENTER_RESULT_FROM_HISTORY_AT_INDEX, index, (int) [history count]);
+    BM_PROBE(RESULT_AT_INDEX_BEGIN, index, (int) [history count]);
     NSString * aResult = nil;
     if ([history count] > 0) {
         NSString * item = [[history objectAtIndex:index] objectAtIndex:1];
@@ -941,13 +948,13 @@ endnow:
             aResult = item;
         }
     }
-    BM_PROBE(EXIT_RESULT_FROM_HISTORY_AT_INDEX, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    BM_PROBE(RESULT_AT_INDEX_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
     return aResult;
 }
 
 - (NSString *) lastScriptSourceFromHistory {
     
-    BM_PROBE(ENTER_LAST_SCRIPT_SOURCE_FROM_HISTORY, (int) [history count]);
+    BM_PROBE(LAST_SCRIPT_BEGIN, (int) [history count]);
     NSString * aScript = nil;
     if ([history count] > 0) {
         NSString * item = [[history lastObject] objectAtIndex:0];
@@ -959,13 +966,13 @@ endnow:
             aScript = item;
         }
     }
-    BM_PROBE(EXIT_LAST_SCRIPT_SOURCE_FROM_HISTORY, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    BM_PROBE(LAST_SCRIPT_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
     return aScript;
 }
 
 - (NSString *) lastResultFromHistory {
     
-    BM_PROBE(ENTER_LAST_RESULT_FROM_HISTORY, (int) [history count]);
+    BM_PROBE(LAST_RESULT_BEGIN, (int) [history count]);
     NSString * aResult = nil;
     if ([history count] > 0) {
         NSString * item = [[history lastObject] objectAtIndex:1];
@@ -977,7 +984,7 @@ endnow:
             aResult = item;
         }
     }
-    BM_PROBE(EXIT_LAST_RESULT_FROM_HISTORY, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    BM_PROBE(LAST_RESULT_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
     return aResult;
 }
 

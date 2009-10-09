@@ -13,7 +13,7 @@ extern "C" {
 
 #define BMSCRIPT_STABILITY "___dtrace_stability$BMScript$v1$1_1_0_1_1_0_1_1_0_1_1_0_1_1_0"
 
-#define BMSCRIPT_TYPEDEFS "___dtrace_typedefs$BMScript$v2$4e53496e7465676572$5465726d696e6174696f6e537461747573"
+#define BMSCRIPT_TYPEDEFS "___dtrace_typedefs$BMScript$v2$5465726d696e6174696f6e537461747573$4e53496e7465676572"
 
 #define	BMSCRIPT_ACQUIRE_LOCK_END(arg0) \
 do { \
@@ -31,118 +31,70 @@ do { \
 } while (0)
 #define	BMSCRIPT_ACQUIRE_LOCK_START_ENABLED() \
 	__dtrace_isenabled$BMScript$acquire_lock_start$v1()
-#define	BMSCRIPT_END_BG_EXECUTE(arg0) \
+#define	BMSCRIPT_APPEND_DATA_BEGIN(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$end_bg_execute$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$append_data_begin$v1$63686172202a(arg0); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_END_BG_EXECUTE_ENABLED() \
-	__dtrace_isenabled$BMScript$end_bg_execute$v1()
-#define	BMSCRIPT_END_NET_EXECUTE(arg0) \
+#define	BMSCRIPT_APPEND_DATA_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$append_data_begin$v1()
+#define	BMSCRIPT_APPEND_DATA_END(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$end_net_execute$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$append_data_end$v1$63686172202a(arg0); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_END_NET_EXECUTE_ENABLED() \
-	__dtrace_isenabled$BMScript$end_net_execute$v1()
-#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENT(arg0) \
+#define	BMSCRIPT_APPEND_DATA_END_ENABLED() \
+	__dtrace_isenabled$BMScript$append_data_end$v1()
+#define	BMSCRIPT_BG_EXECUTE_BEGIN(arg0, arg1, arg2) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$end_saturate_with_argument$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$bg_execute_begin$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENT_ENABLED() \
-	__dtrace_isenabled$BMScript$end_saturate_with_argument$v1()
-#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENTS(arg0) \
+#define	BMSCRIPT_BG_EXECUTE_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$bg_execute_begin$v1()
+#define	BMSCRIPT_BG_EXECUTE_END(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$end_saturate_with_arguments$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$bg_execute_end$v1$63686172202a(arg0); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_END_SATURATE_WITH_ARGUMENTS_ENABLED() \
-	__dtrace_isenabled$BMScript$end_saturate_with_arguments$v1()
-#define	BMSCRIPT_END_SATURATE_WITH_DICTIONARY(arg0) \
+#define	BMSCRIPT_BG_EXECUTE_END_ENABLED() \
+	__dtrace_isenabled$BMScript$bg_execute_end$v1()
+#define	BMSCRIPT_CLEANUP_BG_TASK_BEGIN() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$end_saturate_with_dictionary$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$cleanup_bg_task_begin$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_END_SATURATE_WITH_DICTIONARY_ENABLED() \
-	__dtrace_isenabled$BMScript$end_saturate_with_dictionary$v1()
-#define	BMSCRIPT_END_TASK_LAUNCH(arg0, arg1) \
+#define	BMSCRIPT_CLEANUP_BG_TASK_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$cleanup_bg_task_begin$v1()
+#define	BMSCRIPT_CLEANUP_BG_TASK_END() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$end_task_launch$v1$5465726d696e6174696f6e537461747573$63686172202a(arg0, arg1); \
+	__dtrace_probe$BMScript$cleanup_bg_task_end$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_END_TASK_LAUNCH_ENABLED() \
-	__dtrace_isenabled$BMScript$end_task_launch$v1()
-#define	BMSCRIPT_ENTER_LAST_RESULT_FROM_HISTORY(arg0) \
+#define	BMSCRIPT_CLEANUP_BG_TASK_END_ENABLED() \
+	__dtrace_isenabled$BMScript$cleanup_bg_task_end$v1()
+#define	BMSCRIPT_CLEANUP_TASK_BEGIN() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_last_result_from_history$v1$696e74(arg0); \
+	__dtrace_probe$BMScript$cleanup_task_begin$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_ENTER_LAST_RESULT_FROM_HISTORY_ENABLED() \
-	__dtrace_isenabled$BMScript$enter_last_result_from_history$v1()
-#define	BMSCRIPT_ENTER_LAST_SCRIPT_SOURCE_FROM_HISTORY(arg0) \
+#define	BMSCRIPT_CLEANUP_TASK_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$cleanup_task_begin$v1()
+#define	BMSCRIPT_CLEANUP_TASK_END() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_last_script_source_from_history$v1$696e74(arg0); \
+	__dtrace_probe$BMScript$cleanup_task_end$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_ENTER_LAST_SCRIPT_SOURCE_FROM_HISTORY_ENABLED() \
-	__dtrace_isenabled$BMScript$enter_last_script_source_from_history$v1()
-#define	BMSCRIPT_ENTER_RESULT_FROM_HISTORY_AT_INDEX(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_result_from_history_at_index$v1$4e53496e7465676572$696e74(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_ENTER_RESULT_FROM_HISTORY_AT_INDEX_ENABLED() \
-	__dtrace_isenabled$BMScript$enter_result_from_history_at_index$v1()
-#define	BMSCRIPT_ENTER_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$enter_script_source_from_history_at_index$v1$4e53496e7465676572$696e74(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_ENTER_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX_ENABLED() \
-	__dtrace_isenabled$BMScript$enter_script_source_from_history_at_index$v1()
-#define	BMSCRIPT_EXIT_LAST_RESULT_FROM_HISTORY(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$exit_last_result_from_history$v1$63686172202a$696e74(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_EXIT_LAST_RESULT_FROM_HISTORY_ENABLED() \
-	__dtrace_isenabled$BMScript$exit_last_result_from_history$v1()
-#define	BMSCRIPT_EXIT_LAST_SCRIPT_SOURCE_FROM_HISTORY(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$exit_last_script_source_from_history$v1$63686172202a$696e74(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_EXIT_LAST_SCRIPT_SOURCE_FROM_HISTORY_ENABLED() \
-	__dtrace_isenabled$BMScript$exit_last_script_source_from_history$v1()
-#define	BMSCRIPT_EXIT_RESULT_FROM_HISTORY_AT_INDEX(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$exit_result_from_history_at_index$v1$63686172202a$696e74(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_EXIT_RESULT_FROM_HISTORY_AT_INDEX_ENABLED() \
-	__dtrace_isenabled$BMScript$exit_result_from_history_at_index$v1()
-#define	BMSCRIPT_EXIT_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$exit_script_source_from_history_at_index$v1$63686172202a$696e74(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_EXIT_SCRIPT_SOURCE_FROM_HISTORY_AT_INDEX_ENABLED() \
-	__dtrace_isenabled$BMScript$exit_script_source_from_history_at_index$v1()
+#define	BMSCRIPT_CLEANUP_TASK_END_ENABLED() \
+	__dtrace_isenabled$BMScript$cleanup_task_end$v1()
 #define	BMSCRIPT_INIT_BEGIN(arg0, arg1, arg2) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -167,6 +119,150 @@ do { \
 } while (0)
 #define	BMSCRIPT_INIT_SELF_ENABLED() \
 	__dtrace_isenabled$BMScript$init_self$v1()
+#define	BMSCRIPT_LAST_RESULT_BEGIN(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$last_result_begin$v1$696e74(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_LAST_RESULT_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$last_result_begin$v1()
+#define	BMSCRIPT_LAST_RESULT_END(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$last_result_end$v1$63686172202a$696e74(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_LAST_RESULT_END_ENABLED() \
+	__dtrace_isenabled$BMScript$last_result_end$v1()
+#define	BMSCRIPT_LAST_SCRIPT_BEGIN(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$last_script_begin$v1$696e74(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_LAST_SCRIPT_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$last_script_begin$v1()
+#define	BMSCRIPT_LAST_SCRIPT_END(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$last_script_end$v1$63686172202a$696e74(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_LAST_SCRIPT_END_ENABLED() \
+	__dtrace_isenabled$BMScript$last_script_end$v1()
+#define	BMSCRIPT_NET_EXECUTE_BEGIN(arg0, arg1, arg2) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$net_execute_begin$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_NET_EXECUTE_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$net_execute_begin$v1()
+#define	BMSCRIPT_NET_EXECUTE_END(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$net_execute_end$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_NET_EXECUTE_END_ENABLED() \
+	__dtrace_isenabled$BMScript$net_execute_end$v1()
+#define	BMSCRIPT_RESULT_AT_INDEX_BEGIN(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$result_at_index_begin$v1$4e53496e7465676572$696e74(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_RESULT_AT_INDEX_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$result_at_index_begin$v1()
+#define	BMSCRIPT_RESULT_AT_INDEX_END(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$result_at_index_end$v1$63686172202a$696e74(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_RESULT_AT_INDEX_END_ENABLED() \
+	__dtrace_isenabled$BMScript$result_at_index_end$v1()
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENT_BEGIN(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$saturate_with_argument_begin$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENT_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$saturate_with_argument_begin$v1()
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENT_END(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$saturate_with_argument_end$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENT_END_ENABLED() \
+	__dtrace_isenabled$BMScript$saturate_with_argument_end$v1()
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENTS_BEGIN() \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$saturate_with_arguments_begin$v1(); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENTS_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$saturate_with_arguments_begin$v1()
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENTS_END(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$saturate_with_arguments_end$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SATURATE_WITH_ARGUMENTS_END_ENABLED() \
+	__dtrace_isenabled$BMScript$saturate_with_arguments_end$v1()
+#define	BMSCRIPT_SATURATE_WITH_DICTIONARY_BEGIN(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$saturate_with_dictionary_begin$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SATURATE_WITH_DICTIONARY_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$saturate_with_dictionary_begin$v1()
+#define	BMSCRIPT_SATURATE_WITH_DICTIONARY_END(arg0) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$saturate_with_dictionary_end$v1$63686172202a(arg0); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SATURATE_WITH_DICTIONARY_END_ENABLED() \
+	__dtrace_isenabled$BMScript$saturate_with_dictionary_end$v1()
+#define	BMSCRIPT_SCRIPT_AT_INDEX_BEGIN(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$script_at_index_begin$v1$4e53496e7465676572$696e74(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SCRIPT_AT_INDEX_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$script_at_index_begin$v1()
+#define	BMSCRIPT_SCRIPT_AT_INDEX_END(arg0, arg1) \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$script_at_index_end$v1$63686172202a$696e74(arg0, arg1); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SCRIPT_AT_INDEX_END_ENABLED() \
+	__dtrace_isenabled$BMScript$script_at_index_end$v1()
+#define	BMSCRIPT_SETUP_BG_TASK_BEGIN() \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$setup_bg_task_begin$v1(); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SETUP_BG_TASK_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$setup_bg_task_begin$v1()
+#define	BMSCRIPT_SETUP_BG_TASK_END() \
+do { \
+	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
+	__dtrace_probe$BMScript$setup_bg_task_end$v1(); \
+	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
+} while (0)
+#define	BMSCRIPT_SETUP_BG_TASK_END_ENABLED() \
+	__dtrace_isenabled$BMScript$setup_bg_task_end$v1()
 #define	BMSCRIPT_SETUP_TASK_BEGIN() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -183,110 +279,114 @@ do { \
 } while (0)
 #define	BMSCRIPT_SETUP_TASK_END_ENABLED() \
 	__dtrace_isenabled$BMScript$setup_task_end$v1()
-#define	BMSCRIPT_START_BG_EXECUTE(arg0, arg1, arg2) \
+#define	BMSCRIPT_STOP_BG_TASK_BEGIN() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$start_bg_execute$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
+	__dtrace_probe$BMScript$stop_bg_task_begin$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_START_BG_EXECUTE_ENABLED() \
-	__dtrace_isenabled$BMScript$start_bg_execute$v1()
-#define	BMSCRIPT_START_NET_EXECUTE(arg0, arg1, arg2) \
+#define	BMSCRIPT_STOP_BG_TASK_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$stop_bg_task_begin$v1()
+#define	BMSCRIPT_STOP_BG_TASK_END() \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$start_net_execute$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
+	__dtrace_probe$BMScript$stop_bg_task_end$v1(); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_START_NET_EXECUTE_ENABLED() \
-	__dtrace_isenabled$BMScript$start_net_execute$v1()
-#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENT(arg0) \
+#define	BMSCRIPT_STOP_BG_TASK_END_ENABLED() \
+	__dtrace_isenabled$BMScript$stop_bg_task_end$v1()
+#define	BMSCRIPT_TASK_LAUNCH_BEGIN(arg0, arg1) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$start_saturate_with_argument$v1$63686172202a(arg0); \
+	__dtrace_probe$BMScript$task_launch_begin$v1$5465726d696e6174696f6e537461747573$63686172202a(arg0, arg1); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENT_ENABLED() \
-	__dtrace_isenabled$BMScript$start_saturate_with_argument$v1()
-#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENTS() \
+#define	BMSCRIPT_TASK_LAUNCH_BEGIN_ENABLED() \
+	__dtrace_isenabled$BMScript$task_launch_begin$v1()
+#define	BMSCRIPT_TASK_LAUNCH_END(arg0, arg1) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$start_saturate_with_arguments$v1(); \
+	__dtrace_probe$BMScript$task_launch_end$v1$5465726d696e6174696f6e537461747573$63686172202a(arg0, arg1); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
-#define	BMSCRIPT_START_SATURATE_WITH_ARGUMENTS_ENABLED() \
-	__dtrace_isenabled$BMScript$start_saturate_with_arguments$v1()
-#define	BMSCRIPT_START_SATURATE_WITH_DICTIONARY(arg0) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$start_saturate_with_dictionary$v1$63686172202a(arg0); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_START_SATURATE_WITH_DICTIONARY_ENABLED() \
-	__dtrace_isenabled$BMScript$start_saturate_with_dictionary$v1()
-#define	BMSCRIPT_START_TASK_LAUNCH(arg0, arg1) \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$start_task_launch$v1$5465726d696e6174696f6e537461747573$63686172202a(arg0, arg1); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_START_TASK_LAUNCH_ENABLED() \
-	__dtrace_isenabled$BMScript$start_task_launch$v1()
+#define	BMSCRIPT_TASK_LAUNCH_END_ENABLED() \
+	__dtrace_isenabled$BMScript$task_launch_end$v1()
 
 
 extern void __dtrace_probe$BMScript$acquire_lock_end$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$acquire_lock_end$v1(void);
 extern void __dtrace_probe$BMScript$acquire_lock_start$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$acquire_lock_start$v1(void);
-extern void __dtrace_probe$BMScript$end_bg_execute$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$end_bg_execute$v1(void);
-extern void __dtrace_probe$BMScript$end_net_execute$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$end_net_execute$v1(void);
-extern void __dtrace_probe$BMScript$end_saturate_with_argument$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$end_saturate_with_argument$v1(void);
-extern void __dtrace_probe$BMScript$end_saturate_with_arguments$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$end_saturate_with_arguments$v1(void);
-extern void __dtrace_probe$BMScript$end_saturate_with_dictionary$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$end_saturate_with_dictionary$v1(void);
-extern void __dtrace_probe$BMScript$end_task_launch$v1$5465726d696e6174696f6e537461747573$63686172202a(TerminationStatus, char *);
-extern int __dtrace_isenabled$BMScript$end_task_launch$v1(void);
-extern void __dtrace_probe$BMScript$enter_last_result_from_history$v1$696e74(int);
-extern int __dtrace_isenabled$BMScript$enter_last_result_from_history$v1(void);
-extern void __dtrace_probe$BMScript$enter_last_script_source_from_history$v1$696e74(int);
-extern int __dtrace_isenabled$BMScript$enter_last_script_source_from_history$v1(void);
-extern void __dtrace_probe$BMScript$enter_result_from_history_at_index$v1$4e53496e7465676572$696e74(NSInteger, int);
-extern int __dtrace_isenabled$BMScript$enter_result_from_history_at_index$v1(void);
-extern void __dtrace_probe$BMScript$enter_script_source_from_history_at_index$v1$4e53496e7465676572$696e74(NSInteger, int);
-extern int __dtrace_isenabled$BMScript$enter_script_source_from_history_at_index$v1(void);
-extern void __dtrace_probe$BMScript$exit_last_result_from_history$v1$63686172202a$696e74(char *, int);
-extern int __dtrace_isenabled$BMScript$exit_last_result_from_history$v1(void);
-extern void __dtrace_probe$BMScript$exit_last_script_source_from_history$v1$63686172202a$696e74(char *, int);
-extern int __dtrace_isenabled$BMScript$exit_last_script_source_from_history$v1(void);
-extern void __dtrace_probe$BMScript$exit_result_from_history_at_index$v1$63686172202a$696e74(char *, int);
-extern int __dtrace_isenabled$BMScript$exit_result_from_history_at_index$v1(void);
-extern void __dtrace_probe$BMScript$exit_script_source_from_history_at_index$v1$63686172202a$696e74(char *, int);
-extern int __dtrace_isenabled$BMScript$exit_script_source_from_history_at_index$v1(void);
+extern void __dtrace_probe$BMScript$append_data_begin$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$append_data_begin$v1(void);
+extern void __dtrace_probe$BMScript$append_data_end$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$append_data_end$v1(void);
+extern void __dtrace_probe$BMScript$bg_execute_begin$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
+extern int __dtrace_isenabled$BMScript$bg_execute_begin$v1(void);
+extern void __dtrace_probe$BMScript$bg_execute_end$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$bg_execute_end$v1(void);
+extern void __dtrace_probe$BMScript$cleanup_bg_task_begin$v1(void);
+extern int __dtrace_isenabled$BMScript$cleanup_bg_task_begin$v1(void);
+extern void __dtrace_probe$BMScript$cleanup_bg_task_end$v1(void);
+extern int __dtrace_isenabled$BMScript$cleanup_bg_task_end$v1(void);
+extern void __dtrace_probe$BMScript$cleanup_task_begin$v1(void);
+extern int __dtrace_isenabled$BMScript$cleanup_task_begin$v1(void);
+extern void __dtrace_probe$BMScript$cleanup_task_end$v1(void);
+extern int __dtrace_isenabled$BMScript$cleanup_task_end$v1(void);
 extern void __dtrace_probe$BMScript$init_begin$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
 extern int __dtrace_isenabled$BMScript$init_begin$v1(void);
 extern void __dtrace_probe$BMScript$init_end$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$init_end$v1(void);
 extern void __dtrace_probe$BMScript$init_self$v1(void);
 extern int __dtrace_isenabled$BMScript$init_self$v1(void);
+extern void __dtrace_probe$BMScript$last_result_begin$v1$696e74(int);
+extern int __dtrace_isenabled$BMScript$last_result_begin$v1(void);
+extern void __dtrace_probe$BMScript$last_result_end$v1$63686172202a$696e74(char *, int);
+extern int __dtrace_isenabled$BMScript$last_result_end$v1(void);
+extern void __dtrace_probe$BMScript$last_script_begin$v1$696e74(int);
+extern int __dtrace_isenabled$BMScript$last_script_begin$v1(void);
+extern void __dtrace_probe$BMScript$last_script_end$v1$63686172202a$696e74(char *, int);
+extern int __dtrace_isenabled$BMScript$last_script_end$v1(void);
+extern void __dtrace_probe$BMScript$net_execute_begin$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
+extern int __dtrace_isenabled$BMScript$net_execute_begin$v1(void);
+extern void __dtrace_probe$BMScript$net_execute_end$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$net_execute_end$v1(void);
+extern void __dtrace_probe$BMScript$result_at_index_begin$v1$4e53496e7465676572$696e74(NSInteger, int);
+extern int __dtrace_isenabled$BMScript$result_at_index_begin$v1(void);
+extern void __dtrace_probe$BMScript$result_at_index_end$v1$63686172202a$696e74(char *, int);
+extern int __dtrace_isenabled$BMScript$result_at_index_end$v1(void);
+extern void __dtrace_probe$BMScript$saturate_with_argument_begin$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$saturate_with_argument_begin$v1(void);
+extern void __dtrace_probe$BMScript$saturate_with_argument_end$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$saturate_with_argument_end$v1(void);
+extern void __dtrace_probe$BMScript$saturate_with_arguments_begin$v1(void);
+extern int __dtrace_isenabled$BMScript$saturate_with_arguments_begin$v1(void);
+extern void __dtrace_probe$BMScript$saturate_with_arguments_end$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$saturate_with_arguments_end$v1(void);
+extern void __dtrace_probe$BMScript$saturate_with_dictionary_begin$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$saturate_with_dictionary_begin$v1(void);
+extern void __dtrace_probe$BMScript$saturate_with_dictionary_end$v1$63686172202a(char *);
+extern int __dtrace_isenabled$BMScript$saturate_with_dictionary_end$v1(void);
+extern void __dtrace_probe$BMScript$script_at_index_begin$v1$4e53496e7465676572$696e74(NSInteger, int);
+extern int __dtrace_isenabled$BMScript$script_at_index_begin$v1(void);
+extern void __dtrace_probe$BMScript$script_at_index_end$v1$63686172202a$696e74(char *, int);
+extern int __dtrace_isenabled$BMScript$script_at_index_end$v1(void);
+extern void __dtrace_probe$BMScript$setup_bg_task_begin$v1(void);
+extern int __dtrace_isenabled$BMScript$setup_bg_task_begin$v1(void);
+extern void __dtrace_probe$BMScript$setup_bg_task_end$v1(void);
+extern int __dtrace_isenabled$BMScript$setup_bg_task_end$v1(void);
 extern void __dtrace_probe$BMScript$setup_task_begin$v1(void);
 extern int __dtrace_isenabled$BMScript$setup_task_begin$v1(void);
 extern void __dtrace_probe$BMScript$setup_task_end$v1(void);
 extern int __dtrace_isenabled$BMScript$setup_task_end$v1(void);
-extern void __dtrace_probe$BMScript$start_bg_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
-extern int __dtrace_isenabled$BMScript$start_bg_execute$v1(void);
-extern void __dtrace_probe$BMScript$start_net_execute$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
-extern int __dtrace_isenabled$BMScript$start_net_execute$v1(void);
-extern void __dtrace_probe$BMScript$start_saturate_with_argument$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$start_saturate_with_argument$v1(void);
-extern void __dtrace_probe$BMScript$start_saturate_with_arguments$v1(void);
-extern int __dtrace_isenabled$BMScript$start_saturate_with_arguments$v1(void);
-extern void __dtrace_probe$BMScript$start_saturate_with_dictionary$v1$63686172202a(char *);
-extern int __dtrace_isenabled$BMScript$start_saturate_with_dictionary$v1(void);
-extern void __dtrace_probe$BMScript$start_task_launch$v1$5465726d696e6174696f6e537461747573$63686172202a(TerminationStatus, char *);
-extern int __dtrace_isenabled$BMScript$start_task_launch$v1(void);
+extern void __dtrace_probe$BMScript$stop_bg_task_begin$v1(void);
+extern int __dtrace_isenabled$BMScript$stop_bg_task_begin$v1(void);
+extern void __dtrace_probe$BMScript$stop_bg_task_end$v1(void);
+extern int __dtrace_isenabled$BMScript$stop_bg_task_end$v1(void);
+extern void __dtrace_probe$BMScript$task_launch_begin$v1$5465726d696e6174696f6e537461747573$63686172202a(TerminationStatus, char *);
+extern int __dtrace_isenabled$BMScript$task_launch_begin$v1(void);
+extern void __dtrace_probe$BMScript$task_launch_end$v1$5465726d696e6174696f6e537461747573$63686172202a(TerminationStatus, char *);
+extern int __dtrace_isenabled$BMScript$task_launch_end$v1(void);
 
 #ifdef	__cplusplus
 }

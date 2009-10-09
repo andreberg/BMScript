@@ -70,6 +70,21 @@ provider BMScript {
     probe setup_task_begin();
     probe   setup_task_end();
     
+    probe cleanup_task_begin();
+    probe cleanup_task_end();
+        
+    probe setup_bg_task_begin();
+    probe   setup_bg_task_end();
+    
+    probe cleanup_bg_task_begin();
+    probe cleanup_bg_task_end();
+    
+    probe stop_bg_task_begin(); /* stopTask calls cleanupTask for bg task, */
+    probe stop_bg_task_end();   /* so this is kinda more interesting that just cleanup */
+    
+    probe append_data_begin(char * newData);
+    probe append_data_end(char * partialResult);
+    
     /* Initialization */
     
     probe init_begin(char * initMethodName, char * sourceOrPath, char * optionsRep);
@@ -78,39 +93,39 @@ provider BMScript {
         
     /* Execution */
     
-    probe start_net_execute(char * scriptSource, char * isTemplate, char * launchPath);
-    probe end_net_execute(char * result);
+    probe net_execute_begin(char * scriptSource, char * isTemplate, char * launchPath);
+    probe net_execute_end(char * result);
     
-    probe start_bg_execute(char * scriptSource, char * isTemplate, char * launchPath);
-    probe end_bg_execute(char * result);
+    probe bg_execute_begin(char * scriptSource, char * isTemplate, char * launchPath);
+    probe bg_execute_end(char * result);
     
-    probe start_task_launch(TerminationStatus status, char * statusText);
-    probe end_task_launch(TerminationStatus status, char * statusText);
+    probe task_launch_begin(TerminationStatus status, char * statusText); /* might not need these two */
+    probe task_launch_end(TerminationStatus status, char * statusText);
     
     /* Templates */
     
-    probe start_saturate_with_argument(char * theArg);
-    probe end_saturate_with_argument(char * saturatedScript);
+    probe saturate_with_argument_begin(char * theArg);
+    probe saturate_with_argument_end(char * saturatedScript);
     
-    probe start_saturate_with_arguments();
-    probe end_saturate_with_arguments(char * saturatedScript);
+    probe saturate_with_arguments_begin();
+    probe saturate_with_arguments_end(char * saturatedScript);
     
-    probe start_saturate_with_dictionary(char * theDict);
-    probe end_saturate_with_dictionary(char * saturatedScript);
+    probe saturate_with_dictionary_begin(char * theDict);
+    probe saturate_with_dictionary_end(char * saturatedScript);
     
     /* History */
     
-    probe enter_script_source_from_history_at_index(NSInteger index, int historySize);
-    probe  exit_script_source_from_history_at_index(char * script, int historySize);
+    probe script_at_index_begin(NSInteger index, int historySize);
+    probe script_at_index_end(char * script, int historySize);
     
-    probe enter_result_from_history_at_index(NSInteger index, int historySize);
-    probe  exit_result_from_history_at_index(char * result, int historySize);
+    probe result_at_index_begin(NSInteger index, int historySize);
+    probe result_at_index_end(char * result, int historySize);
     
-    probe enter_last_script_source_from_history(int historySize);
-    probe  exit_last_script_source_from_history(char * script, int historySize);
+    probe last_script_begin(int historySize);
+    probe last_script_end(char * script, int historySize);
     
-    probe enter_last_result_from_history(int historySize);
-    probe  exit_last_result_from_history(char * result, int historySize);
+    probe last_result_begin(int historySize);
+    probe last_result_end(char * result, int historySize);
     
     /* Locking */
     

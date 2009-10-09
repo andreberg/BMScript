@@ -27,7 +27,6 @@
 #import "BMDefines.h"
 
 #import "ScriptRunner.h"
-#import "BMAtomic.h"
 #import "NSObject_MemoryLogger.h"
 
 #define DEBUG_RUNTIME_INTERVAL  5.0
@@ -40,9 +39,6 @@
 #endif
 
 
-void exitNow(void) {
-    exit(0);
-}
 
 int main (int argc, const char * argv[]) {
     #pragma unused(argc, argv)
