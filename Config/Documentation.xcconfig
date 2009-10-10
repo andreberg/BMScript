@@ -38,6 +38,9 @@ DOCEXAMPLES=$(DOCROOT)/Examples
 // name of the generated docset
 DOCSET_NAME=BMScript.docset
 
+// feed name
+DOCSET_FEEDNAME=BMScript
+
 // docset bundle id
 DOCSET_BUNDLE_ID=com.bergmedia.BMScript
 

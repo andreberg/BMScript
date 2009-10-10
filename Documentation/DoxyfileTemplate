@@ -129,14 +129,17 @@ FILE_PATTERNS          = *.c \
                          *.vhdl \
                          *.include
 RECURSIVE              = NO
-EXCLUDE                = BMScriptProbes.h \
-                         *.d
+EXCLUDE                = .svn \
+                         *.d \
+                         BMScriptProbes.* \
+                         NSObject_MemoryLogger.* \
+                         ScriptRunner.*
 EXCLUDE_SYMLINKS       = YES
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = */.svn/*
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = $DOCINCLUDES
 EXAMPLE_PATTERNS       = 
-EXAMPLE_RECURSIVE      = NO
+EXAMPLE_RECURSIVE      = YES
 IMAGE_PATH             = 
 INPUT_FILTER           = 
 FILTER_PATTERNS        = 
@@ -170,7 +173,7 @@ HTML_STYLESHEET        = $HTML_STYLESHEET
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 GENERATE_DOCSET        = YES
-DOCSET_FEEDNAME        = BMScript
+DOCSET_FEEDNAME        = $DOCSET_FEEDNAME
 DOCSET_BUNDLE_ID       = $DOCSET_BUNDLE_ID
 HTML_DYNAMIC_SECTIONS  = YES
 CHM_FILE               = 

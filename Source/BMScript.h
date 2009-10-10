@@ -491,7 +491,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @required
 /*!
  * Returns the options dictionary. This is required.
- * @see #BMSynthesizeOptions and @link bmScriptOptionsDictionary.m @endlink
+ * @see #BMSynthesizeOptions and #bmScriptOptionsDictionary.m
  */
 - (NSDictionary *) defaultOptionsForLanguage;
 @optional
@@ -513,14 +513,14 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * If implemented, called whenever a history item is about to be added to the history. 
  * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  *
- * @param anItem the item that will be set as new value in setter if this method returns YES.
+ * @param historyItem a history item is an NSArray with two entries: the script and the result when that script was executed.
  */
 - (BOOL) shouldAddItemToHistory:(NSArray *)historyItem;
 /*!
  * If implemented, called whenever a history item is about to be returned from the history.
  * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  *
- * @param anItem the item that will be returned from getter if this method returns YES.
+ * @param historyItem a history item is an NSArray with two entries: the script and the result when that script was executed.
  */
 - (BOOL) shouldReturnItemFromHistory:(NSString *)historyItem;
 /*!
@@ -729,13 +729,13 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (TerminationStatus) execute;
 /*!
  * Executes the script with a synchroneous (blocking) task and stores the result in &result.
- * @param result a pointer to an NSString where the result should be written to
+ * @param results a pointer to an NSString where the result should be written to
  * @return YES if the execution was successful, NO on error
  */
 - (TerminationStatus) executeAndReturnResult:(NSString **)results;
 /*!
  * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
- * @param result a pointer to an NSString where the result should be written to
+ * @param results a pointer to an NSString where the result should be written to
  * @param error a pointer to an NSError where errors should be written to
  * @return YES if the execution was successful, NO on error
  */

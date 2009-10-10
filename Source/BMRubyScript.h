@@ -17,6 +17,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+/// @cond HIDDEN
+
 #import <Cocoa/Cocoa.h>
 #import "BMScript.h"
 
@@ -27,3 +29,4 @@
 - (NSDictionary *) defaultOptionsForLanguage;
 @end
 
+/// @endcond

@@ -230,7 +230,7 @@
 			);
 			includeInIndex = 0;
 			name = Examples;
-			path = Documentation/Examples;
+			path = Documentation/Includes/Examples;
 			sourceTree = "<group>";
 		};
 		6503F2CA1073752000B260F7 /* Resources */ = {

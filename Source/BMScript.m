@@ -683,8 +683,6 @@ endnow:
 
 // MARK: Templates
 
-// TODO: add probes for template system
-
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg {
     BM_PROBE(SATURATE_WITH_ARGUMENT_BEGIN, (char *) [tArg UTF8String]);
     if (self.isTemplate) {
@@ -1001,39 +999,39 @@ endnow:
     return sameScript && sameLaunchPath;
 }
 
-// MARK: BMScriptDelegate
+// MARK BMScriptDelegate
 
-- (BOOL) shouldAddItemToHistory:(NSArray *)anItem { 
-    #pragma unused(anItem)
-    return YES; 
-}
-- (BOOL) shouldReturnItemFromHistory:(NSString *)anItem { 
-    #pragma unused(anItem)
-    return YES; 
-}
-- (BOOL) shouldAppendPartialResult:(NSString *)string { 
-    #pragma unused(string)
-    return YES; 
-}
-- (BOOL) shouldSetResult:(NSString *)aString { 
-    #pragma unused(aString)
-    return YES; 
-}
-- (BOOL) shouldSetScript:(NSString *)aScript { 
-    #pragma unused(aScript)
-    return YES; 
-}
-- (BOOL) shouldSetOptions:(NSDictionary *)opts { 
-    #pragma unused(opts)
-    return YES; 
-}
-
-- (NSString *) willAddItemToHistory:(NSString *)anItem { return anItem; }
-- (NSString *) willReturnItemFromHistory:(NSString *)anItem { return anItem; }
-- (NSString *) willAppendPartialResult:(NSString *)string { return string; }
-- (NSString *) willSetResult:(NSString *)aString { return aString; }
-- (NSString *) willSetScript:(NSString *)aScript { return aScript; }
-- (NSDictionary *) willSetOptions:(NSDictionary *)opts { return opts; }
+// - (BOOL) shouldAddItemToHistory:(NSArray *)anItem { 
+//     #pragma unused(anItem)
+//     return YES; 
+// }
+// - (BOOL) shouldReturnItemFromHistory:(NSString *)anItem { 
+//     #pragma unused(anItem)
+//     return YES; 
+// }
+// - (BOOL) shouldAppendPartialResult:(NSString *)string { 
+//     #pragma unused(string)
+//     return YES; 
+// }
+// - (BOOL) shouldSetResult:(NSString *)aString { 
+//     #pragma unused(aString)
+//     return YES; 
+// }
+// - (BOOL) shouldSetScript:(NSString *)aScript { 
+//     #pragma unused(aScript)
+//     return YES; 
+// }
+// - (BOOL) shouldSetOptions:(NSDictionary *)opts { 
+//     #pragma unused(opts)
+//     return YES; 
+// }
+// 
+// - (NSString *) willAddItemToHistory:(NSString *)anItem { return anItem; }
+// - (NSString *) willReturnItemFromHistory:(NSString *)anItem { return anItem; }
+// - (NSString *) willAppendPartialResult:(NSString *)string { return string; }
+// - (NSString *) willSetResult:(NSString *)aString { return aString; }
+// - (NSString *) willSetScript:(NSString *)aScript { return aScript; }
+// - (NSDictionary *) willSetOptions:(NSDictionary *)opts { return opts; }
 
 // MARK BMScriptLanguage
 
