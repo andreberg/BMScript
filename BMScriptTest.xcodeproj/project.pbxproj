@@ -146,8 +146,11 @@
 		659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Import DocSet into Xcode.sh"; sourceTree = "<group>"; };
 		65ACBD7F10802DFB00B21D55 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
+		65C8429C10804467009B369D /* BMScript - Acquire Lock Time.instrument */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "BMScript - Acquire Lock Time.instrument"; sourceTree = "<group>"; };
+		65C8429D10804467009B369D /* BMScript - Net Execution Time.instrument */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "BMScript - Net Execution Time.instrument"; sourceTree = "<group>"; };
+		65C8429E10804467009B369D /* BMScript - Trace Call Graph.instrument */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "BMScript - Trace Call Graph.instrument"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BMScriptTest.1; sourceTree = "<group>"; };
+		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; name = BMScriptTest.1; path = Documentation/BMScriptTest.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,9 +408,20 @@
 		65BDAD3D1077CA3900458E0F /* DTrace */ = {
 			isa = PBXGroup;
 			children = (
+				65C8429910804454009B369D /* Instruments */,
 				6547BCCC10698F2400B3A390 /* Probes */,
 			);
 			path = DTrace;
+			sourceTree = "<group>";
+		};
+		65C8429910804454009B369D /* Instruments */ = {
+			isa = PBXGroup;
+			children = (
+				65C8429C10804467009B369D /* BMScript - Acquire Lock Time.instrument */,
+				65C8429D10804467009B369D /* BMScript - Net Execution Time.instrument */,
+				65C8429E10804467009B369D /* BMScript - Trace Call Graph.instrument */,
+			);
+			path = Instruments;
 			sourceTree = "<group>";
 		};
 		C6859EA2029092E104C91782 /* Documentation */ = {

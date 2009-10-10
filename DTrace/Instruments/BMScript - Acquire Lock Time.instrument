@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="com.apple.dtrace.instrument.EC360559_5042_4AB3_BBAA_6B9F49E9DC9A" name="EC360559-5042-4AB3-BBAA-6B9F49E9DC9A" version="1.0">
+    <activation>
+        <rule kind="extension" id="com.apple.powertrace.dtrace-instrument-plugin.main"/>
+    </activation>
+    <extension id="EC360559-5042-4AB3-BBAA-6B9F49E9DC9A" category="BMScript" deletable="true" version="1.0" helpURL="" iconURL="" defaultBrushName="default" pluginIdentifier="com.apple.powertrace.dtrace-instrument-plugin.main" data_silent="" instrumentClass="PFTDTraceInstrument" end_silent="" point="com.apple.xray.dtrace-instrument-type" runClass="PFTDTraceRun" deckUnits="1" instrumentDescription="Records the amount of time takes for acquiring a pthread_mutex_lock. (Note: If BMSCRIPT_THREAD_SAFE is not 1 this has no effect." begin_silent="self->totalMicros = 0;" name="Acquire Lock Time">
+        <targetType launched="true" existing="true" all="true"/>
+        <brush name="Default"/>
+        <stack ustack="true" kstack="false" jstack="false"/>
+        <probe_definition index="0" event_name="acquireLockStart" probe="BMScript*:::acquire_lock_start" silent_script="self->startAcquireLock = vtimestamp;\nnself->startAcquireLockMicros = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <field index="0" name="Start Time (us)" code="self->startAcquireLockMicros" type="%u" width="" truncation=""/>
+            <field index="1" name="Fast Lock Enabled" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="1" event_name="acquireLockEnd" probe="BMScript*:::acquire_lock_end" silent_script="self->endAcquireLockMicros = (vtimestamp - self->startAcquireLock) / 1000;\nnself->totalMicros = (self->totalMicros + self->endAcquireLockMicros);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <field index="0" name="Total Time (us)" code="self->totalMicros" type="%u" width="" truncation=""/>
+            <field index="1" name="End Time (us)" code="self->endAcquireLockMicros" type="%u" width="" truncation=""/>
+        </probe_definition>
+    </extension>
+</plugin>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="com.apple.dtrace.instrument.C4C3797E_EDCA_4D3D_A342_42BA04C93629" name="C4C3797E-EDCA-4D3D-A342-42BA04C93629" version="1.0">
+    <activation>
+        <rule kind="extension" id="com.apple.powertrace.dtrace-instrument-plugin.main"/>
+    </activation>
+    <extension id="C4C3797E-EDCA-4D3D-A342-42BA04C93629" category="BMScript" version="1.0" helpURL="" iconURL="" defaultBrushName="default" pluginIdentifier="com.apple.powertrace.dtrace-instrument-plugin.main" instrumentClass="PFTDTraceInstrument" point="com.apple.xray.dtrace-instrument-type" runClass="PFTDTraceRun" deckUnits="1" instrumentDescription="Activates probes in all major execution paths." name="Trace Call Graph">
+        <targetType launched="true" existing="true" all="true"/>
+        <brush name="Default"/>
+        <stack ustack="true" kstack="false" jstack="false"/>
+        <probe_definition index="0" event_name="enterExecuteAndReturnResultError" probe="BMScript*:::enter_execute_and_return_result_error" silent_script="self->enterExecuteAndReturnResultErrorTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Time (us)" code="self->enterExecuteAndReturnResultErrorTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Is Template" code="arg1" type="%s" width="" truncation=""/>
+            <field index="2" name="Launch Path" code="arg2" type="%s" width="" truncation=""/>
+            <field index="3" name="Script Source" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="1" event_name="exitExecuteAndReturnResultError" probe="BMScript*:::exit_execute_and_return_result_error" silent_script="self->exitExecuteAndReturnResultErrorTime = (vtimestamp / 1000);\nnself->unitTime = self->exitExecuteAndReturnResultErrorTime - self->enterExecuteAndReturnResultErrorTime;" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <variable index="1" name="caller"/>
+            <field index="0" name="Time (us)" code="self->exitExecuteAndReturnResultErrorTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Last Result" code="arg0" type="%s" width="" truncation=""/>
+            <field index="2" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="2" event_name="enterSetupTask" probe="BMScript*:::enter_setup_task" silent_script="self->enterSetupTaskTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <variable index="1" name="caller"/>
+            <field index="0" name="Task Is Running" code="arg0" type="%s" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->enterSetupTaskTime" type="%u" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="3" event_name="exitSetupTask" probe="BMScript*:::exit_setup_task" silent_script="self->exitSetupTaskTime = (vtimestamp / 1000);\nnself->unitTime = self->exitSetupTaskTime - self->enterSetupTaskTime;" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->exitSetupTaskTime" type="%u" width="" truncation=""/>
+            <field index="2" name="Task Is Running" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="4" event_name="enterLaunchTaskAndStoreLastResult" probe="BMScript*:::enter_launch_task_and_store_last_result" silent_script="self->enterLaunchTaskAndStoreLastResultTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <variable index="1" name="caller"/>
+            <field index="0" name="Time (us)" code="self->enterLaunchTaskAndStoreLastResultTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Last Result" code="arg1" type="%s" width="" truncation=""/>
+            <field index="2" name="Task Is Running" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="5" event_name="exitLaunchTaskAndStoreLastResult" probe="BMScript*:::exit_launch_task_and_store_last_result" silent_script="self->exitLaunchTaskAndStoreLastResultTime = (vtimestamp / 1000);\nnself->unitTime = self->exitLaunchTaskAndStoreLastResultTime - self->enterLaunchTaskAndStoreLastResultTime;" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Last Result" code="arg1" type="%s" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->exitLaunchTaskAndStoreLastResultTime" type="%u" width="" truncation=""/>
+            <field index="2" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+            <field index="3" name="Task Is Running" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="6" event_name="enterSetupAndLaunchBackgroundTask" probe="BMScript*:::enter_setup_and_launch_background_task" silent_script="self->enterSetupAndLaunchBackgroundTaskTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <variable index="1" name="caller"/>
+            <field index="0" name="Last Result" code="arg1" type="%s" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->enterSetupAndLaunchBackgroundTaskTime" type="%u" width="" truncation=""/>
+            <field index="2" name="Task Is Running" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="7" event_name="exitSetupAndLaunchBackgroundTask" probe="BMScript*:::exit_setup_and_launch_background_task" silent_script="self->exitSetupAndLaunchBackgroundTaskTime = (vtimestamp / 1000);\nnself->unitTime = self->exitSetupAndLaunchBackgroundTaskTime - self->enterSetupAndLaunchBackgroundTaskTime;" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->exitSetupAndLaunchBackgroundTaskTime" type="%u" width="" truncation=""/>
+            <field index="2" name="Task Is Running" code="arg0" type="%s" width="" truncation=""/>
+            <field index="3" name="Last Result" code="arg1" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="8" event_name="enterDataReady" probe="BMScript*:::enter_data_ready" silent_script="self->enterDataReadyTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <variable index="1" name="caller"/>
+            <field index="0" name="Time (us)" code="self->enterDataReadyTime" type="%u" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="9" event_name="exitDataReady" probe="BMScript*:::exit_data_ready" silent_script="self->exitDataReadyTime = (vtimestamp / 1000);\nnself->unitTime = self->exitDataReadyTime - self->enterDataReadyTime;" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->exitDataReadyTime" type="%u" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="10" event_name="enterAppendData" probe="BMScript*:::enter_append_data" silent_script="self->enterAppendDataTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Time (us)" code="self->enterAppendDataTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Partial Result" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="11" event_name="exitAppendData" probe="BMScript*:::exit_append_data" silent_script="self->exitAppendDataTime = (vtimestamp / 1000);\nnself->unitTime = self->exitAppendDataTime - self->enterAppendDataTime;" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->exitAppendDataTime" type="%u" width="" truncation=""/>
+            <field index="2" name="Partial Result" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="12" event_name="enterTaskTerminated" probe="BMScript*:::enter_task_terminated" silent_script="self->enterTaskTerminatedTime = (vtimestamp / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="caller"/>
+            <variable index="1" name="probename"/>
+            <field index="0" name="Time (us)" code="self->enterTaskTerminatedTime" type="%u" width="" truncation=""/>
+            <field index="1" name="User Info" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="13" event_name="exitTaskTerminated" probe="BMScript*:::exit_task_terminated" silent_script="self->exitTaskTerminatedTime = (vtimestamp / 1000);\nnself->unitTime = self->exitTaskTerminatedTime - self->enterTaskTerminatedTime;" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <variable index="1" name="caller"/>
+            <field index="0" name="Last Result" code="arg0" type="%s" width="" truncation=""/>
+            <field index="1" name="Time (us)" code="self->exitTaskTerminatedTime" type="%u" width="" truncation=""/>
+            <field index="2" name="Partial Result" code="arg1" type="%s" width="" truncation=""/>
+            <field index="3" name="Unit Time (us)" code="self->unitTime" type="%u" width="" truncation=""/>
+        </probe_definition>
+    </extension>
+</plugin>

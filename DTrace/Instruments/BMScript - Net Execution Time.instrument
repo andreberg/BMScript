@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="com.apple.dtrace.instrument.C15E29CE_1958_4116_AB40_D65A0347157A" name="C15E29CE-1958-4116-AB40-D65A0347157A" version="1.0">
+    <activation>
+        <rule kind="extension" id="com.apple.powertrace.dtrace-instrument-plugin.main"/>
+    </activation>
+    <extension id="C15E29CE-1958-4116-AB40-D65A0347157A" category="BMScript" deletable="true" version="1.0" helpURL="" iconURL="" defaultBrushName="default" pluginIdentifier="com.apple.powertrace.dtrace-instrument-plugin.main" data_silent="" instrumentClass="PFTDTraceInstrument" end_silent="" point="com.apple.xray.dtrace-instrument-type" runClass="PFTDTraceRun" deckUnits="1" instrumentDescription="Records net execution time of a sript utilizing a blocking execution model (net = time excl. setup and initialization)." begin_silent="" name="Net Execution Time">
+        <targetType launched="true" existing="true" all="true"/>
+        <brush name="Default"/>
+        <stack ustack="true" kstack="false" jstack="false"/>
+        <probe_definition index="0" event_name="startNetExecute" probe="BMScript*:::start_net_execute" silent_script="self->netExecStart = vtimestamp;\nnself->netExecStartMicros = (self->netExecStart / 1000);" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <field index="0" name="Launch Path" code="arg2" type="%s" width="" truncation=""/>
+            <field index="1" name="Is Template" code="arg1" type="%s" width="" truncation=""/>
+            <field index="2" name="Start Time (us)" code="self->netExecStartMicros" type="%u" width="" truncation=""/>
+            <field index="3" name="Script Source (quoted)" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+        <probe_definition index="1" event_name="endNetExecute" probe="BMScript*:::end_net_execute" silent_script="self->netExecEnd = (vtimestamp - self-> netExecStart) / 1000;" predicate="" attach_debugger="">
+            <variable index="0" name="probename"/>
+            <field index="0" name="Total Time (us)" code="self->netExecEnd" type="%u" width="" truncation=""/>
+            <field index="1" name="Result (quoted)" code="arg0" type="%s" width="" truncation=""/>
+        </probe_definition>
+    </extension>
+</plugin>
