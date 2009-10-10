@@ -367,6 +367,7 @@
 				659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */,
 			);
 			name = Scripts;
+			path = Documentation/Scripts;
 			sourceTree = "<group>";
 		};
 		65B45BD110696CE10015DF1B /* Includes */ = {
