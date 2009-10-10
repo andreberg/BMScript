@@ -195,7 +195,7 @@
 				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
 			);
-			name = Source;
+			path = Source;
 			sourceTree = "<group>";
 		};
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
@@ -272,7 +272,7 @@
 			children = (
 				652085F01071634600BA57EC /* DebugEnvironment.sh */,
 			);
-			name = Scripts;
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 		65429588105FE1B80037E0C8 /* Unit Tests */ = {
@@ -282,7 +282,7 @@
 				65429590105FE1B80037E0C8 /* BMRubyScriptUnitTests.m */,
 				65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */,
 			);
-			name = "Unit Tests";
+			path = "Unit Tests";
 			sourceTree = "<group>";
 		};
 		65429589105FE1B80037E0C8 /* Resources */ = {
@@ -291,7 +291,7 @@
 				6542958A105FE1B80037E0C8 /* Scripts */,
 				6542958C105FE1B80037E0C8 /* Templates */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		6542958A105FE1B80037E0C8 /* Scripts */ = {
@@ -299,7 +299,7 @@
 			children = (
 				6542958B105FE1B80037E0C8 /* Convert To Oct.rb */,
 			);
-			name = Scripts;
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 		6542958C105FE1B80037E0C8 /* Templates */ = {
@@ -310,7 +310,7 @@
 				6542958F105FE1B80037E0C8 /* Multiple Tokens Template.rb */,
 				65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */,
 			);
-			name = Templates;
+			path = Templates;
 			sourceTree = "<group>";
 		};
 		65429594105FE1D00037E0C8 /* Classes */ = {
@@ -329,7 +329,7 @@
 				654548181069F4E900E03140 /* BMScriptProbes.h */,
 				6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */,
 			);
-			name = Probes;
+			path = Probes;
 			sourceTree = "<group>";
 		};
 		654E9CE4106BEFBF008CC673 /* Config */ = {
@@ -342,7 +342,7 @@
 				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
 				653D01761074BB4400C9F7CC /* UnitTests.xcconfig */,
 			);
-			name = Config;
+			path = Config;
 			sourceTree = "<group>";
 		};
 		65731F961067771B001E9123 /* Other Sources */ = {
@@ -407,7 +407,7 @@
 			children = (
 				6547BCCC10698F2400B3A390 /* Probes */,
 			);
-			name = DTrace;
+			path = DTrace;
 			sourceTree = "<group>";
 		};
 		C6859EA2029092E104C91782 /* Documentation */ = {
