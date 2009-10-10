@@ -21,8 +21,8 @@ ENV['PROJECT_NUMBER'] = "#{ENV['PROJECT_VERSION']} (r#{ENV['SVN_REVISION']})"
 
 if XCODE
    puts "Replacing variables in DOXYFILE template"
-   doxyfile_path = "#{ENV['SRCROOT']}/#{ENV['DOXYFILE']}"
-   doxyfile_template_path = "#{ENV['SRCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}"
+   doxyfile_path = "#{ENV['DOCROOT']}/#{ENV['DOXYFILE']}"
+   doxyfile_template_path = "#{ENV['DOCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}"
 else
    doxyfile_template_path = "/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/DoxyfileTemplate"
 end
@@ -32,7 +32,7 @@ puts "doxyfile_template_path = \"#{doxyfile_template_path}\"" if $DEBUG
 
 if XCODE
    # a hash table is perfect for storying what need to be unique symbols
-   # a symbol on this case is one build setting shell variable (i.e. $SRCROOT)
+   # a symbol on this case is one build setting shell variable (i.e. $DOCROOT)
    # which must be replaced
    symbols = Hash.new()
    
@@ -44,7 +44,7 @@ if XCODE
    end
    
 else
-   symbols = {"$SRCROOT" => "/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk", "$DOXYGEN_RES_PATH" => "/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources", "$DOT_PATH" => "/opt/local/bin"}
+   symbols = {"$DOCROOT" => "/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk", "$DOXYGEN_RES_PATH" => "/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources", "$DOT_PATH" => "/opt/local/bin"}
 end
 
 puts "symbols = '#{symbols.inspect}'" if $DEBUG

@@ -13,7 +13,6 @@
 			buildPhases = (
 				6503F10A1072ACD000B260F7 /* Saturate Doxygen Template */,
 				657323E71067BF6A001E9123 /* Run Doxygen */,
-				65454AB8106A015800E03140 /* Overwrite doxygen.css Copies (disabled) */,
 				655D7B78106A1CA500B4B907 /* Import DocSet into Xcode */,
 			);
 			dependencies = (
@@ -531,7 +530,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Saturate Doxygen Template.rb\"";
+			shellScript = "\"${DOCSCRIPTS}/Saturate Doxygen Template.rb\"";
 		};
 		6520F82B1071706C00683038 /* Source DebugEnvironment.sh */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -560,20 +559,6 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
-		65454AB8106A015800E03140 /* Overwrite doxygen.css Copies (disabled) */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Overwrite doxygen.css Copies (disabled)";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# let's wait and see if we no longer need this. \n# It's better and more efficient to just specify the CSS file for Doxygen in the Doxyfile template.\n\n#if [[ -e \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\"\n#fi\n#\n#if [[ -e \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\n#fi\n#\n#if [[ -e \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\n#fi";
-		};
 		6547BD221069943B00B3A390 /* Generate DTrace Header Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -600,7 +585,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Import DocSet into Xcode.sh\"";
+			shellScript = "\"${DOCSCRIPTS}/Import DocSet into Xcode.sh\"";
 		};
 		657323E71067BF6A001E9123 /* Run Doxygen */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -614,7 +599,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Run Doxygen.sh\"";
+			shellScript = "\"${DOCSCRIPTS}/Run Doxygen.sh\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
