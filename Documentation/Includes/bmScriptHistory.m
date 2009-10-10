@@ -1,0 +1,4 @@
+- (NSString *) scriptSourceFromHistoryAtIndex:(int)index;
+- (NSString *) resultFromHistoryAtIndex:(int)index;
+- (NSString *) lastScriptSourceFromHistory;
+- (NSString *) lastResultFromHistory;
