@@ -6,6 +6,8 @@
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 
+/// @cond HIDDEN
+
 #import "NSObject_MemoryLogger.h"
 
 id MemoryLogger_retain(id self, SEL _cmd) { 
@@ -81,3 +83,5 @@ static NSMutableDictionary * loggedClasses = nil;
 }
 
 @end
+
+/// @endcond 

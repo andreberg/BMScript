@@ -491,7 +491,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @required
 /*!
  * Returns the options dictionary. This is required.
- * @see #BMSynthesizeOptions and #bmScriptOptionsDictionary.m
+ * @see #BMSynthesizeOptions and bmScriptOptionsDictionary.m
  */
 - (NSDictionary *) defaultOptionsForLanguage;
 @optional

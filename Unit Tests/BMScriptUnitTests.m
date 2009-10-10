@@ -8,7 +8,7 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "BMScript.h"
-#import "BMRubyScript.h"
+#import "BMRubyScript.h"    /* needed for testing isDescendantOfClass */
 
 #ifdef PATHFOR
     #define OLD_PATHFOR PATHFOR
@@ -169,7 +169,11 @@
     [script1 saturateTemplateWithArgument:[NSString stringWithFormat:@"%li", NSIntegerMax ]];
     [script1 executeAndReturnResult:&result error:&error];
     
+#if __LP64__ || NS_BUILD_32_LIKE_64
+    STAssertTrue([result isEqualToString:@"0x7fffffffffffffff"], @"but instead is %@", result);
+#else
     STAssertTrue([result isEqualToString:@"0x7fffffff"], @"but instead is %@", result);
+#endif
 
 
     

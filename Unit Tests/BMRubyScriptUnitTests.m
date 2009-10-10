@@ -93,9 +93,9 @@
 - (void) testInitializers {
     
     BMRubyScript * script1 = [[BMRubyScript alloc] init];
-    BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:defaultScript];      
+    BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:defaultScript options:nil];      
     BMRubyScript * script3 = [[BMRubyScript alloc] initWithScriptSource:defaultScript options:defaultOptions];
-    BMRubyScript * script4 = [[BMRubyScript alloc] initWithContentsOfFile:convertToOctPath];      
+    BMRubyScript * script4 = [[BMRubyScript alloc] initWithContentsOfFile:convertToOctPath options:nil];      
     BMRubyScript * script5 = [[BMRubyScript alloc] initWithContentsOfFile:convertToOctPath options:defaultOptions];
     
     STAssertNotNil(script1, @"script1 should not be nil but is %@", script1);
@@ -115,7 +115,7 @@
     
     NSString * result = [NSString string];
     
-    BMRubyScript * script1 = [BMRubyScript scriptWithContentsOfFile:convertToOctPath];
+    BMRubyScript * script1 = [BMRubyScript scriptWithContentsOfFile:convertToOctPath options:nil];
     [script1 execute];
     result = [script1 lastResult];
     
@@ -129,7 +129,7 @@
     STAssertTrue([result isEqualToString:@"0377"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
-    BMRubyScript * script3 = [BMRubyScript scriptWithSource:decScript];
+    BMRubyScript * script3 = [BMRubyScript scriptWithSource:decScript options:nil];
     [script3 execute];
     result = [script3 lastResult];
     

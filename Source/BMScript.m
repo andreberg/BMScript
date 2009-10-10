@@ -667,8 +667,8 @@ endnow:
     }
     
     NSDictionary * info = [NSDictionary dictionaryWithObjectsAndKeys:
-                           [NSNumber numberWithInt:gBgTaskStatus], BMScriptNotificationTaskTerminationStatus, 
-                                                           result, BMScriptNotificationTaskResults, nil];
+                           [NSNumber numberWithInteger:gBgTaskStatus], BMScriptNotificationTaskTerminationStatus, 
+                                                               result, BMScriptNotificationTaskResults, nil];
     BM_LOCK(self)
     [[NSNotificationCenter defaultCenter] postNotificationName:BMScriptTaskDidEndNotification object:self userInfo:info];
     BM_UNLOCK(self)

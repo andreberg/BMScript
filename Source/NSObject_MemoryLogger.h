@@ -9,9 +9,13 @@
 //  a German book on Objective-2.0 and iPhone programming.
 //  ISBN: 978-3-8266-5966-9
 
+/// @cond HIDDEN
+
 #import <Cocoa/Cocoa.h>
 
 @interface NSObject(MemoryLogger) 
 - (id) startLogging; 
 - (id) stopLogging; 
 @end
+
+/// @endcond 

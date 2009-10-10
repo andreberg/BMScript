@@ -129,11 +129,11 @@ FILE_PATTERNS          = *.c \
                          *.vhdl \
                          *.include
 RECURSIVE              = NO
-EXCLUDE                = .svn \
-                         *.d \
-                         BMScriptProbes.* \
-                         NSObject_MemoryLogger.* \
-                         ScriptRunner.*
+EXCLUDE                = *.d \
+                         *BMScriptProbes* \
+                         *NSObject_MemoryLogger* \
+                         *ScriptRunner* \
+                         *BMRubyScript*
 EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       = */.svn/*
 EXCLUDE_SYMBOLS        = 
@@ -152,9 +152,9 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = YES
 REFERENCES_RELATION    = YES
-REFERENCES_LINK_SOURCE = YES
+REFERENCES_LINK_SOURCE = NO
 USE_HTAGS              = NO
-VERBATIM_HEADERS       = YES
+VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
@@ -243,7 +243,7 @@ PERLMOD_MAKEVAR_PREFIX =
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = NO
-SEARCH_INCLUDES        = YES
+SEARCH_INCLUDES        = NO
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = *.h
 PREDEFINED             = 
