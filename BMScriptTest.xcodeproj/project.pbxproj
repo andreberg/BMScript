@@ -97,12 +97,12 @@
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
 		6503F08810729F9A00B260F7 /* SubclassingExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubclassingExample.m; sourceTree = "<group>"; };
 		6503F0A11072A05F00B260F7 /* BlockingExecutionExamples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples.m; sourceTree = "<group>"; };
-		6503F16A1072BAD900B260F7 /* DoxyfileTemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DoxyfileTemplate; sourceTree = "<group>"; };
+		6503F16A1072BAD900B260F7 /* DoxyfileTemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DoxyfileTemplate; path = Documentation/DoxyfileTemplate; sourceTree = "<group>"; };
 		6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples1.m; sourceTree = "<group>"; };
 		6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples2.m; sourceTree = "<group>"; };
 		6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples3.m; sourceTree = "<group>"; };
-		6503F2CC1073754100B260F7 /* common.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = common.css; sourceTree = "<group>"; };
-		6503F2CD1073754100B260F7 /* content.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content.css; sourceTree = "<group>"; };
+		6503F2CC1073754100B260F7 /* common.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = common.css; path = "CSS/Third-Party/common.css"; sourceTree = "<group>"; };
+		6503F2CD1073754100B260F7 /* content.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content.css; path = "CSS/Third-Party/content.css"; sourceTree = "<group>"; };
 		651407DD10758BDA00AB47BA /* NSObject_MemoryLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSObject_MemoryLogger.h; sourceTree = "<group>"; };
 		651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSObject_MemoryLogger.m; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* DebugEnvironment.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = DebugEnvironment.sh; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 1; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		654548181069F4E900E03140 /* BMScriptProbes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptProbes.h; sourceTree = "<group>"; };
-		65454AB6106A00E100E03140 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = doxygen.css; sourceTree = "<group>"; };
+		65454AB6106A00E100E03140 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = doxygen.css; path = CSS/doxygen.css; sourceTree = "<group>"; };
 		6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.dtrace; path = BMScriptProbes.d; sourceTree = "<group>"; };
 		654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Documentation.xcconfig; sourceTree = "<group>"; };
 		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptRunner.h; sourceTree = "<group>"; wrapsLines = 0; };
@@ -228,6 +228,7 @@
 			);
 			includeInIndex = 0;
 			name = Examples;
+			path = Documentation/Examples;
 			sourceTree = "<group>";
 		};
 		6503F2CA1073752000B260F7 /* Resources */ = {
@@ -236,6 +237,7 @@
 				6503F2CB1073752700B260F7 /* CSS */,
 			);
 			name = Resources;
+			path = Documentation/Resources;
 			sourceTree = "<group>";
 		};
 		6503F2CB1073752700B260F7 /* CSS */ = {
@@ -386,6 +388,7 @@
 			);
 			includeInIndex = 0;
 			name = Includes;
+			path = Documentation/Includes;
 			sourceTree = "<group>";
 		};
 		65BA2D2D106776E5000B5D3B /* Helper Classes */ = {
