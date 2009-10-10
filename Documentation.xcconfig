@@ -26,8 +26,6 @@
 // on your own system, there's a very big chance that you will have to modify
 // these settings to fit your own build environment.
 
-#include "Version.xcconfig"
-
 // path to the doxygen resources folder in its .app bundle
 DOXYGEN_RES_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources
 

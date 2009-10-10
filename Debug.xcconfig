@@ -21,12 +21,17 @@
 // targets. It may then be included from the "based-on" dropdown of the 
 // build settings dialog.
 
+#include "Common.xcconfig"
+
 // Source DebugEnvironment.sh? DebugEnvironment.sh sets a bunch of environment 
 // variables which are useful for debugging, such as NSZombieEnabled, CFZombieLevel etc...
 // This works in conjunction with a "Run Script" build phase and $BUILD_STYLE_NAME,
 // which is pre-set by Xcode with the Configuration name - if the Configuration 
 // does not contain the word "Debug" this setting will always expand to 0.
 USE_DEBUG_ENVIRONMENT_SCRIPT = 0
+
+// saves some build time
+ONLY_ACTIVE_ARCH = YES
 
 // Ahhh, how we love the static analyzer 
 RUN_CLANG_STATIC_ANALYZER = YES

@@ -317,7 +317,7 @@
 
 #ifndef BMSCRIPT_ENABLE_DTRACE
     /*! Toggle for DTrace probes. */
-    #define BMSCRIPT_ENABLE_DTRACE 1
+    #define BMSCRIPT_ENABLE_DTRACE 0
 #endif
 
 
@@ -778,12 +778,12 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns a cached script source from the history. 
  * @param index index of the item to return. May return nil if the history does not contain any objects.
  */
-- (NSString *) scriptSourceFromHistoryAtIndex:(int)index;
+- (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index;
 /*!
  * Returns a cached result from the history. 
  * @param index index of the item to return. May return nil if the history does not contain any objects.
  */
-- (NSString *) resultFromHistoryAtIndex:(int)index;
+- (NSString *) resultFromHistoryAtIndex:(NSInteger)index;
 /*!
  * Returns the last cached script source from the history. 
  * May return nil if the history does not contain any objects.

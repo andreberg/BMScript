@@ -27,10 +27,9 @@
 #import "BMDefines.h"
 
 #import "ScriptRunner.h"
-#import "NSObject_MemoryLogger.h"
+
 
 #define DEBUG_RUNTIME_INTERVAL  5.0
-#define DEBUG_USE_MEMORY_LOGGER 0
 
 #ifdef __OBJC_GC__
     #define DEBUG_GC_ENABLED 1
@@ -38,10 +37,13 @@
     #define DEBUG_GC_ENABLED 0
 #endif
 
-
+#ifndef DEBUG
+    #define DEBUG 0
+#endif 
 
 int main (int argc, const char * argv[]) {
     #pragma unused(argc, argv)
+    
     // start gc thread
     objc_startCollectorThread();
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -51,15 +53,12 @@ int main (int argc, const char * argv[]) {
     NSLog(@"later = %@", later);
     
     ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] initWithExecutionMode:SRBlockingExecutionMode];
-    if (DEBUG_USE_MEMORY_LOGGER && !DEBUG_GC_ENABLED) [scriptRunner1 startLogging];
     [scriptRunner1 run];
 
     ScriptRunner * scriptRunner2 = [[ScriptRunner alloc] initWithExecutionMode:SRNonBlockingExecutionMode];
-    if (DEBUG_USE_MEMORY_LOGGER && !DEBUG_GC_ENABLED) [scriptRunner2 startLogging];
     [scriptRunner2 run];
 
     BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"test test" options:nil]; // options:nil == BMSynthesizeOptions(@"/bin/echo", @"")
-    if (DEBUG_USE_MEMORY_LOGGER && !DEBUG_GC_ENABLED) [script1 startLogging];
     [script1 execute];
     
     NSLog(@"script1 result = '%@'\n", [[script1 lastResult] quote]);
@@ -72,12 +71,7 @@ int main (int argc, const char * argv[]) {
     [scriptRunner1 release], scriptRunner1 = nil;
     [scriptRunner2 release], scriptRunner2 = nil;
     
-    if (DEBUG) {
-        if (!DEBUG_GC_ENABLED) {
-            [scriptRunner1 stopLogging];
-            [scriptRunner2 stopLogging];
-            [script1 stopLogging];
-        }            
+    if (DEBUG) {      
         for (;;) {
             // allocate a local pool because we are creating 
             // short-lived autorelease'd objects like crazy

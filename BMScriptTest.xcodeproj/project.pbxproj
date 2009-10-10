@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 657323F21067BFA4001E9123 /* Build configuration list for PBXAggregateTarget "BMScriptDocumentation" */;
 			buildPhases = (
-				6503F10A1072ACD000B260F7 /* Saturate ENVs in DoxyfileTemplate */,
+				6503F10A1072ACD000B260F7 /* Saturate Doxygen Template */,
 				657323E71067BF6A001E9123 /* Run Doxygen */,
 				65454AB8106A015800E03140 /* Overwrite doxygen.css Copies (disabled) */,
 				655D7B78106A1CA500B4B907 /* Import DocSet into Xcode */,
@@ -37,7 +37,6 @@
 
 /* Begin PBXBuildFile section */
 		651406BF10757A7D00AB47BA /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
-		651407DF10758BDA00AB47BA /* NSObject_MemoryLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */; };
 		65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
 		654295AB105FE24F0037E0C8 /* Convert To Oct.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958B105FE1B80037E0C8 /* Convert To Oct.rb */; };
 		654295AC105FE24F0037E0C8 /* Convert To Hex Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */; };
@@ -99,7 +98,6 @@
 		6503F08810729F9A00B260F7 /* SubclassingExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubclassingExample.m; sourceTree = "<group>"; };
 		6503F0A11072A05F00B260F7 /* BlockingExecutionExamples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples.m; sourceTree = "<group>"; };
 		6503F16A1072BAD900B260F7 /* DoxyfileTemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DoxyfileTemplate; sourceTree = "<group>"; };
-		6503F1BA1072D16300B260F7 /* Version.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples1.m; sourceTree = "<group>"; };
 		6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples2.m; sourceTree = "<group>"; };
 		6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples3.m; sourceTree = "<group>"; };
@@ -141,7 +139,12 @@
 		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; wrapsLines = 1; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
 		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
+		6592D50F108015A600C7B887 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; };
+		659D7A9B107F99C70032B0B1 /* Saturate Doxygen Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Saturate Doxygen Template.rb"; sourceTree = "<group>"; };
+		659D7AB1107F9AE30032B0B1 /* Run Doxygen.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Run Doxygen.sh"; sourceTree = "<group>"; };
+		659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Import DocSet into Xcode.sh"; sourceTree = "<group>"; };
+		65ACBD7F10802DFB00B21D55 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* BMScriptTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* BMScriptTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BMScriptTest.1; sourceTree = "<group>"; };
@@ -186,6 +189,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				659D40E81071001500051C57 /* Defines, Macros, etc. */,
+				651407F710758E6B00AB47BA /* Categories */,
 				65429594105FE1D00037E0C8 /* Classes */,
 				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
@@ -309,8 +314,6 @@
 		65429594105FE1D00037E0C8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				659D40E81071001500051C57 /* Defines, Macros, etc. */,
-				651407F710758E6B00AB47BA /* Categories */,
 				65BA2D2D106776E5000B5D3B /* Helper Classes */,
 				654295CF105FE2A90037E0C8 /* BMScript.h */,
 				654295D0105FE2A90037E0C8 /* BMScript.m */,
@@ -331,8 +334,9 @@
 			isa = PBXGroup;
 			children = (
 				65349A1E1075611300376626 /* Scripts */,
-				6503F1BA1072D16300B260F7 /* Version.xcconfig */,
+				65ACBD7F10802DFB00B21D55 /* Common.xcconfig */,
 				652085F4107163DC00BA57EC /* Debug.xcconfig */,
+				6592D50F108015A600C7B887 /* Release.xcconfig */,
 				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
 				653D01761074BB4400C9F7CC /* UnitTests.xcconfig */,
 			);
@@ -353,6 +357,16 @@
 				6583FB79106FA7C30073983C /* BMDefines.h */,
 			);
 			name = "Defines, Macros, etc.";
+			sourceTree = "<group>";
+		};
+		659D7A9A107F99A20032B0B1 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				659D7A9B107F99C70032B0B1 /* Saturate Doxygen Template.rb */,
+				659D7AB1107F9AE30032B0B1 /* Run Doxygen.sh */,
+				659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */,
+			);
+			name = Scripts;
 			sourceTree = "<group>";
 		};
 		65B45BD110696CE10015DF1B /* Includes */ = {
@@ -395,6 +409,7 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				659D7A9A107F99A20032B0B1 /* Scripts */,
 				6503F2CA1073752000B260F7 /* Resources */,
 				6503F09010729FF000B260F7 /* Examples */,
 				65B45BD110696CE10015DF1B /* Includes */,
@@ -486,19 +501,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6503F10A1072ACD000B260F7 /* Saturate ENVs in DoxyfileTemplate */ = {
+		6503F10A1072ACD000B260F7 /* Saturate Doxygen Template */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Saturate ENVs in DoxyfileTemplate";
+			name = "Saturate Doxygen Template";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env ruby -wKu";
-			shellScript = "# \n#  Saturate Doxygen Template\n#  Xcode Build Scripts\n#  \n#  Created by Andre Berg on 2009-09-30.\n#  Copyright 2009 Berg Media. All rights reserved.\n# \n#  Saturates a Doxyfile template with values \n#  from .xcconfig files.\n#\n\nXCODE = true\n\n# these should be set from the .xcconfig files but I did not succeed in\n# getting the needed inline shell script output. So we set those from here...\n\nENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!\nENV['PROJECT_VERSION'] = \"%.1f\" % (ENV['SVN_REVISION'].to_i / 150.0)\nENV['PROJECT_NUMBER'] = \"#{ENV['PROJECT_VERSION']} (r#{ENV['SVN_REVISION']})\"\n\nif XCODE\n   puts \"Running Replace ENVs in DOXYFILE\"\n   doxyfile_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE']}\"\n   doxyfile_template_path = \"#{ENV['SRCROOT']}/#{ENV['DOXYFILE_TEMPLATE']}\"\nelse\n   doxyfile_template_path = \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk/DoxyfileTemplate\"\nend\ndoxyfile_contents = File.read(doxyfile_template_path)\n\nputs \"doxyfile_template_path = \\\"#{doxyfile_template_path}\\\"\" if $DEBUG\n\nif XCODE\n   # a hash table is perfect for storying what need to be unique symbols\n   # a symbol on this case is one build setting shell variable (i.e. $SRCROOT)\n   # which must be replaced\n   symbols = Hash.new()\n   \n   doxyfile_contents.each_line do |line|\n      if /\\$([A-Z_]+)/.match(line)\n         matchdata = $~\n         symbols[\"$#{matchdata[1]}\"] = ENV[matchdata[1]]\n      end\n   end\n   \nelse\n   symbols = {\"$SRCROOT\" => \"/Users/andre/Documents/Xcode/CommandLineUtility/Foundation/+Tests/BMScriptTestSVN/trunk\", \"$DOXYGEN_RES_PATH\" => \"/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources\", \"$DOT_PATH\" => \"/opt/local/bin\"}\nend\n\nputs \"symbols = '#{symbols.inspect}'\" if $DEBUG\n\nsymbols.each_pair do |key, value|\n   if value\n      doxyfile_contents.gsub!(key, value)\n   else\n      doxyfile_contents.gsub!(\"#{key}\", \"#{key}\")\n   end\nend\n\nif $DEBUG\n   puts \"doxyfile_contents = '#{doxyfile_contents}'\" \nelse\n   doxyfile_new = File.open(\"#{doxyfile_path}\", \"w\")\n   doxyfile_new.write(doxyfile_contents)\n   doxyfile_new.close\nend";
+			shellPath = /bin/sh;
+			shellScript = "\"${PROJECT_DIR}/Saturate Doxygen Template.rb\"";
 		};
 		6520F82B1071706C00683038 /* Source DebugEnvironment.sh */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -539,7 +554,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#if [[ -e \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\"\n#fi\n#\n#if [[ -e \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\n#fi\n#\n#if [[ -e \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\n#fi";
+			shellScript = "# let's wait and see if we no longer need this. \n# It's better and more efficient to just specify the CSS file for Doxygen in the Doxyfile template.\n\n#if [[ -e \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/doxygen.css\"\n#fi\n#\n#if [[ -e \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$SOURCE_ROOT/BMScript.docset/html/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\n#fi\n#\n#if [[ -e \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\" ]]; then\n#\techo overwriting auto-generated doxygen.css with tuned copy from Documentation group\n#\tcp -f \"$SOURCE_ROOT/doxygen.css\" \"$HOME/Library/Developer/Shared/Documentation/DocSets/com.bergmedia.BMScript.docset/Contents/Resources/Documents/doxygen.css\"\n#fi";
 		};
 		6547BD221069943B00B3A390 /* Generate DTrace Header Files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -567,7 +582,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#  make will invoke docsetutil. Take a look at the Makefile to see how this is done.\n\nmake -C \"$SOURCE_ROOT/$DOCSET_NAME/html\" install\n\n#  Construct a temporary applescript file to tell Xcode to load a docset.\n\nrm -f \"$TEMP_DIR/loadDocSet.scpt\"\n\necho \"tell application \\\"Xcode\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"\tload documentation set with path \\\"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\\\"\" >> \"$TEMP_DIR/loadDocSet.scpt\"\necho \"end tell\" >> \"$TEMP_DIR/loadDocSet.scpt\"\n\n#  Run the load-docset applescript command.\n\narch -i386 osascript \"$TEMP_DIR/loadDocSet.scpt\"";
+			shellScript = "\"${PROJECT_DIR}/Import DocSet into Xcode.sh\"";
 		};
 		657323E71067BF6A001E9123 /* Run Doxygen */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -581,7 +596,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#  Build the doxygen documentation for the project and load the docset into Xcode.\n\n#  Use the following to adjust the value of the $DOXYGEN_PATH User-Defined Setting:\n#    Binary install location: /Applications/Doxygen.app/Contents/Resources/doxygen\n#    Source build install location: /usr/local/bin/doxygen\n\n#  If the config file doesn't exist, run 'doxygen -g $SOURCE_ROOT/doxygen.config' to \n#   a get default file.\n\n# run doxygen to generate the makefile based on our DOXYFILE\n\n\"$DOXYGEN_PATH\" \"$SOURCE_ROOT/$DOXYFILE\"";
+			shellScript = "\"${PROJECT_DIR}/Run Doxygen.sh\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -605,7 +620,6 @@
 				654295D1105FE2A90037E0C8 /* BMScript.m in Sources */,
 				6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */,
 				654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */,
-				651407DF10758BDA00AB47BA /* NSObject_MemoryLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,12 +658,12 @@
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = BMScriptTest;
-				SDKROOT = macosx10.5;
 			};
 			name = Debug;
 		};
 		1DEB927608733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -663,25 +677,26 @@
 		};
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
 		1DEB927A08733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
@@ -695,7 +710,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = macosx10.6;
 			};
 			name = "Debug GC";
 		};
@@ -724,7 +739,6 @@
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = BMScriptTest;
-				SDKROOT = macosx10.5;
 			};
 			name = "Debug GC";
 		};
@@ -797,6 +811,7 @@
 		};
 		654295A5105FE22C0037E0C8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
@@ -809,10 +824,6 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				OTHER_CFLAGS = (
-					"-D",
-					"BMSCRIPT_UNIT_TESTS=1",
-				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -865,20 +876,94 @@
 			};
 			name = Release;
 		};
-		65C57D18106733DA00BE26F6 /* Debug LLVM */ = {
+		6592D4D610800B9100C7B887 /* Release LLVM */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = "Release LLVM";
+		};
+		6592D4D710800B9100C7B887 /* Release LLVM */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = "Release LLVM";
+		};
+		6592D4D810800B9100C7B887 /* Release LLVM */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Release LLVM";
+		};
+		6592D4D910800B9100C7B887 /* Release LLVM */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = "Release LLVM";
+		};
+		6592D4DA10800B9100C7B887 /* Release LLVM */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Documentation;
+				ZERO_LINK = NO;
+			};
+			name = "Release LLVM";
+		};
+		65C57D18106733DA00BE26F6 /* Debug LLVM */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			buildSettings = {
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GENERATE_PROFILING_CODE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
-				STRIP_INSTALLED_PRODUCT = NO;
+				SDKROOT = macosx10.6;
 			};
 			name = "Debug LLVM";
 		};
@@ -932,19 +1017,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
-				STRIP_INSTALLED_PRODUCT = NO;
+				SDKROOT = macosx10.6;
 			};
 			name = "Debug LLVM GC";
 		};
@@ -1043,6 +1123,7 @@
 				65C57D19106733DA00BE26F6 /* Debug LLVM */,
 				65C57EF010673DC900BE26F6 /* Debug LLVM GC */,
 				1DEB927608733DD40010E9CD /* Release */,
+				6592D4D810800B9100C7B887 /* Release LLVM */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1055,6 +1136,7 @@
 				65C57D18106733DA00BE26F6 /* Debug LLVM */,
 				65C57EEF10673DC900BE26F6 /* Debug LLVM GC */,
 				1DEB927A08733DD40010E9CD /* Release */,
+				6592D4D610800B9100C7B887 /* Release LLVM */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1067,6 +1149,7 @@
 				65C57D1A106733DA00BE26F6 /* Debug LLVM */,
 				65C57EF110673DC900BE26F6 /* Debug LLVM GC */,
 				654295A5105FE22C0037E0C8 /* Release */,
+				6592D4D910800B9100C7B887 /* Release LLVM */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1079,6 +1162,7 @@
 				657323EB1067BF6A001E9123 /* Debug LLVM */,
 				657323EC1067BF6A001E9123 /* Debug LLVM GC */,
 				657323ED1067BF6A001E9123 /* Release */,
+				6592D4DA10800B9100C7B887 /* Release LLVM */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1091,6 +1175,7 @@
 				65EEC190106A340B00E2E451 /* Debug LLVM */,
 				65EEC191106A340B00E2E451 /* Debug LLVM GC */,
 				65EEC192106A340B00E2E451 /* Release */,
+				6592D4D710800B9100C7B887 /* Release LLVM */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
