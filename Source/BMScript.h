@@ -317,7 +317,7 @@
 
 #ifndef BMSCRIPT_ENABLE_DTRACE
     /*! Toggle for DTrace probes. */
-    #define BMSCRIPT_ENABLE_DTRACE 0
+    #define BMSCRIPT_ENABLE_DTRACE 1
 #endif
 
 

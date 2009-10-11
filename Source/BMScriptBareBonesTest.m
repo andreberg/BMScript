@@ -44,8 +44,11 @@
 int main (int argc, const char * argv[]) {
     #pragma unused(argc, argv)
     
+    #if __OBJC_GC__
     // start gc thread
     objc_startCollectorThread();
+    #endif
+    
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
     NSDate * later = [NSDate dateWithTimeIntervalSinceNow:DEBUG_RUNTIME_INTERVAL];

@@ -223,7 +223,9 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 /* designated initializer */
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions {
     
-    BM_PROBE(INIT_SELF);
+    BM_PROBE(INIT_BEGIN, 
+             (char *) (scriptSource ? [[scriptSource quote] UTF8String] : "(null)"), 
+             (char *) (scriptOptions ? [[[scriptOptions descriptionInStringsFileFormat] quote] UTF8String] : "(null)"));
     
     if ([self isDescendantOfClass:[BMScript class]] && ![self conformsToProtocol:@protocol(BMScriptLanguageProtocol)]) {
         @throw [NSException exceptionWithName:BMScriptLanguageProtocolDoesNotConformException 
@@ -276,17 +278,12 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
         // on an as-needed basis because NSTasks are one-shot (not for re-use)
     }
     
-    BM_PROBE(INIT_END, (char *) [[[self debugDescription] wrapSingleQuotes] UTF8String]);
+    BM_PROBE(INIT_END, (char *) [[[self debugDescription] quote] UTF8String]);
     
     return self;
 }
 
 - (id) initWithTemplateSource:(NSString *)templateSource options:(NSDictionary *)scriptOptions {
-    
-    BM_PROBE(INIT_BEGIN,
-             (char *) __PRETTY_FUNCTION__, 
-             (char *) [templateSource UTF8String],
-             (char *) [[scriptOptions descriptionInStringsFileFormat] UTF8String]);
     
     if (templateSource) {
         BM_LOCK(isTemplate)
@@ -300,11 +297,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 }
 
 - (id) initWithContentsOfFile:(NSString *)path options:(NSDictionary *)scriptOptions {
-    
-    BM_PROBE(INIT_BEGIN,
-             (char *) __PRETTY_FUNCTION__, 
-             (char *) [path UTF8String],
-             (char *) [[scriptOptions descriptionInStringsFileFormat] UTF8String]);
     
     NSError * err = nil;
     NSString * scriptSource = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&err];
@@ -320,11 +312,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 }
 
 - (id) initWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions {
-    
-    BM_PROBE(INIT_BEGIN,
-             (char *) __PRETTY_FUNCTION__, 
-             (char *) [path UTF8String],
-             (char *) [[scriptOptions descriptionInStringsFileFormat] UTF8String]);
     
     NSError * err;
     NSString * scriptSource = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&err];

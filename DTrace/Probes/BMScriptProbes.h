@@ -95,10 +95,10 @@ do { \
 } while (0)
 #define	BMSCRIPT_CLEANUP_TASK_END_ENABLED() \
 	__dtrace_isenabled$BMScript$cleanup_task_end$v1()
-#define	BMSCRIPT_INIT_BEGIN(arg0, arg1, arg2) \
+#define	BMSCRIPT_INIT_BEGIN(arg0, arg1) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$init_begin$v1$63686172202a$63686172202a$63686172202a(arg0, arg1, arg2); \
+	__dtrace_probe$BMScript$init_begin$v1$63686172202a$63686172202a(arg0, arg1); \
 	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
 } while (0)
 #define	BMSCRIPT_INIT_BEGIN_ENABLED() \
@@ -111,14 +111,6 @@ do { \
 } while (0)
 #define	BMSCRIPT_INIT_END_ENABLED() \
 	__dtrace_isenabled$BMScript$init_end$v1()
-#define	BMSCRIPT_INIT_SELF() \
-do { \
-	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
-	__dtrace_probe$BMScript$init_self$v1(); \
-	__asm__ volatile(".reference " BMSCRIPT_STABILITY); \
-} while (0)
-#define	BMSCRIPT_INIT_SELF_ENABLED() \
-	__dtrace_isenabled$BMScript$init_self$v1()
 #define	BMSCRIPT_LAST_RESULT_BEGIN(arg0) \
 do { \
 	__asm__ volatile(".reference " BMSCRIPT_TYPEDEFS); \
@@ -333,12 +325,10 @@ extern void __dtrace_probe$BMScript$cleanup_task_begin$v1(void);
 extern int __dtrace_isenabled$BMScript$cleanup_task_begin$v1(void);
 extern void __dtrace_probe$BMScript$cleanup_task_end$v1(void);
 extern int __dtrace_isenabled$BMScript$cleanup_task_end$v1(void);
-extern void __dtrace_probe$BMScript$init_begin$v1$63686172202a$63686172202a$63686172202a(char *, char *, char *);
+extern void __dtrace_probe$BMScript$init_begin$v1$63686172202a$63686172202a(char *, char *);
 extern int __dtrace_isenabled$BMScript$init_begin$v1(void);
 extern void __dtrace_probe$BMScript$init_end$v1$63686172202a(char *);
 extern int __dtrace_isenabled$BMScript$init_end$v1(void);
-extern void __dtrace_probe$BMScript$init_self$v1(void);
-extern int __dtrace_isenabled$BMScript$init_self$v1(void);
 extern void __dtrace_probe$BMScript$last_result_begin$v1$696e74(int);
 extern int __dtrace_isenabled$BMScript$last_result_begin$v1(void);
 extern void __dtrace_probe$BMScript$last_result_end$v1$63686172202a$696e74(char *, int);

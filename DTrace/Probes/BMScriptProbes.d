@@ -87,9 +87,8 @@ provider BMScript {
     
     /* Initialization */
     
-    probe init_begin(char * initMethodName, char * sourceOrPath, char * optionsRep);
-    probe init_self();
-    probe init_end(char * selfDebugDescription); 
+    probe init_begin(char * source, char * options);
+    probe init_end(char * debugDescription); 
         
     /* Execution */
     
