@@ -347,6 +347,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     if (BM_EXPECTED([task isRunning], 0)) {
         [task terminate];
     } else {
+        
         BM_PROBE(SETUP_TASK_BEGIN);
 
         task = [[NSTask alloc] init];
@@ -395,18 +396,18 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_LOCK(task)
     @try {
-        BM_PROBE(TASK_LAUNCH_BEGIN, status, (char *) [BMStringFromTerminationStatus(status) UTF8String]);
+        BM_PROBE(NET_EXECUTION_BEGIN, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
         [task launch];
     }
     @catch (NSException * e) {
         BM_LOCK(gTaskStatus)
         gTaskStatus = status = BMScriptExceptionTerminationStatus;
         BM_UNLOCK(gTaskStatus)
-        BM_PROBE(TASK_LAUNCH_END, status, (char *) [BMStringFromTerminationStatus(status) UTF8String]);
+        BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
         goto endnow;
     }    
     [task waitUntilExit];
-    BM_PROBE(TASK_LAUNCH_END, status, (char *) [BMStringFromTerminationStatus(status) UTF8String]);
+    BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
     NSData * data = [[pipe fileHandleForReading] readDataToEndOfFile];
     if (BM_EXPECTED([task isRunning], 0)) [task terminate];
     BM_UNLOCK(task)
@@ -671,6 +672,7 @@ endnow:
 // MARK: Templates
 
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg {
+    
     BM_PROBE(SATURATE_WITH_ARGUMENT_BEGIN, (char *) [tArg UTF8String]);
     if (self.isTemplate) {
         BM_LOCK(script)
@@ -684,6 +686,7 @@ endnow:
 }
 
 - (BOOL) saturateTemplateWithArguments:(NSString *)firstArg, ... {
+    
     BM_PROBE(SATURATE_WITH_ARGUMENTS_BEGIN);
     BOOL success = NO;
     if (self.isTemplate) {
@@ -733,6 +736,7 @@ endnow:
 }
 
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary {
+    
     BOOL success = NO;
     BM_PROBE(SATURATE_WITH_DICTIONARY_BEGIN, (char *) [[[dictionary descriptionInStringsFileFormat] quote] UTF8String]);
     if (self.isTemplate) {
@@ -791,10 +795,10 @@ endnow:
 
 - (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error {
     
-    BM_PROBE(NET_EXECUTE_BEGIN, 
+    BM_PROBE(EXECUTE_BEGIN, 
+             (char *) [[[task launchPath] wrapSingleQuotes] UTF8String],
              (char *) [[script quote] UTF8String], 
-             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
-             (char *) [[task launchPath] UTF8String]);
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
     
     BOOL success = NO;
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
@@ -874,7 +878,7 @@ endnow:
         }
     }
     
-    BM_PROBE(NET_EXECUTE_END, (char *) [[result quote] UTF8String]);
+    BM_PROBE(EXECUTE_END, (char *) [[result quote] UTF8String]);
 
     return status;
 }
@@ -889,9 +893,9 @@ endnow:
     }
     
     BM_PROBE(BG_EXECUTE_BEGIN, 
+             (char *) [[[options objectForKey:BMScriptOptionsTaskLaunchPathKey] wrapSingleQuotes] UTF8String],
              (char *) [[script quote] UTF8String], 
-             (char *) [BMStringFromBOOL(isTemplate) UTF8String], 
-             (char *) [[options objectForKey:BMScriptOptionsTaskLaunchPathKey] UTF8String]);
+             (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
     
     [self setupAndLaunchBackgroundTask];
     

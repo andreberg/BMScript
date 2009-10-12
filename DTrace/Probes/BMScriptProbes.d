@@ -66,7 +66,9 @@ provider BMScript {
     probe enter_task_terminated();
     probe  exit_task_terminated(char * lastResult, char * partialResult);
     */
-
+    
+    /* Deallocation */
+    
     probe setup_task_begin();
     probe   setup_task_end();
     
@@ -76,14 +78,11 @@ provider BMScript {
     probe setup_bg_task_begin();
     probe   setup_bg_task_end();
     
+    probe stop_bg_task_begin(); /* stopTask calls cleanupTask for bg task, */
+    probe stop_bg_task_end();   /* so this is more interesting than just cleanup */
+    
     probe cleanup_bg_task_begin();
     probe cleanup_bg_task_end();
-    
-    probe stop_bg_task_begin(); /* stopTask calls cleanupTask for bg task, */
-    probe stop_bg_task_end();   /* so this is kinda more interesting that just cleanup */
-    
-    probe append_data_begin(char * newData);
-    probe append_data_end(char * partialResult);
     
     /* Initialization */
     
@@ -92,14 +91,17 @@ provider BMScript {
         
     /* Execution */
     
-    probe net_execute_begin(char * scriptSource, char * isTemplate, char * launchPath);
-    probe net_execute_end(char * result);
+    probe execute_begin(char * launchPath, char * scriptSource, char * isTemplate);
+    probe execute_end(char * result);
     
-    probe bg_execute_begin(char * scriptSource, char * isTemplate, char * launchPath);
+    probe bg_execute_begin( char * launchPath, char * scriptSource, char * isTemplate);
     probe bg_execute_end(char * result);
     
-    probe task_launch_begin(TerminationStatus status, char * statusText); /* might not need these two */
-    probe task_launch_end(TerminationStatus status, char * statusText);
+    probe net_execution_begin(char * statusText); /* net execution is just [[task launch] waitUntilExit] */
+    probe net_execution_end(char * statusText);
+    
+    probe append_data_begin(char * newData);
+    probe append_data_end(char * partialResult);
     
     /* Templates */
     
