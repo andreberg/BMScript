@@ -22,6 +22,7 @@
 // build settings dialog.
 
 #include "Common.xcconfig"
+#include "UnitTests.xcconfig"
 
 // Source DebugEnvironment.sh? DebugEnvironment.sh sets a bunch of environment 
 // variables which are useful for debugging, such as NSZombieEnabled, CFZombieLevel etc...
@@ -33,13 +34,10 @@ USE_DEBUG_ENVIRONMENT_SCRIPT = 0
 // saves some build time
 ONLY_ACTIVE_ARCH = YES
 
-// Ahhh, how we love the static analyzer 
-RUN_CLANG_STATIC_ANALYZER = YES
-
 // Might be nice to have for better Shark et al. support
 GENERATE_PROFILING_CODE = YES
 
-WARNING_CFLAGS = $(inherited) -Winit-self -Wnonnull -Wformat=2 -Wsequence-point -Wstrict-aliasing -Wstrict-aliasing=2 -Wsign-compare -Wall -Wextra -Wdiv-by-zero -Wmissing-field-initializers -Wno-format-nonliteral -Wshorten-64-to-32
+WARNING_CFLAGS = $(inherited) -Winit-self -Wformat=2 -Wsequence-point -Wstrict-aliasing -Wstrict-aliasing=2 -Wsign-compare -Wall -Wextra -Wmissing-field-initializers -Wno-format-nonliteral -Wshorten-64-to-32
 
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1
 

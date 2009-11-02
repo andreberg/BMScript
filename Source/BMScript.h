@@ -23,21 +23,21 @@
  * @mainpage BMScript: Harness The Power Of Shell Scripts
  * <hr>
  * @par Introduction
- * 
+ *
  * BMScript is an Objective-C class set to make it easier to utilize the
  * power and flexibility of a whole range of scripting languages that already
  * come with modern Macs. BMScript does not favor any particular scripting
  * language or UNIX™ command line tool for that matter, instead it was written
- * as an abstraction layer to NSTask, and as such supports any command line tool, 
+ * as an abstraction layer to NSTask, and as such supports any command line tool,
  * provided that it is available on the target system.
- * 
+ *
  * @par Usage
  *
  * BMScript can be used in two ways:
  *
  * -# Use it directly
  * -# Guided by the BMScriptLanguageProtocol, make a subclass from it
- * 
+ *
  * The easiest way to use BMScript is, of course, to instanciate it directly:
  *
  * @include bmScriptCreationMethods.m
@@ -47,55 +47,55 @@
  * The options dictionary then looks like this:
  *
  * @include bmScriptOptionsDictionary.m
- * 
+ *
  * There's two constant keys. These are the only keys you need to define values for.
- * #BMScriptOptionsTaskLaunchPathKey stores the path to the tool's executable and 
- * #BMScriptOptionsTaskArgumentsKey is a nil-terminated variable list of parameters 
- * to be used as arguments to the task which will load and execute the tool found at 
+ * #BMScriptOptionsTaskLaunchPathKey stores the path to the tool's executable and
+ * #BMScriptOptionsTaskArgumentsKey is a nil-terminated variable list of parameters
+ * to be used as arguments to the task which will load and execute the tool found at
  * the launch path specified for the other key.
- * 
- * It is very important to note that the script source string should <b>NOT</b> be 
- * supplied in the array for the #BMScriptOptionsTaskArgumentsKey, as it will be added 
+ *
+ * It is very important to note that the script source string should <b>NOT</b> be
+ * supplied in the array for the #BMScriptOptionsTaskArgumentsKey, as it will be added
  * later by the class after performing tests and delegation which could alter the script
  * in ways needed to safely execute it. This is in the delegate object's responsibility.
  *
- * A macro function called #BMSynthesizeOptions(path, args) is available to ease 
+ * A macro function called #BMSynthesizeOptions(path, args) is available to ease
  * the declaration of the options.<br>
  * Here is the definition:
  *
  * @include bmScriptSynthesizeOptions.m
  *
  * <div class="box important">
-        <div class="table">
-            <div class="row">
-                <div class="label cell">Important:</div>
-                <div class="message cell">
-                    Don't forget the <b>nil</b> at the end even 
-                    if you don't need to supply any task arguments.
-                </div>
-            </div>
-        </div>
-   </div>
+ *      <div class="table">
+ *          <div class="row">
+ *              <div class="label cell">Important:</div>
+ *              <div class="message cell">
+ *                  Don't forget the <b>nil</b> at the end even
+ *                  if you don't need to supply any task arguments.
+ *              </div>
+ *          </div>
+ *      </div>
+ * </div>
  *
- * If you initialize BMScript directly without specifying options and script source 
+ * If you initialize BMScript directly without specifying options and script source
  * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
  * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
  * and the script source will default to <span class="sourcecode">@"echo '<script source placeholder>'"</span>.
  *
  * <div class="box warning">
-        <div class="table">
-            <div class="row">
-                <div class="label cell">Warning:</div>
-                <div class="message cell">
-                    If you let your end-users, the consumers of your application, supply the 
-                    script source without defining exact task options this can be very dangerous as anything
-                    passed to <span class="sourcecode">/bin/echo</span> is not checked by default! This is a 
-                    good reason to use the BMScriptDelegateProtocol methods for error/security checking or to 
-                    subclass BMScript instead of using it directly.
-                </div>
-            </div>
-        </div>
-    </div>
+ *      <div class="table">
+ *          <div class="row">
+ *              <div class="label cell">Warning:</div>
+ *              <div class="message cell">
+ *                  If you let your end-users, the consumers of your application, supply the
+ *                  script source without defining exact task options this can be very dangerous as anything
+ *                  passed to <span class="sourcecode">/bin/echo</span> is not checked by default! This is a
+ *                  good reason to use the BMScriptDelegateProtocol methods for error/security checking or to
+ *                  subclass BMScript instead of using it directly.
+ *              </div>
+ *          </div>
+ *      </div>
+ *  </div>
  *
  * There are also convenience methods for the most common scripting languages, which have
  * their options set to OS default values:
@@ -103,29 +103,29 @@
  * @include bmScriptConvenienceMethods.m
  *
  * As you can see loading scripts from source files is also supported, including a small
- * and lightweight template system. 
- * 
+ * and lightweight template system.
+ *
  * @par Templates
- * 
- * Using templates can be a good way to add domain-specific problem solving to a class. 
+ *
+ * Using templates can be a good way to add domain-specific problem solving to a class.
  * To utilize the template system, three steps are required:
  *
- *   -# Initialize a BMScript instance with a template 
+ *   -# Initialize a BMScript instance with a template
  *   -# Saturate template with values ("fill in the blanks")
- *   -# Execute BMScript instance 
- * 
+ *   -# Execute BMScript instance
+ *
  * Here are the methods you use to saturate a BMScript template with values:
  *
  * @include bmScriptSaturateTemplate.m
  *
  * So how does a template look like then? We use standard text files which have special
  * token strings bound to get replaced. If you are familiar with Ruby, the magic template token
- * looks a lot like Ruby's double quoted string literal: 
- * 
- * @verbatim %{} @endverbatim 
- * 
- * If this pattern structure is empty it will be replaced in the order of occurrence. The first 
- * two saturate methods are good for this. 
+ * looks a lot like Ruby's double quoted string literal:
+ *
+ * @verbatim %{} @endverbatim
+ *
+ * If this pattern structure is empty it will be replaced in the order of occurrence. The first
+ * two saturate methods are good for this.
  * If the magic tokens wrap other values, a more flexible dictionary based system can be used
  * with the third saturate method. There, the magic tokens must wrap names of keys defined in the
  * dictionary. The keys will correspond to what the replacement value will be. <br>
@@ -136,14 +136,14 @@
  *
  * @par Subclassing BMScript
  *
- * You can also see BMScript as a sort of abstract superclass and customize its 
- * behaviour by making a subclass which knows about the details of the particular 
- * command line tool that you want to use. Your subclass must implement the 
+ * You can also see BMScript as a sort of abstract superclass and customize its
+ * behaviour by making a subclass which knows about the details of the particular
+ * command line tool that you want to use. Your subclass must implement the
  * BMScriptLanguageProtocol. It only has one required and one optional method:
  *
  * @include bmScriptLanguageProtocol.m
  *
- * The first method should return default values, e.g. for launch path and task arguments, 
+ * The first method should return default values, e.g. for launch path and task arguments,
  * which are sensible and specific to the command line tool your subclass wants to utilize.
  * Here you may again use #BMSynthesizeOptions(path, args) as the options dictionary has the
  * same format as shown above.
@@ -152,9 +152,9 @@
  * by the command line tool. If you do not implement this method the script source will be set
  * to the default script source of BMScript (see above).
  *
- * If you subclass BMScript and do not use the designated initializer through which 
- * you supply options and script source yourself, the BMScriptLanguageProtocol-p.defaultOptionsForLanguage 
- * method will be called on your subclass. If it is missing an exception of type 
+ * If you subclass BMScript and do not use the designated initializer through which
+ * you supply options and script source yourself, the BMScriptLanguageProtocol-p.defaultOptionsForLanguage
+ * method will be called on your subclass. If it is missing an exception of type
  * #BMScriptLanguageProtocolMethodMissingException is thrown.
  *
  * @par Execution
@@ -166,49 +166,49 @@
  *
  * Using the blocking execution model you can either pass a pointer to NSString where the result will be
  * written to (including NSError if needed), or just use plain BMScript.execute followed by BMScript.lastResult.
- * 
+ *
  * The non-blocking execution model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="external">notifications</a>.
- * You register your class as observer with the default notification center for a notification called 
- * #BMScriptTaskDidEndNotification passing a selector to execute once the notification arrives. If you have 
+ * You register your class as observer with the default notification center for a notification called
+ * #BMScriptTaskDidEndNotification passing a selector to execute once the notification arrives. If you have
  * multiple BMScript instances you can also pass the instance you want to register the notification for as
- * the object paramater (see inline example below). 
- * 
+ * the object paramater (see inline example below).
+ *
  * Then you tell the BMScript instance to BMScript.executeInBackgroundAndNotify. When execution finishes and your
  * selector is called it will be passed an NSNotification object which encapsulates an NSDictionary with two keys:
  *
  * <div class="box hasRows noshadow">
-        <div class="row odd firstRow">
-            <span class="cell left firstCell">#BMScriptNotificationTaskResults</span>
-            <span class="cell rightCell lastCell">contains the results returned by the execution as NSString.</span>
-        </div>
-        <div class="row even">
-            <span class="cell left firstCell">#BMScriptNotificationTaskTerminationStatus</span>
-            <span class="cell rightCell lastCell">contains the termination status (aka return/exit code)</span>
-        </div>
-   </div>
- * 
+ *      <div class="row odd firstRow">
+ *          <span class="cell left firstCell">#BMScriptNotificationTaskResults</span>
+ *          <span class="cell rightCell lastCell">contains the results returned by the execution as NSString.</span>
+ *      </div>
+ *      <div class="row even">
+ *          <span class="cell left firstCell">#BMScriptNotificationTaskTerminationStatus</span>
+ *          <span class="cell rightCell lastCell">contains the termination status (aka return/exit code)</span>
+ *      </div>
+ * </div>
+ *
  * To make that clearer here's an example with the relevant parts thrown together:
  *
  * @include NotificationExample.m
  *
  * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate instance variables.
- * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment. 
+ * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment.
  *
  * @par On The Topic Of Concurrency
- * 
- * All access to global data, shared variables and mutable objects has been 
- * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> 
- * (in Xcode: right-click and choose "Open Link in Browser"). 
- * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not 1. 
+ *
+ * All access to global data, shared variables and mutable objects has been
+ * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a>
+ * (in Xcode: right-click and choose "Open Link in Browser").
+ * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not 1.
  * Note that there haven't been enough tests yet to say that BMScript is
- * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will 
- * unfortunately have to be tested by you. 
+ * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will
+ * unfortunately have to be tested by you.
  *
  * @par Delegate Methods
- * 
- * BMScript also features a delegate protocol (BMScriptDelegateProtocol) providing descriptions for methods 
+ *
+ * BMScript also features a delegate protocol (BMScriptDelegateProtocol) providing descriptions for methods
  * your subclass or another class posing as delegate can implement:
- * 
+ *
  * @include bmScriptDelegateMethods.m
  *
  * And last but not least, BMScript features an execution cache, called its history. This works like the Shell history
@@ -224,13 +224,13 @@
 /*!
  * @example SubclassingExample.m
  *
- * Example of subclassing BMScript. 
+ * Example of subclassing BMScript.
  *
- * This subclass provides specifics about executing Ruby scripts. 
- * Of course this example is a bit of a moot point because BMScript 
- * already comes with convenience constructors for all the major 
- * scripting languages. Nevertheless, it nicely illustrates the bare minimum 
- * needed to subclass BMScript. From a somewhat more realistic 
+ * This subclass provides specifics about executing Ruby scripts.
+ * Of course this example is a bit of a moot point because BMScript
+ * already comes with convenience constructors for all the major
+ * scripting languages. Nevertheless, it nicely illustrates the bare minimum
+ * needed to subclass BMScript. From a somewhat more realistic
  * and practical point of view, reasons to subclass BMScript may include:
  *
  * - You need to give your end-users the ability to supply script sources
@@ -493,14 +493,14 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns the options dictionary. This is required.
  * @see #BMSynthesizeOptions and bmScriptOptionsDictionary.m
  */
-- (NSDictionary *) defaultOptionsForLanguage;
+- (NSDictionary *) defaultOptionsForLanguage NS_RETURNS_RETAINED;
 @optional
 /*!
  * Returns the default script source. This is optional and will be set to a placeholder if absent.
  * You might want to implement this if you plan on using plain alloc/init with your subclass a lot since 
  * alloc/init will pull this in as default script if no script source was supplied to the designated initalizer.
  */
-- (NSString *) defaultScriptSourceForLanguage; 
+- (NSString *) defaultScriptSourceForLanguage NS_RETURNS_RETAINED; 
 @end
 
 /*!

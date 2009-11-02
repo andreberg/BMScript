@@ -97,6 +97,23 @@ extern "C" {
 #if defined(ENABLE_MACOSX_GARBAGE_COLLECTION) && !defined(MAC_OS_X_VERSION_10_5)
 #error The Mac OS X Garbage Collection feature requires at least Mac OS X 10.5
 #endif
+
+    
+/*! 
+ * A note to Clang's static analyzer. 
+ * It tells about the returning onwnership intentions of methods. 
+ * The header documentation of Apple follows:
+ * "Marks methods and functions which return an object that needs to be released by the caller but whose names are not consistent with Cocoa naming rules. The recommended fix to this is the rename the methods or functions, but this macro can be used to let the clang static analyzer know of any exceptions that cannot be fixed."
+ *
+ */
+#ifndef NS_RETURNS_RETAINED
+    #if defined(__clang__)
+        #define NS_RETURNS_RETAINED __attribute__((ns_returns_retained))
+    #else
+        #define NS_RETURNS_RETAINED
+    #endif
+#endif
+    
     
 // To simplify support for 64bit (and Leopard in general), 
 // provide the type defines for non Leopard SDKs

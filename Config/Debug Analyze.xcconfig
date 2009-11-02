@@ -1,8 +1,8 @@
 //
-//  Release.xcconfig
+//  Analyze.xcconfig
 //  BMScriptTest
 //
-//  Created by Andre Berg on 10.10.09.
+//  Created by Andre Berg on 13.10.09.
 //  Copyright 2009 Berg Media. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#include "Common.xcconfig"
+#include "Debug.xcconfig"
+#include "UnitTests.xcconfig"
 
-GCC_PREPROCESSOR_DEFINITIONS = DEBUG=0
+// Ahhh, how we love the static analyzer 
+RUN_CLANG_STATIC_ANALYZER = YES
