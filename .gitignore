@@ -1,0 +1,21 @@
+BMScriptProbes.h
+Doxyfile
+Documentation/*.docset
+
+# Mac OS X stuff
+
+.DS_Store
+._.*
+
+# Xcode stuff
+
+build/
+*.pbxuser
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+
+# TextMate stuff
+
+*.tm_build_errors
+*.tmproj
