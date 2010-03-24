@@ -15,8 +15,13 @@ XCODE = true
 # these should be set from the .xcconfig files but I did not succeed in
 # getting the needed inline shell script output. So we set those from here...
 
-ENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!
-ENV['PROJECT_VERSION'] = "%.1f" % (ENV['SVN_REVISION'].to_i / 150.0)
+# FIXME: replace svn based code with git version
+# ENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!
+# ENV['PROJECT_VERSION'] = "%.1f" % (ENV['SVN_REVISION'].to_i / 150.0)
+
+#ENV['GIT_REVISION'] = `git describe`
+ENV['GIT_REVISION'] = "100"
+ENV['PROJECT_VERSION'] = "0.1"
 ENV['PROJECT_NUMBER'] = "#{ENV['PROJECT_VERSION']} (r#{ENV['SVN_REVISION']})"
 
 if XCODE
