@@ -17,4 +17,4 @@
 
 #run doxygen to generate the makefile based on our DOXYFILE
 
-"$DOXYGEN_PATH" "$DOCROOT/$DOXYFILE"
+"${DOXYGEN_PATH}" "${DOCROOT}/${DOXYFILE}"
