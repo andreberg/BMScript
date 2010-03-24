@@ -28,9 +28,6 @@
 
 #import "ScriptRunner.h"
 
-
-#define DEBUG_RUNTIME_INTERVAL  5.0
-
 #ifdef __OBJC_GC__
     #define DEBUG_GC_ENABLED 1
 #else
@@ -51,10 +48,6 @@ int main (int argc, const char * argv[]) {
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
-    NSDate * later = [NSDate dateWithTimeIntervalSinceNow:DEBUG_RUNTIME_INTERVAL];
-    NSLog(@"now   = %@", [NSDate date]);
-    NSLog(@"later = %@", later);
-    
     ScriptRunner * scriptRunner1 = [[ScriptRunner alloc] initWithExecutionMode:SRBlockingExecutionMode];
     [scriptRunner1 run];
 
@@ -73,37 +66,6 @@ int main (int argc, const char * argv[]) {
     
     [scriptRunner1 release], scriptRunner1 = nil;
     [scriptRunner2 release], scriptRunner2 = nil;
-    
-    if (DEBUG) {      
-        for (;;) {
-            // allocate a local pool because we are creating 
-            // short-lived autorelease'd objects like crazy
-            NSAutoreleasePool * localPool = [[NSAutoreleasePool alloc] init];
-            
-            NSDate * now = [NSDate date];
-            NSComparisonResult res = [later compare:now];
-            
-            NSDateFormatter * outputFormatter = [[NSDateFormatter alloc] init];
-            [outputFormatter setDateFormat:@"SSS"];
-            
-            NSString * fractionSecondsString = [outputFormatter stringFromDate:now];
-            NSInteger fractionSeconds = [fractionSecondsString integerValue];
-            //NSLog(@"fractionSecondsString = '%@'", fractionSecondsString);
-
-            // display every second... normally NSTimer would be more suitable 
-            // but using performSelector is difficult in a Foundation tool.
-            if (fractionSeconds == 0) {
-                NSLog(@"now = %@", now);
-            }
-            
-            [outputFormatter release], outputFormatter = nil;
-            [localPool release];
-            if (res <= NSOrderedSame) {
-                // program is running for DEBUG_RUNTIME_INTERVAL seconds, shutdown now...
-                break;
-            }
-        };
-    }
     
     [pool drain];
     return 0;
