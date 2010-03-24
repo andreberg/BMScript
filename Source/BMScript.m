@@ -214,7 +214,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 - (id)init {
     
-    NSLog(@"BMScript: Warning: Initializing instance %@ with default values!"
+    NSLog(@"BMScript Warning: Initializing instance %@ with default values! "
           @"(options = \"/bin/echo\", \"\", script source = '<script source placeholder>')", [super description]);
     
     return [self initWithScriptSource:nil options:nil]; 
