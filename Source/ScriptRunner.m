@@ -47,16 +47,6 @@
     [super dealloc];
 }
 
-- (void) finalize {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [script setDelegate:nil];
-    [script release], script = nil;
-    [results release], results = nil;
-    [super finalize];
-}
-
-
 - (id) init { 
     return [self initWithExecutionMode:SRBlockingExecutionMode];
 }
