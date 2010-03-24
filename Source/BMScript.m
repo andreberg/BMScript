@@ -747,8 +747,10 @@ endnow:
         NSArray * keys = [dictionary allKeys];
         NSArray * values = [dictionary allValues];
         
+        // FIXME: Don't replace escaped token sequences
         NSInteger i = 0;
         for (NSString * key in keys) {
+            accumulator = [accumulator stringByReplacingOccurrencesOfString:@"\\%" withString:@"%%%%"];
             accumulator = [accumulator stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%%{"BMSCRIPT_INSERTION_TOKEN"}", key ] 
                                                                  withString:[values objectAtIndex:i]];
             i++;
