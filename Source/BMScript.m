@@ -235,8 +235,26 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     }
     self = [super init];
     if (BM_EXPECTED(self != nil, 1)) {
+        
+        if (scriptOptions) {
+            options = [scriptOptions retain];
+        } else {
+            if ([self isDescendantOfClass:[BMScript class]] && ![self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
+                @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
+                                               reason:@"BMScript Error: Descendants of BMScript must implement "
+                        @"-[<BMScriptLanguageProtocol> defaultOptionsForLanguage]." 
+                                             userInfo:nil];
+            } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
+                options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
+            } else {
+                NSLog(@"BMScript Warning: Initializing instance %@ with default options: BMSynthesizeOptions(@\"/bin/echo\", @\"\")", [super description]);
+                options = [BMSynthesizeOptions(@"/bin/echo", @"") retain];
+            }
+            
+        }
+        
         if (scriptSource) {
-            if (scriptOptions != nil) {
+            if (scriptOptions || options) {
                 script = [scriptSource retain];
             } else {
                 // if scriptOptions == nil, we run with default options, namely /bin/echo so it might be better 
@@ -252,23 +270,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
                 NSLog(@"BMScript Warning: Initializing instance %@ with default script: '<script source placeholder>'", [super description]);
                 script = @"'<script source placeholder>'";
             }
-        }
-
-        if (scriptOptions) {
-            options = [scriptOptions retain];
-        } else {
-            if ([self isDescendantOfClass:[BMScript class]] && ![self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
-                @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
-                                               reason:@"BMScript Error: Descendants of BMScript must implement "
-                                                      @"-[<BMScriptLanguageProtocol> defaultOptionsForLanguage]." 
-                                             userInfo:nil];
-            } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
-                options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
-            } else {
-                NSLog(@"BMScript Warning: Initializing instance %@ with default options: BMSynthesizeOptions(@\"/bin/echo\", @\"\")", [super description]);
-                options = [BMSynthesizeOptions(@"/bin/echo", @"") retain];
-            }
-            
         }
         
         history = [[NSMutableArray alloc] init];
