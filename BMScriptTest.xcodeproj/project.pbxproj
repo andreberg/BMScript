@@ -44,8 +44,17 @@
 		654295D1105FE2A90037E0C8 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */ = {isa = PBXBuildFile; fileRef = 6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */; };
 		654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
+		654FF08E115A3233004C8721 /* NSString_Truncate.m in Sources */ = {isa = PBXBuildFile; fileRef = 654FF08C115A3233004C8721 /* NSString_Truncate.m */; };
+		654FF101115A3636004C8721 /* NSString_TruncateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 654FF100115A3636004C8721 /* NSString_TruncateTests.m */; };
+		654FF102115A3646004C8721 /* NSString_Truncate.m in Sources */ = {isa = PBXBuildFile; fileRef = 654FF08C115A3233004C8721 /* NSString_Truncate.m */; };
+		654FF15A115A3A3A004C8721 /* BMScriptBareBonesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */; };
+		654FF15B115A3A56004C8721 /* BMRubyScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 65429596105FE1D00037E0C8 /* BMRubyScript.m */; };
+		654FF15C115A3A56004C8721 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
+		654FF15D115A3A56004C8721 /* BMScriptProbes.d in Sources */ = {isa = PBXBuildFile; fileRef = 6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */; };
+		654FF15E115A3A56004C8721 /* ScriptRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 654E9D57106C2082008CC673 /* ScriptRunner.m */; };
+		654FF15F115A3A56004C8721 /* NSString_Truncate.m in Sources */ = {isa = PBXBuildFile; fileRef = 654FF08C115A3233004C8721 /* NSString_Truncate.m */; };
+		654FF160115A3A6E004C8721 /* BMScriptTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* BMScriptTest.m */; };
 		65731FD210677891001E9123 /* Multiple Defined Tokens Template.rb in Resources */ = {isa = PBXBuildFile; fileRef = 65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */; };
-		6583F842106F5D2B0073983C /* BMScriptBareBonesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */; };
 		65BA2B9910676CB9000B5D3B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654295A8105FE2410037E0C8 /* SenTestingKit.framework */; };
 		65BF535C1074C9E100F7F5A5 /* BMScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 654295D0105FE2A90037E0C8 /* BMScript.m */; };
 		65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */; };
@@ -54,6 +63,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		654FF254115A4689004C8721 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 654FF14E115A3A27004C8721;
+			remoteInfo = BMScriptBareBonesTest;
+		};
 		6581A39210675DA300558062 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -122,7 +138,6 @@
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
 		6542958F105FE1B80037E0C8 /* Multiple Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Tokens Template.rb"; sourceTree = "<group>"; };
-		65429590105FE1B80037E0C8 /* BMRubyScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScriptUnitTests.m; sourceTree = "<group>"; };
 		65429595105FE1D00037E0C8 /* BMRubyScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMRubyScript.h; sourceTree = "<group>"; };
 		65429596105FE1D00037E0C8 /* BMRubyScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScript.m; sourceTree = "<group>"; };
 		654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BMScriptUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,10 +151,15 @@
 		654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Documentation.xcconfig; sourceTree = "<group>"; };
 		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptRunner.h; sourceTree = "<group>"; wrapsLines = 0; };
 		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; wrapsLines = 1; };
+		654FF08C115A3233004C8721 /* NSString_Truncate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_Truncate.m; sourceTree = "<group>"; };
+		654FF08D115A3233004C8721 /* NSString_Truncate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_Truncate.h; sourceTree = "<group>"; };
+		654FF0FF115A3636004C8721 /* NSString_TruncateTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_TruncateTests.h; sourceTree = "<group>"; };
+		654FF100115A3636004C8721 /* NSString_TruncateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_TruncateTests.m; sourceTree = "<group>"; };
+		654FF14F115A3A27004C8721 /* BMScriptBareBonesTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptBareBonesTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
 		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
 		6592D50F108015A600C7B887 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; };
+		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		659D7A9B107F99C70032B0B1 /* Saturate Doxygen Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Saturate Doxygen Template.rb"; sourceTree = "<group>"; };
 		659D7AB1107F9AE30032B0B1 /* Run Doxygen.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Run Doxygen.sh"; sourceTree = "<group>"; };
 		659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Import DocSet into Xcode.sh"; sourceTree = "<group>"; };
@@ -162,6 +182,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		654FF14D115A3A27004C8721 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -177,8 +204,8 @@
 			isa = PBXGroup;
 			children = (
 				654E9CE4106BEFBF008CC673 /* Config */,
+				65BA2D2D106776E5000B5D3B /* Tests */,
 				08FB7795FE84155DC02AAC07 /* Source */,
-				65429588105FE1B80037E0C8 /* Unit Tests */,
 				65BDAD3D1077CA3900458E0F /* DTrace */,
 				65731F961067771B001E9123 /* Other Sources */,
 				C6859EA2029092E104C91782 /* Documentation */,
@@ -193,10 +220,8 @@
 			isa = PBXGroup;
 			children = (
 				659D40E81071001500051C57 /* Defines, Macros, etc. */,
-				651407F710758E6B00AB47BA /* Categories */,
-				65429594105FE1D00037E0C8 /* Classes */,
-				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
-				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
+				654295CF105FE2A90037E0C8 /* BMScript.h */,
+				654295D0105FE2A90037E0C8 /* BMScript.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -215,6 +240,7 @@
 			children = (
 				8DD76FA10486AA7600D96B5E /* BMScriptTest */,
 				654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */,
+				654FF14F115A3A27004C8721 /* BMScriptBareBonesTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -261,11 +287,24 @@
 			name = "Third-Party";
 			sourceTree = "<group>";
 		};
+		6504F47E1154EC95003EFB50 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				654E9D56106C2082008CC673 /* ScriptRunner.h */,
+				654E9D57106C2082008CC673 /* ScriptRunner.m */,
+				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
+				65429596105FE1D00037E0C8 /* BMRubyScript.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
 		651407F710758E6B00AB47BA /* Categories */ = {
 			isa = PBXGroup;
 			children = (
 				651407DD10758BDA00AB47BA /* NSObject_MemoryLogger.h */,
 				651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */,
+				654FF08C115A3233004C8721 /* NSString_Truncate.m */,
+				654FF08D115A3233004C8721 /* NSString_Truncate.h */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -282,48 +321,32 @@
 			isa = PBXGroup;
 			children = (
 				65429589105FE1B80037E0C8 /* Resources */,
-				65429590105FE1B80037E0C8 /* BMRubyScriptUnitTests.m */,
 				65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */,
+				654FF0FF115A3636004C8721 /* NSString_TruncateTests.h */,
+				654FF100115A3636004C8721 /* NSString_TruncateTests.m */,
 			);
-			path = "Unit Tests";
+			name = "Unit Tests";
+			path = "../Unit Tests";
 			sourceTree = "<group>";
 		};
 		65429589105FE1B80037E0C8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6542958A105FE1B80037E0C8 /* Scripts */,
 				6542958C105FE1B80037E0C8 /* Templates */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		6542958A105FE1B80037E0C8 /* Scripts */ = {
-			isa = PBXGroup;
-			children = (
-				6542958B105FE1B80037E0C8 /* Convert To Oct.rb */,
-			);
-			path = Scripts;
-			sourceTree = "<group>";
-		};
 		6542958C105FE1B80037E0C8 /* Templates */ = {
 			isa = PBXGroup;
 			children = (
+				6542958B105FE1B80037E0C8 /* Convert To Oct.rb */,
 				6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */,
 				6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */,
 				6542958F105FE1B80037E0C8 /* Multiple Tokens Template.rb */,
 				65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */,
 			);
 			path = Templates;
-			sourceTree = "<group>";
-		};
-		65429594105FE1D00037E0C8 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				65BA2D2D106776E5000B5D3B /* Helper Classes */,
-				654295CF105FE2A90037E0C8 /* BMScript.h */,
-				654295D0105FE2A90037E0C8 /* BMScript.m */,
-			);
-			name = Classes;
 			sourceTree = "<group>";
 		};
 		6547BCCC10698F2400B3A390 /* Probes */ = {
@@ -347,6 +370,17 @@
 				654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		654FF263115A4744004C8721 /* Executables */ = {
+			isa = PBXGroup;
+			children = (
+				651407F710758E6B00AB47BA /* Categories */,
+				6504F47E1154EC95003EFB50 /* Helpers */,
+				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
+				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
+			);
+			name = Executables;
 			sourceTree = "<group>";
 		};
 		65731F961067771B001E9123 /* Other Sources */ = {
@@ -395,15 +429,14 @@
 			path = Documentation/Includes;
 			sourceTree = "<group>";
 		};
-		65BA2D2D106776E5000B5D3B /* Helper Classes */ = {
+		65BA2D2D106776E5000B5D3B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				654E9D56106C2082008CC673 /* ScriptRunner.h */,
-				654E9D57106C2082008CC673 /* ScriptRunner.m */,
-				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
-				65429596105FE1D00037E0C8 /* BMRubyScript.m */,
+				654FF263115A4744004C8721 /* Executables */,
+				65429588105FE1B80037E0C8 /* Unit Tests */,
 			);
-			name = "Helper Classes";
+			name = Tests;
+			path = Source;
 			sourceTree = "<group>";
 		};
 		65BDAD3D1077CA3900458E0F /* DTrace */ = {
@@ -454,12 +487,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				654FF255115A4689004C8721 /* PBXTargetDependency */,
 				6581A39310675DA300558062 /* PBXTargetDependency */,
 			);
 			name = BMScriptUnitTests;
 			productName = BMScriptUnitTests;
 			productReference = 654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */;
 			productType = "com.apple.product-type.bundle";
+		};
+		654FF14E115A3A27004C8721 /* BMScriptBareBonesTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 654FF166115A3A9C004C8721 /* Build configuration list for PBXNativeTarget "BMScriptBareBonesTest" */;
+			buildPhases = (
+				654FF14C115A3A27004C8721 /* Sources */,
+				654FF14D115A3A27004C8721 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BMScriptBareBonesTest;
+			productName = BMScriptBareBonesTest;
+			productReference = 654FF14F115A3A27004C8721 /* BMScriptBareBonesTest */;
+			productType = "com.apple.product-type.tool";
 		};
 		8DD76F960486AA7600D96B5E /* BMScriptTest */ = {
 			isa = PBXNativeTarget;
@@ -498,6 +548,7 @@
 			targets = (
 				65EEC18D106A340B00E2E451 /* All */,
 				8DD76F960486AA7600D96B5E /* BMScriptTest */,
+				654FF14E115A3A27004C8721 /* BMScriptBareBonesTest */,
 				654295A1105FE22B0037E0C8 /* BMScriptUnitTests */,
 				657323E81067BF6A001E9123 /* BMScriptDocumentation */,
 			);
@@ -573,7 +624,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Generating header files for dtrace probes matching pattern ${PROJECT_DIR}/DTrace/Probes/*Probes.d\"\ndtrace -h -s ${PROJECT_DIR}/DTrace/Probes/*Probes.d -o ${PROJECT_DIR}/DTrace/Probes/BMScriptProbes.h";
+			shellScript = "echo \"Generating header files for dtrace probes matching pattern ${PROJECT_DIR}/DTrace/Probes/*Probes.d\"\ndtrace -h -s \"${PROJECT_DIR}\"/DTrace/Probes/*Probes.d -o \"${PROJECT_DIR}\"/DTrace/Probes/BMScriptProbes.h";
 		};
 		655D7B78106A1CA500B4B907 /* Import DocSet into Xcode */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -613,6 +664,21 @@
 				65BF535C1074C9E100F7F5A5 /* BMScript.m in Sources */,
 				651406BF10757A7D00AB47BA /* BMRubyScript.m in Sources */,
 				65C58144106745FE00BE26F6 /* BMScriptUnitTests.m in Sources */,
+				654FF102115A3646004C8721 /* NSString_Truncate.m in Sources */,
+				654FF101115A3636004C8721 /* NSString_TruncateTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654FF14C115A3A27004C8721 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				654FF15A115A3A3A004C8721 /* BMScriptBareBonesTest.m in Sources */,
+				654FF15B115A3A56004C8721 /* BMRubyScript.m in Sources */,
+				654FF15C115A3A56004C8721 /* BMScript.m in Sources */,
+				654FF15D115A3A56004C8721 /* BMScriptProbes.d in Sources */,
+				654FF15E115A3A56004C8721 /* ScriptRunner.m in Sources */,
+				654FF15F115A3A56004C8721 /* NSString_Truncate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -620,17 +686,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6583F842106F5D2B0073983C /* BMScriptBareBonesTest.m in Sources */,
 				65429597105FE1D00037E0C8 /* BMRubyScript.m in Sources */,
+				654FF160115A3A6E004C8721 /* BMScriptTest.m in Sources */,
 				654295D1105FE2A90037E0C8 /* BMScript.m in Sources */,
 				6547BCCF1069903F00B3A390 /* BMScriptProbes.d in Sources */,
 				654E9D58106C2082008CC673 /* ScriptRunner.m in Sources */,
+				654FF08E115A3233004C8721 /* NSString_Truncate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		654FF255115A4689004C8721 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 654FF14E115A3A27004C8721 /* BMScriptBareBonesTest */;
+			targetProxy = 654FF254115A4689004C8721 /* PBXContainerItemProxy */;
+		};
 		6581A39310675DA300558062 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DD76F960486AA7600D96B5E /* BMScriptTest */;
@@ -841,6 +913,192 @@
 				ZERO_LINK = NO;
 			};
 			name = Release;
+		};
+		654FF151115A3A27004C8721 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = Debug;
+		};
+		654FF152115A3A27004C8721 /* Debug GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug GC";
+		};
+		654FF153115A3A27004C8721 /* Debug LLVM */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug LLVM";
+		};
+		654FF154115A3A27004C8721 /* Debug LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug LLVM GC";
+		};
+		654FF155115A3A27004C8721 /* Debug Clang */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug Clang";
+		};
+		654FF156115A3A27004C8721 /* Debug Clang GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug Clang GC";
+		};
+		654FF157115A3A27004C8721 /* Debug Analyze Clang */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug Analyze Clang";
+		};
+		654FF158115A3A27004C8721 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		654FF159115A3A27004C8721 /* Release LLVM */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Release LLVM";
 		};
 		657323E91067BF6A001E9123 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1235,6 +1493,7 @@
 			buildSettings = {
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				PREBINDING = NO;
@@ -1258,10 +1517,12 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = BMScriptTest;
 			};
@@ -1392,6 +1653,22 @@
 				65DB4D061084B607005E7765 /* Debug Analyze Clang */,
 				654295A5105FE22C0037E0C8 /* Release */,
 				6592D4D910800B9100C7B887 /* Release LLVM */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		654FF166115A3A9C004C8721 /* Build configuration list for PBXNativeTarget "BMScriptBareBonesTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				654FF151115A3A27004C8721 /* Debug */,
+				654FF152115A3A27004C8721 /* Debug GC */,
+				654FF153115A3A27004C8721 /* Debug LLVM */,
+				654FF154115A3A27004C8721 /* Debug LLVM GC */,
+				654FF155115A3A27004C8721 /* Debug Clang */,
+				654FF156115A3A27004C8721 /* Debug Clang GC */,
+				654FF157115A3A27004C8721 /* Debug Analyze Clang */,
+				654FF158115A3A27004C8721 /* Release */,
+				654FF159115A3A27004C8721 /* Release LLVM */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
