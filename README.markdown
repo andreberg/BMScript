@@ -25,7 +25,10 @@ In a nutshell BMScript sports the following features:
 
 * Provides extensive delegated customization (for things like validation)
 
-* Fully documented (uses a customized Doxygen template)
+* Easy to subclass when you need more extensive validation (for example, script sources come from endusers of your app).
+  Details provided by a very simple protocol.
+
+* Fully documented (uses a customized Doxygen template, resulting in a Xcode searchable DocSet)
 
 * Support for DTrace/Instruments probes.
 
@@ -40,7 +43,18 @@ There are also some caveats:
 
 * Therefore: **Use at your own risk!** I'm just throwing it out there for whomever might find it useful.
   
-  
+
+Usage
+-----
+
+1. Add BMScript.m/.h to your project
+
+2. Add BMScriptDefines.h to your project
+
+3. Import BMScript.h in any of your implementation files while using forward declaration in your header files (@class BMScript;)
+
+4. Details on how to utilize BMScript can be found in it's documentation.
+
   
 Acknowledgements
 ----------------
