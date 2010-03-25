@@ -114,10 +114,11 @@ int main (int argc, const char * argv[]) {
     // ---------------------------------------------------------------------------------------- 
     
 
-     BMScript * script1 = [[BMScript alloc] init];
-     [script1 execute];
-     NSString * result1 = [script1 lastResult];
-     printf("script1 result = %s", [result1 UTF8String]);
+    BMScript * script1 = [[BMScript alloc] init];
+    [script1 execute];
+
+    NSString * result1 = [script1 lastResult];
+    NSLog(@"script1 (alloc init) result = %@", result1);
     
     
     NSLog(@"----------------------------------------------------------------------------------------");
@@ -128,7 +129,7 @@ int main (int argc, const char * argv[]) {
     success = [script2 executeAndReturnResult:&result2];
    
     if (success == BMScriptFinishedSuccessfullyTerminationStatus) {
-        NSLog(@"script2 result = %@", result2);
+        NSLog(@"script2 (BMRubyScript 'puts 1+2') result = %@", result2);
     };
     
     NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
@@ -187,11 +188,7 @@ int main (int argc, const char * argv[]) {
     NSDictionary * alternativeOptions = [NSDictionary dictionaryWithObjectsAndKeys:
                                           RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
                                                     alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
-    
-    
-    NSLog(@"----------------------------------------------------------------------------------------");
-    // ---------------------------------------------------------------------------------------- 
-    
+        
     BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
     [script5 executeAndReturnResult:&result5];
         
@@ -278,11 +275,6 @@ int main (int argc, const char * argv[]) {
     [script2 release];
         
     [pool drain];
-    
-    if (DEBUG) {
-        NSLog(@"Press return to exit...");
-        getchar();
-    }
     return 0;
 }
 
