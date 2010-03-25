@@ -15,14 +15,39 @@ XCODE = true
 # these should be set from the .xcconfig files but I did not succeed in
 # getting the needed inline shell script output. So we set those from here...
 
-# FIXME: replace svn based code with git version
 # ENV['SVN_REVISION'] = `svn info | grep Revision | awk '{print $2}'`.chomp!
 # ENV['PROJECT_VERSION'] = "%.1f" % (ENV['SVN_REVISION'].to_i / 150.0)
 
-#ENV['GIT_REVISION'] = `git describe`
-ENV['GIT_REVISION'] = "100"
-ENV['PROJECT_VERSION'] = "0.1"
-ENV['PROJECT_NUMBER'] = "#{ENV['PROJECT_VERSION']} (r#{ENV['SVN_REVISION']})"
+common_git_paths = %w[/usr/local/bin/git /usr/local/git/bin/git /opt/local/bin/git]
+git_path = ""
+ 
+common_git_paths.each do |p|
+  if File.exist?(p)
+    git_path = p
+    break
+  end
+end
+ 
+if git_path == ""
+  puts "Error: path to git not found! Setting doc version components to null values."
+  ENV['PROJECT_VERSION'] = "v0.0"
+  ENV['GIT_COMMIT_COUNT'] = "0"
+  ENV['GIT_SHA'] = "000000"
+else
+   s = `#{git_path} describe --long`
+
+   mat = s.match(/v?(\d\.\d)\-(\d*?)\-(\w+)/)
+   if mat && mat.length > 3
+      version = mat[1]
+      commit_count = mat[2]
+      sha = mat[3]
+   end
+   ENV['PROJECT_VERSION'] = version
+   ENV['GIT_COMMIT_COUNT'] = commit_count
+   ENV['GIT_SHA'] = sha
+end
+
+ENV['PROJECT_NUMBER'] = "v#{ENV['PROJECT_VERSION']} r#{ENV['GIT_COMMIT_COUNT']}"
 
 if XCODE
    puts "Replacing variables in DOXYFILE template"
