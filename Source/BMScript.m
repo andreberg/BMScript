@@ -20,7 +20,10 @@
 /// @cond HIDDEN
 
 #import "BMScript.h"
+
+#ifdef BMSCRIPT_ENABLE_DTRACE
 #import "BMScriptProbes.h"      /* dtrace probes auto-generated from .d file(s) */
+#endif
 
 #include <unistd.h>             /* for usleep       */
 #include <pthread.h>            /* for pthread_*    */
@@ -222,11 +225,13 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 
 /* designated initializer */
 - (id) initWithScriptSource:(NSString *)scriptSource options:(NSDictionary *)scriptOptions {
-    
-    BM_PROBE(INIT_BEGIN, 
-             (char *) (scriptSource ? [[scriptSource quote] UTF8String] : "(null)"), 
-             (char *) (scriptOptions ? [[[scriptOptions descriptionInStringsFileFormat] quote] UTF8String] : "(null)"));
-    
+
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(INIT_BEGIN, 
+                 (char *) (scriptSource ? [[scriptSource quote] UTF8String] : "(null)"), 
+                 (char *) (scriptOptions ? [[[scriptOptions descriptionInStringsFileFormat] quote] UTF8String] : "(null)"));
+    #endif
+        
     if ([self isDescendantOfClass:[BMScript class]] && ![self conformsToProtocol:@protocol(BMScriptLanguageProtocol)]) {
         @throw [NSException exceptionWithName:BMScriptLanguageProtocolDoesNotConformException 
                                        reason:@"BMScript Error: "
@@ -278,9 +283,9 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
         // tasks/pipes will be allocated, initialized (and destroyed) lazily
         // on an as-needed basis because NSTasks are one-shot (not for re-use)
     }
-    
-    BM_PROBE(INIT_END, (char *) [[[self debugDescription] quote] UTF8String]);
-    
+    #if (BMSCRIPT_ENABLE_DTRACE)    
+        BM_PROBE(INIT_END, (char *) [[[self debugDescription] quote] UTF8String]);
+    #endif    
     return self;
 }
 
@@ -348,8 +353,10 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     if (BM_EXPECTED([task isRunning], 0)) {
         [task terminate];
     } else {
-        
-        BM_PROBE(SETUP_TASK_BEGIN);
+
+        #if (BMSCRIPT_ENABLE_DTRACE)
+            BM_PROBE(SETUP_TASK_BEGIN);
+        #endif
 
         task = [[NSTask alloc] init];
         pipe = [[NSPipe alloc] init];
@@ -382,8 +389,9 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
                 //NSLog(@"BMScript: Info: setting [task standardError:pipe]");
                 [task setStandardError:pipe];
             }
-            
-            BM_PROBE(SETUP_TASK_END);
+            #if (BMSCRIPT_ENABLE_DTRACE)            
+                BM_PROBE(SETUP_TASK_END);
+            #endif
             success = YES;
         }
     }
@@ -397,18 +405,24 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     
     BM_LOCK(task)
     @try {
-        BM_PROBE(NET_EXECUTION_BEGIN, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
+        #if (BMSCRIPT_ENABLE_DTRACE)
+            BM_PROBE(NET_EXECUTION_BEGIN, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
+        #endif
         [task launch];
     }
     @catch (NSException * e) {
         BM_LOCK(gTaskStatus)
         gTaskStatus = status = BMScriptExceptionTerminationStatus;
         BM_UNLOCK(gTaskStatus)
-        BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
+        #if (BMSCRIPT_ENABLE_DTRACE)
+                BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
+        #endif
         goto endnow;
     }    
     [task waitUntilExit];
-    BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
+    #endif
     NSData * data = [[pipe fileHandleForReading] readDataToEndOfFile];
     if (BM_EXPECTED([task isRunning], 0)) [task terminate];
     BM_UNLOCK(task)
@@ -450,8 +464,9 @@ endnow:
         [bgTask terminate];
     } else {
         if (!bgTask) {
-            
-            BM_PROBE(SETUP_BG_TASK_BEGIN);
+            #if (BMSCRIPT_ENABLE_DTRACE)            
+                BM_PROBE(SETUP_BG_TASK_BEGIN);
+            #endif
 
             // Create a task and pipe
             bgTask = [[NSTask alloc] init];
@@ -501,8 +516,9 @@ endnow:
                                                      selector:@selector(taskTerminated:) 
                                                          name:NSTaskDidTerminateNotification 
                                                        object:bgTask];
-            
-            BM_PROBE(SETUP_BG_TASK_END);
+            #if (BMSCRIPT_ENABLE_DTRACE)            
+                BM_PROBE(SETUP_BG_TASK_END);
+            #endif
 
             @try {
                 [bgTask launch];
@@ -538,7 +554,9 @@ endnow:
 - (void) appendData:(NSData *)data {
     
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    BM_PROBE(APPEND_DATA_BEGIN, (char *) [string UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(APPEND_DATA_BEGIN, (char *) [string UTF8String]);
+    #endif
     if (BM_EXPECTED(string != nil, 1)) {
         NSString * aPartial = string;
         BOOL shouldAppendPartial = YES;
@@ -556,14 +574,18 @@ endnow:
     } else {
         NSLog(@"BMScript: Warning: Attempted %s but could not append to self.partialResult. Data maybe lost!", __PRETTY_FUNCTION__);
     }
-    BM_PROBE(APPEND_DATA_END, (char *) [[partialResult quote] UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(APPEND_DATA_END, (char *) [[partialResult quote] UTF8String]);
+    #endif
     [string release], string = nil;
 }
 
 - (void) cleanupTask:(NSTask *)whichTask {
     if (task && task == whichTask) {
-        
-        BM_PROBE(CLEANUP_TASK_BEGIN);
+                
+        #if (BMSCRIPT_ENABLE_DTRACE)
+            BM_PROBE(CLEANUP_TASK_BEGIN);
+        #endif
         BM_LOCK(task)
         [task release], task = nil;
         BM_UNLOCK(task)
@@ -574,11 +596,15 @@ endnow:
             [pipe release], pipe = nil;
         }
         BM_UNLOCK(pipe)
-        BM_PROBE(CLEANUP_TASK_END);
+        #if (BMSCRIPT_ENABLE_DTRACE)
+            BM_PROBE(CLEANUP_TASK_END);
+        #endif
         
     } else if (bgTask && bgTask == whichTask) {
         
-        BM_PROBE(CLEANUP_BG_TASK_BEGIN);
+        #if (BMSCRIPT_ENABLE_DTRACE)
+            BM_PROBE(CLEANUP_BG_TASK_BEGIN);
+        #endif
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:NSFileHandleReadCompletionNotification 
                                                       object:[bgPipe fileHandleForReading]];
@@ -596,14 +622,17 @@ endnow:
             [bgPipe release], bgPipe = nil;
         }
         BM_UNLOCK(bgPipe)
-        BM_PROBE(CLEANUP_BG_TASK_END);
+        #if (BMSCRIPT_ENABLE_DTRACE)
+            BM_PROBE(CLEANUP_BG_TASK_END);
+        #endif
     }
 }
 
 
 - (void) stopTask {
-    
-    BM_PROBE(STOP_BG_TASK_BEGIN);
+    #if (BMSCRIPT_ENABLE_DTRACE)    
+        BM_PROBE(STOP_BG_TASK_BEGIN);
+    #endif
     
     // read out remaining data, as the pipes have a limited buffer size 
     // and may stall on subsequent calls if full
@@ -636,8 +665,10 @@ endnow:
     BM_UNLOCK(result)
     
     [self cleanupTask:bgTask];
-    
-    BM_PROBE(BG_EXECUTE_END, (char *) [[result quote] UTF8String]);
+
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(BG_EXECUTE_END, (char *) [[result quote] UTF8String]);
+    #endif
 
     NSArray * historyItem = [NSArray arrayWithObjects:script, result, nil];
     BM_LOCK(history)
@@ -661,8 +692,9 @@ endnow:
     BM_LOCK(self)
     [[NSNotificationCenter defaultCenter] postNotificationName:BMScriptTaskDidEndNotification object:self userInfo:info];
     BM_UNLOCK(self)
-    
-    BM_PROBE(STOP_BG_TASK_END);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(STOP_BG_TASK_END);
+    #endif
 }
 
 - (void) taskTerminated:(NSNotification *) aNotification { 
@@ -673,8 +705,9 @@ endnow:
 // MARK: Templates
 
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg {
-    
-    BM_PROBE(SATURATE_WITH_ARGUMENT_BEGIN, (char *) [tArg UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)    
+        BM_PROBE(SATURATE_WITH_ARGUMENT_BEGIN, (char *) [tArg UTF8String]);
+    #endif
     if (self.isTemplate) {
         BM_LOCK(script)
         self.script = [NSString stringWithFormat:script, tArg];
@@ -683,12 +716,15 @@ endnow:
         return YES;
     }
     return NO;
-    BM_PROBE(SATURATE_WITH_ARGUMENT_END, (char *) [[script quote] UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(SATURATE_WITH_ARGUMENT_END, (char *) [[script quote] UTF8String]);
+    #endif
 }
 
 - (BOOL) saturateTemplateWithArguments:(NSString *)firstArg, ... {
-    
-    BM_PROBE(SATURATE_WITH_ARGUMENTS_BEGIN);
+    #if (BMSCRIPT_ENABLE_DTRACE)    
+        BM_PROBE(SATURATE_WITH_ARGUMENTS_BEGIN);
+    #endif
     BOOL success = NO;
     if (self.isTemplate) {
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -732,14 +768,18 @@ endnow:
         goto endnow;
     }
 endnow:
-    BM_PROBE(SATURATE_WITH_ARGUMENTS_END, (char *) [[script quote] UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(SATURATE_WITH_ARGUMENTS_END, (char *) [[script quote] UTF8String]);
+    #endif
     return success;
 }
 
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary {
     
     BOOL success = NO;
-    BM_PROBE(SATURATE_WITH_DICTIONARY_BEGIN, (char *) [[[dictionary descriptionInStringsFileFormat] quote] UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(SATURATE_WITH_DICTIONARY_BEGIN, (char *) [[[dictionary descriptionInStringsFileFormat] quote] UTF8String]);
+    #endif
     if (self.isTemplate) {
         
         NSString * accumulator = self.script;
@@ -763,7 +803,9 @@ endnow:
         
         success = YES;
     }
-    BM_PROBE(SATURATE_WITH_DICTIONARY_END, (char *) [[script quote] UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(SATURATE_WITH_DICTIONARY_END, (char *) [[script quote] UTF8String]);
+    #endif
     return success;
 }
 
@@ -797,11 +839,12 @@ endnow:
 }
 
 - (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error {
-    
-    BM_PROBE(EXECUTE_BEGIN, 
-             (char *) [[[task launchPath] wrapSingleQuotes] UTF8String],
-             (char *) [[script quote] UTF8String], 
-             (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(EXECUTE_BEGIN, 
+                 (char *) [[[task launchPath] wrapSingleQuotes] UTF8String],
+                 (char *) [[script quote] UTF8String], 
+                 (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
+    #endif
     
     BOOL success = NO;
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
@@ -880,8 +923,10 @@ endnow:
             }
         }
     }
-    
-    BM_PROBE(EXECUTE_END, (char *) [[result quote] UTF8String]);
+
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(EXECUTE_END, (char *) [[result quote] UTF8String]);
+    #endif
 
     return status;
 }
@@ -895,10 +940,12 @@ endnow:
                                          userInfo:nil];            
     }
     
-    BM_PROBE(BG_EXECUTE_BEGIN, 
-             (char *) [[[options objectForKey:BMScriptOptionsTaskLaunchPathKey] wrapSingleQuotes] UTF8String],
-             (char *) [[script quote] UTF8String], 
-             (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
+    #if (BMSCRIPT_ENABLE_DTRACE)    
+        BM_PROBE(BG_EXECUTE_BEGIN, 
+                 (char *) [[[options objectForKey:BMScriptOptionsTaskLaunchPathKey] wrapSingleQuotes] UTF8String],
+                 (char *) [[script quote] UTF8String], 
+                 (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
+    #endif
     
     [self setupAndLaunchBackgroundTask];
     
@@ -909,8 +956,10 @@ endnow:
 // TODO add probes for history system
 
 - (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index {
-    
-    BM_PROBE(SCRIPT_AT_INDEX_BEGIN, index, (int) [history count]);
+
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(SCRIPT_AT_INDEX_BEGIN, index, (int) [history count]);
+    #endif
     NSString * aScript = nil;
     if ([history count] > 0) {
         NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:0];
@@ -922,13 +971,16 @@ endnow:
             aScript = item;
         }
     }
-    BM_PROBE(SCRIPT_AT_INDEX_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(SCRIPT_AT_INDEX_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    #endif
     return aScript;
 }
 
 - (NSString *) resultFromHistoryAtIndex:(NSInteger)index {
-
-    BM_PROBE(RESULT_AT_INDEX_BEGIN, index, (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(RESULT_AT_INDEX_BEGIN, index, (int) [history count]);
+    #endif
     NSString * aResult = nil;
     if ([history count] > 0) {
         NSString * item = [[history objectAtIndex:index] objectAtIndex:1];
@@ -940,13 +992,16 @@ endnow:
             aResult = item;
         }
     }
-    BM_PROBE(RESULT_AT_INDEX_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(RESULT_AT_INDEX_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    #endif
     return aResult;
 }
 
 - (NSString *) lastScriptSourceFromHistory {
-    
-    BM_PROBE(LAST_SCRIPT_BEGIN, (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)    
+        BM_PROBE(LAST_SCRIPT_BEGIN, (int) [history count]);
+    #endif
     NSString * aScript = nil;
     if ([history count] > 0) {
         NSString * item = [[history lastObject] objectAtIndex:0];
@@ -958,13 +1013,16 @@ endnow:
             aScript = item;
         }
     }
-    BM_PROBE(LAST_SCRIPT_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(LAST_SCRIPT_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
+    #endif
     return aScript;
 }
 
 - (NSString *) lastResultFromHistory {
-    
-    BM_PROBE(LAST_RESULT_BEGIN, (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(LAST_RESULT_BEGIN, (int) [history count]);
+    #endif
     NSString * aResult = nil;
     if ([history count] > 0) {
         NSString * item = [[history lastObject] objectAtIndex:1];
@@ -976,7 +1034,9 @@ endnow:
             aResult = item;
         }
     }
-    BM_PROBE(LAST_RESULT_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    #if (BMSCRIPT_ENABLE_DTRACE)
+        BM_PROBE(LAST_RESULT_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
+    #endif
     return aResult;
 }
 

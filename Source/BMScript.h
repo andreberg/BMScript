@@ -310,14 +310,14 @@
          * You'd have to evaluate yourself if the article still holds true. I'm mearly pointing you to it. <br>
          * (Though utilizing the locking DTrace probes, I couldn't find much of difference between the two)
          */
-        #define BMSCRIPT_FAST_LOCK 1
+        #define BMSCRIPT_FAST_LOCK 0
     #endif
 #endif
 
 
 #ifndef BMSCRIPT_ENABLE_DTRACE
     /*! Toggle for DTrace probes. */
-    #define BMSCRIPT_ENABLE_DTRACE 1
+    #define BMSCRIPT_ENABLE_DTRACE 0
 #endif
 
 
