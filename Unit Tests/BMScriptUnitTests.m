@@ -153,6 +153,49 @@
     STAssertTrue([result isEqualToString:@"65536"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
+    BMScript * script6 = [BMScript rubyScriptWithSource:@"%w(1 2 3 4).each do |x| puts x end"];
+    [script6 execute];
+    result = [script6 lastResult];
+    
+    STAssertTrue([result isEqualToString:@"1\n2\n3\n4\n"], @"but instead is %@", result);
+    STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
+
+    BMScript * script7 = [BMScript pythonScriptWithSource:@"import this"];
+    [script7 execute];
+    result = [script7 lastResult];
+    
+    STAssertTrue([result isEqualToString:@"The Zen of Python, by Tim Peters\n"
+                                         @"\n"
+                                         @"Beautiful is better than ugly.\n"
+                                         @"Explicit is better than implicit.\n"
+                                         @"Simple is better than complex.\n"
+                                         @"Complex is better than complicated.\n"
+                                         @"Flat is better than nested.\n"
+                                         @"Sparse is better than dense.\n"
+                                         @"Readability counts.\n"
+                                         @"Special cases aren't special enough to break the rules.\n"
+                                         @"Although practicality beats purity.\n"
+                                         @"Errors should never pass silently.\n"
+                                         @"Unless explicitly silenced.\n"
+                                         @"In the face of ambiguity, refuse the temptation to guess.\n"
+                                         @"There should be one-- and preferably only one --obvious way to do it.\n"
+                                         @"Although that way may not be obvious at first unless you're Dutch.\n"
+                                         @"Now is better than never.\n"
+                                         @"Although never is often better than *right* now.\n"
+                                         @"If the implementation is hard to explain, it's a bad idea.\n"
+                                         @"If the implementation is easy to explain, it may be a good idea.\n"
+                                         @"Namespaces are one honking great idea -- let's do more of those!\n"
+                                         @""], @"but instead is %@", result);
+    STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
+    
+    BMScript * script8 = [BMScript shellScriptWithSource:@"echo 'foo bar baz' | awk '{print $2}'"];
+    [script8 execute];
+    result = [script8 lastResult];
+    
+    STAssertTrue([result isEqualToString:@"bar\n"], @"but instead is %@", result);
+    STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
+    
+    
 }
 
 - (void) testTemplates {

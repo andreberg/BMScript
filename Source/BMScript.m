@@ -1211,6 +1211,23 @@ endnow:
     return [[[self alloc] initWithContentsOfTemplateFile:path options:opts] autorelease];
 }
 
+// Shell 
+
++ (id) shellScriptWithSource:(NSString *)scriptSource {
+	NSDictionary * opts = BMSynthesizeOptions(@"/bin/sh", @"-c");
+    return [[[self alloc] initWithScriptSource:scriptSource options:opts] autorelease];
+}
+
++ (id) shellScriptWithContentsOfFile:(NSString *)path {
+	NSDictionary * opts = BMSynthesizeOptions(@"/bin/sh", @"-c");
+    return [[[self alloc] initWithContentsOfFile:path options:opts] autorelease];
+}
+
++ (id) shellScriptWithContentsOfTemplateFile:(NSString *)path {
+	NSDictionary * opts = BMSynthesizeOptions(@"/bin/sh", @"-c");
+    return [[[self alloc] initWithContentsOfTemplateFile:path options:opts] autorelease];
+}
+
 @end
 
 

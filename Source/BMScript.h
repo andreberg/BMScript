@@ -860,6 +860,22 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @param path path to a template file containing the tokens to replace.
  */
 + (id) perlScriptWithContentsOfTemplateFile:(NSString *)path;
+/*!
+ * Returns an autoreleased Shell script ready for execution.
+ * @param scriptSource the script source containing the commands to execute.
+ */
++ (id) shellScriptWithSource:(NSString *)scriptSource;
+/*!
+ * Returns an autoreleased Shell script from a file ready for execution.
+ * @param path path to a file containing the commands to execute.
+ */
++ (id) shellScriptWithContentsOfFile:(NSString *)path;
+/*!
+ * Returns an autoreleased Shell script template ready for saturation.
+ * @param path path to a template file containing the tokens to replace.
+ */
++ (id) shellScriptWithContentsOfTemplateFile:(NSString *)path;
+
 @end
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
