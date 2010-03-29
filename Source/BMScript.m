@@ -21,7 +21,7 @@
 
 #import "BMScript.h"
 
-#ifdef BMSCRIPT_ENABLE_DTRACE
+#if BMSCRIPT_ENABLE_DTRACE
 #import "BMScriptProbes.h"      /* dtrace probes auto-generated from .d file(s) */
 #endif
 
