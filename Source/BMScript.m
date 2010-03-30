@@ -35,7 +35,7 @@
     #define BMSCRIPT_DEBUG_HISTORY  0
 #endif
 
-#if BMSCRIPT_THREAD_SAFE
+#if (BMSCRIPT_THREAD_SAFE && BMSCRIPT_ENABLE_DTRACE)
     #if BMSCRIPT_FAST_LOCK
         #define BM_LOCK(name) \
         BM_PROBE(ACQUIRE_LOCK_START, (char *) [BMStringFromBOOL(BMSCRIPT_FAST_LOCK) UTF8String]); \
@@ -57,6 +57,25 @@
         @synchronized(sync_##name##_ref) {
         #define BM_UNLOCK(name) }\
         BM_PROBE(ACQUIRE_LOCK_END, (char *) [BMStringFromBOOL(BMSCRIPT_FAST_LOCK) UTF8String]);
+    #endif
+#elif (BMSCRIPT_THREAD_SAFE && !BMSCRIPT_ENABLE_DTRACE)
+    #if BMSCRIPT_FAST_LOCK
+        #define BM_LOCK(name) \
+        static pthread_mutex_t mtx_##name = PTHREAD_MUTEX_INITIALIZER; \
+        if (pthread_mutex_lock(&mtx_##name)) {\
+            printf("*** Warning: Lock failed! Application behaviour may be undefined. Exiting...");\
+            exit(EXIT_FAILURE);\
+        }
+        #define BM_UNLOCK(name) \
+        if ((pthread_mutex_unlock(&mtx_##name) != 0)) {\
+            printf("*** Warning: Unlock failed! Application behaviour may be undefined. Exiting...");\
+            exit(EXIT_FAILURE);\
+        };
+    #else
+        #define BM_LOCK(name) \
+        static id const sync_##name##_ref = @""#name;\
+        @synchronized(sync_##name##_ref) {
+        #define BM_UNLOCK(name) };
     #endif
 #else 
     #define BM_LOCK(name)
@@ -394,6 +413,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 - (TerminationStatus) launchTaskAndStoreResult {
     
     TerminationStatus status = BMScriptNotExecutedTerminationStatus;
+    NSData * data = nil;
     
     BM_LOCK(task)
     @try {
@@ -415,13 +435,11 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
     #endif
-    NSData * data = [[pipe fileHandleForReading] readDataToEndOfFile];
+    data = [[pipe fileHandleForReading] readDataToEndOfFile];
     if (BM_EXPECTED([task isRunning], 0)) [task terminate];
     BM_UNLOCK(task)
     
-    BM_LOCK(gTaskStatus)
-    gTaskStatus = status = [task terminationStatus];
-    BM_UNLOCK(gTaskStatus)
+    self.returnValue = status = [task terminationStatus];
     
     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSString * aResult = string;
@@ -652,7 +670,14 @@ endnow:
         if ([delegate respondsToSelector:@selector(willSetResult:)]) {
             aResult = [delegate willSetResult:string];
         }
-        self.result = aResult;
+        // we need to do the right thing here and not use the accessor methods
+        // when the thread safety flag is on, since we are already in a locked 
+        // section.
+        #if (BMSCRIPT_THREAD_SAFE)
+            result = aResult;
+        #else
+            self.result = aResult;
+        #endif
     }
     BM_UNLOCK(result)
     
