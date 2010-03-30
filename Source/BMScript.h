@@ -655,7 +655,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @property (BM_ATOMIC assign) __weak id<BMScriptDelegateProtocol> delegate;
 
 /*! Gets the last execution result. May return nil if the script hasn't been executed yet. */
-- (NSString *)lastResult;
+@property (BM_ATOMIC copy, readonly, getter=lastResult) NSString * result;
 
 // MARK: Initializer Methods
 

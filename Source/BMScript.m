@@ -88,7 +88,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 /* Empty braces means this is an "Extension" as opposed to a Category */
 @interface BMScript ()
 
-@property (BM_ATOMIC copy) NSString * result;
+@property (BM_ATOMIC copy, readwrite) NSString * result;
 @property (BM_ATOMIC copy) NSString * partialResult;
 @property (BM_ATOMIC assign) BOOL isTemplate;
 @property (BM_ATOMIC retain) NSTask * task;
@@ -122,14 +122,6 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 @synthesize pipe;
 @synthesize bgTask;
 @synthesize bgPipe;
-
-//=========================================================== 
-//  lastResult 
-//=========================================================== 
-
-- (NSString *)lastResult {
-    return [[result copy] autorelease]; 
-}
 
 //=========================================================== 
 //  delegate 
