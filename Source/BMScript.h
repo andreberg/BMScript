@@ -614,6 +614,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
     NSPipe * pipe;
     NSTask * bgTask;
     NSPipe * bgPipe;
+    NSInteger returnValue;
+    NSInteger bgTaskReturnValue;
 }
 
 // Doxygen seems to "swallow" the first property item and not generate any documentation for it

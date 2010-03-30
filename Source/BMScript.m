@@ -99,15 +99,12 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
 NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLanguageProtocolIllegalAccessException";
 
 
-// MARK: File Statics (Globals)
-
-static TerminationStatus gTaskStatus   = BMScriptNotExecutedTerminationStatus;
-static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
-
 /* Empty braces means this is an "Extension" as opposed to a Category */
 @interface BMScript ()
 
 @property (BM_ATOMIC copy, readwrite) NSString * result;
+@property (BM_ATOMIC assign) NSInteger returnValue;
+@property (BM_ATOMIC assign) NSInteger bgTaskReturnValue;
 @property (BM_ATOMIC copy) NSString * partialResult;
 @property (BM_ATOMIC assign) BOOL isTemplate;
 @property (BM_ATOMIC retain) NSTask * task;
@@ -141,6 +138,8 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
 @synthesize pipe;
 @synthesize bgTask;
 @synthesize bgPipe;
+@synthesize returnValue;
+@synthesize bgTaskReturnValue;
 
 //=========================================================== 
 //  delegate 
@@ -423,9 +422,7 @@ static TerminationStatus gBgTaskStatus = BMScriptNotExecutedTerminationStatus;
         [task launch];
     }
     @catch (NSException * e) {
-        BM_LOCK(gTaskStatus)
-        gTaskStatus = status = BMScriptExceptionTerminationStatus;
-        BM_UNLOCK(gTaskStatus)
+        self.returnValue = status = BMScriptExceptionTerminationStatus;
         #if (BMSCRIPT_ENABLE_DTRACE)
                 BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
         #endif
@@ -534,9 +531,7 @@ endnow:
                 [bgTask launch];
             }
             @catch (NSException * e) {
-                BM_LOCK(gBgTaskStatus)
-                gBgTaskStatus = BMScriptExceptionTerminationStatus;
-                BM_UNLOCK(gBgTaskStatus)
+                self.bgTaskReturnValue = BMScriptExceptionTerminationStatus;
                 [self cleanupTask:bgTask];
             }
 
@@ -653,9 +648,7 @@ endnow:
 
     if(BM_EXPECTED([bgTask isRunning], 0)) [bgTask terminate];
     
-    BM_LOCK(gBgTaskStatus)
-    gBgTaskStatus = [bgTask terminationStatus];
-    BM_UNLOCK(gBgTaskStatus)
+    self.bgTaskReturnValue = [bgTask terminationStatus];
     
     // task is finished, copy over the accumulated partialResults into lastResult
     NSString * string = self.partialResult;
@@ -704,18 +697,19 @@ endnow:
     }
     
     NSDictionary * info = [NSDictionary dictionaryWithObjectsAndKeys:
-                           [NSNumber numberWithInteger:gBgTaskStatus], BMScriptNotificationTaskTerminationStatus, 
-                                                               result, BMScriptNotificationTaskResults, nil];
+                             [NSNumber numberWithInteger:self.bgTaskReturnValue], BMScriptNotificationTaskTerminationStatus, 
+                                                                          result, BMScriptNotificationTaskResults, nil];
     BM_LOCK(self)
     [[NSNotificationCenter defaultCenter] postNotificationName:BMScriptTaskDidEndNotification object:self userInfo:info];
     BM_UNLOCK(self)
+    
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(STOP_BG_TASK_END);
     #endif
 }
 
 - (void) taskTerminated:(NSNotification *) aNotification { 
-    #pragma unused(aNotification)
+#pragma unused(aNotification)
     [self stopTask]; 
 }
 
@@ -1151,6 +1145,8 @@ endnow:
     [coder encodeObject:bgPipe];
     [coder encodeObject:delegate];
     [coder encodeValueOfObjCType:@encode(BOOL) at:&isTemplate];
+    [coder encodeValueOfObjCType:@encode(NSInteger) at:&returnValue];
+    [coder encodeValueOfObjCType:@encode(NSInteger) at:&bgTaskReturnValue];
 }
 
 
@@ -1168,7 +1164,8 @@ endnow:
         bgPipe      = [[coder decodeObject] retain];
         delegate    = [[coder decodeObject] retain];
         [coder decodeValueOfObjCType:@encode(BOOL) at:&isTemplate];
-        
+        [coder decodeValueOfObjCType:@encode(NSInteger) at:&returnValue];
+        [coder decodeValueOfObjCType:@encode(NSInteger) at:&bgTaskReturnValue];
     }
     return self;
 }
