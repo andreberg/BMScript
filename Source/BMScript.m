@@ -545,7 +545,6 @@ endnow:
 - (void) dataReceived:(NSNotification *)aNotification {
     
 	NSData * data = [[aNotification userInfo] valueForKey:NSFileHandleNotificationDataItem];
-    // NSNumber * errorCode = [[aNotification userInfo] valueForKey:@"NSFileHandleError"];
     if (BM_EXPECTED([data length] > 0, 1)) {
         [self appendData:data];
     } else {
@@ -963,8 +962,6 @@ endnow:
 }
 
 // MARK: History
-
-// TODO add probes for history system
 
 - (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index {
 
