@@ -969,8 +969,9 @@ endnow:
         BM_PROBE(SCRIPT_AT_INDEX_BEGIN, index, (int) [history count]);
     #endif
     NSString * aScript = nil;
-    if ([history count] > 0) {
-        NSString * item = [[[self history] objectAtIndex:index] objectAtIndex:0];
+    NSInteger hc = [history count];
+    if (hc > 0 && (index >= 0 && index <= hc)) {
+        NSString * item = [[self.history objectAtIndex:index] objectAtIndex:0];
         if ([delegate respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([delegate shouldReturnItemFromHistory:item]) {
                 aScript = item;
@@ -978,6 +979,10 @@ endnow:
         } else {
             aScript = item;
         }
+    } else {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException 
+                                       reason:[NSString stringWithFormat:@"Index (%d) out of bounds (%d)", index, hc]
+                                     userInfo:nil];                    
     }
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(SCRIPT_AT_INDEX_END, (char *) [[aScript quote] UTF8String], (int) [history count]);
@@ -990,7 +995,8 @@ endnow:
         BM_PROBE(RESULT_AT_INDEX_BEGIN, index, (int) [history count]);
     #endif
     NSString * aResult = nil;
-    if ([history count] > 0) {
+    NSInteger hc = [history count];
+    if (hc > 0 && (index >= 0 && index <= hc)) {
         NSString * item = [[history objectAtIndex:index] objectAtIndex:1];
         if ([delegate respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([delegate shouldReturnItemFromHistory:item]) {
@@ -999,7 +1005,11 @@ endnow:
         } else {
             aResult = item;
         }
-    }
+    } else {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException 
+                                       reason:[NSString stringWithFormat:@"Index (%d) out of bounds (%d)", index, hc]
+                                     userInfo:nil];                    
+    }    
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(RESULT_AT_INDEX_END, (char *) [[aResult quote] UTF8String], (int) [history count]);
     #endif
