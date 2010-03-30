@@ -193,7 +193,7 @@
  *
  * To make that clearer here's an example with the relevant parts thrown together:
  *
- * @include NotificationExample.m
+ * @include NonBlockingExecutionExample.m
  *
  * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate instance variables.
  * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment.
@@ -273,7 +273,7 @@
  */
 
 /*!
- * @example NotificationExample.m
+ * @example NonBlockingExecutionExample.m
  * Shows how to setup the non-blocking execution model. <br>
  * This shows just one possible way out of many to utilize the notification send from the async execution.
  */
@@ -746,7 +746,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error;
 /*!
  * Executes the script with a asynchroneous (non-blocking) task. The result will be posted with the help of a notifcation item.
- * @see @link NotificationExample.m @endlink
+ * @see @link NonBlockingExecutionExample.m @endlink
  */
 - (void) executeInBackgroundAndNotify; 
 
