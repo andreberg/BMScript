@@ -129,7 +129,7 @@
 		653A0A2F1067D6B20027DF98 /* bmScriptConvenienceMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptConvenienceMethods.m; sourceTree = "<group>"; };
 		653A0A301067D8C10027DF98 /* bmScriptSaturateTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptSaturateTemplate.m; sourceTree = "<group>"; };
 		653A0B4C1067E2930027DF98 /* bmScriptExecution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptExecution.m; sourceTree = "<group>"; };
-		653A0B691067E5860027DF98 /* NotificationExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationExample.m; sourceTree = "<group>"; };
+		653A0B691067E5860027DF98 /* NonBlockingExecutionExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonBlockingExecutionExample.m; sourceTree = "<group>"; };
 		653A0B6A1067E89B0027DF98 /* bmScriptDelegateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptDelegateMethods.m; sourceTree = "<group>"; };
 		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
 		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
@@ -159,6 +159,7 @@
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
 		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
 		6592D50F108015A600C7B887 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		65957A141162B53A00CEA800 /* TemplateKeywordSaturationExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateKeywordSaturationExample.m; sourceTree = "<group>"; };
 		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; wrapsLines = 1; };
 		659D7A9B107F99C70032B0B1 /* Saturate Doxygen Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Saturate Doxygen Template.rb"; sourceTree = "<group>"; };
 		659D7AB1107F9AE30032B0B1 /* Run Doxygen.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Run Doxygen.sh"; sourceTree = "<group>"; };
@@ -248,12 +249,13 @@
 		6503F09010729FF000B260F7 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
-				653A0B691067E5860027DF98 /* NotificationExample.m */,
 				6503F08810729F9A00B260F7 /* SubclassingExample.m */,
+				653A0B691067E5860027DF98 /* NonBlockingExecutionExample.m */,
 				6503F0A11072A05F00B260F7 /* BlockingExecutionExamples.m */,
 				6503F2481072DE0C00B260F7 /* BlockingExecutionExamples1.m */,
 				6503F2491072DE3600B260F7 /* BlockingExecutionExamples2.m */,
 				6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */,
+				65957A141162B53A00CEA800 /* TemplateKeywordSaturationExample.m */,
 			);
 			includeInIndex = 0;
 			name = Examples;
