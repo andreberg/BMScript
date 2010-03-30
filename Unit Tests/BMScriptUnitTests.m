@@ -235,6 +235,22 @@
     //[script1 saturateTemplateWithArgument:@"255"];
     STAssertThrowsSpecificNamed([script3 execute], NSException, BMScriptTemplateArgumentMissingException, @"", nil);
     
+    // test saturation by keyword dict
+    BMScript * script4 = [[BMScript alloc] initWithTemplateSource:@"This is a %{KEYWORD} template. %{ADJECTIVE} stuff." 
+                                                          options:BMSynthesizeOptions(@"/bin/echo", @"-n")];
+    
+    STAssertThrowsSpecificNamed([script4 execute], NSException, BMScriptTemplateArgumentMissingException, @"", nil);
+    
+    NSDictionary * keywordDict = [NSDictionary dictionaryWithObjectsAndKeys:@"keyword-based", @"KEYWORD", 
+                                                                            @"Neat", @"ADJECTIVE", nil];
+    
+    [script4 saturateTemplateWithDictionary:keywordDict];
+    TerminationStatus status = [script4 execute];
+    result = [script4 lastResult];
+    
+    STAssertTrue([result isEqualToString:@"This is a keyword-based template. Neat stuff."], @"but instead is '%@'", [result quote]);
+    STAssertTrue(status == 0, @"but instead is %d", status);
+    
 }
 
 - (void) testExecution {
