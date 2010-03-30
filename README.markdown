@@ -38,9 +38,8 @@ There are also some caveats:
 
 * The initial code base comes from a while back from my very first attempt to write a "real world" Objective-C class
 
-* BMScript is not threadsafe (yet). There is a define BM_ATOMIC that controls the atomicity of the getter and setter methods and even a BMSCRIPT_THREAD_SAFE which employs some locks in critical sections but this is completely untested code! 
-  Especially stuff that deals with the instance execution history has not been catered for. 
-  For example two threads could potentially try to access an execution result on the same instance and cause a race condition.
+* BMScript is not threadsafe (yet). There is a define BMSCRIPT_THREAD_SAFE which if true employs locks in critical sections of the code and also sets BM_ATOMIC to true which in turn makes all the accessor methods atomic. But this is not really tested code! 
+  For example stuff that deals with the instance local execution history could cause race conditions if two threads would try to access the execution result on the same instance at the same time.
 
 * I tested what I could with the tools I have available (e.g. xcode + gdb, caveman debugging, dtrace, instruments) 
   but to date it hasn't been used in heavyweight code.
@@ -60,7 +59,7 @@ Usage
 
 4. If you do not want to use the dTrace probes leave BMSCRIPT_ENABLE_DTRACE at 0.
    If you _do_ however need the dTrace probes set the define to 1 and add the BMScriptProbes.d dTrace script to your Compile Sources phase.
-   Xcode should automatically generate BMScriptProbes.h from that D script. 
+   Xcode should automatically generate BMScriptProbes.h from that D script. Of course this build step has to come first before the compilation of your real app sources (drag it to the top of target build phases list).
    If it doesn't, you can either use BMScriptProbes.h from this BMScript project or add a Run Script phase with the following code
 
         echo "Generating header files for dtrace probes matching pattern ${PROJECT_DIR}/DTrace/Probes/*Probes.d"
