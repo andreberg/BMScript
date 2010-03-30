@@ -134,6 +134,10 @@
  *
  * @include convertToDecimalTemplate.rb
  *
+ * Here's a short example how you'd use keyword based templates:
+ *
+ * @include TemplateKeywordSaturationExample.m
+ *
  * @par Subclassing BMScript
  *
  * You can also see BMScript as a sort of abstract superclass and customize its
