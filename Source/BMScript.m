@@ -906,7 +906,7 @@ endnow:
                     *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:0 userInfo:errorDict];
                 }
             } else {
-                if (BM_EXPECTED(results != nil, 1)) {
+                if (results) {
                     *results = result;
                 }
                 
