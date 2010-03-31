@@ -10,3 +10,7 @@
 + (id) perlScriptWithSource:(NSString *)scriptSource;
 + (id) perlScriptWithContentsOfFile:(NSString *)path;
 + (id) perlScriptWithContentsOfTemplateFile:(NSString *)path;
+
++ (id) shellScriptWithSource:(NSString *)scriptSource;
++ (id) shellScriptWithContentsOfFile:(NSString *)path;
++ (id) shellScriptWithContentsOfTemplateFile:(NSString *)path;
