@@ -169,7 +169,9 @@
  * @include bmScriptExecution.m
  *
  * Using the blocking execution model you can either pass a pointer to NSString where the result will be
- * written to (including NSError if needed), or just use plain BMScript.execute followed by BMScript.lastResult.
+ * written to (including NSError if needed), or just use plain BMScript.execute. 
+ * This will return the TerminationStatus, or the return value the underlying process exited with.
+ * You can then obtain the script execution result by accessing BMScript.lastResult.
  *
  * The non-blocking execution model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="external">notifications</a>.
  * You register your class as observer with the default notification center for a notification called
@@ -204,9 +206,15 @@
  * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a>
  * (in Xcode: right-click and choose "Open Link in Browser").
  * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not 1.
- * Note that there haven't been enough tests yet to say that BMScript is
- * thread-safe. It is likely to be thread-safe enough, but if that will be enough for your own application will
- * unfortunately have to be tested by you.
+ * #BMSCRIPT_THREAD_SAFE will also set #BM_ATOMIC to 1 which will make all accessor methods atomic.
+ * Note that there haven't been enough tests yet to say that BMScript is thread-safe. 
+ *
+ * It is likely thread-safe enough, but still, care has to be taken when two different threads want to access
+ * internal state of the same BMScript instance. 
+ *
+ * BMScript was also designed such that re-use is possible. Unfortunately this does not automatically mean it's 
+ * intrinsically thread-safe or that it does promote re-entrant code. 
+ * You are encouraged to look through the source in order to determine if it may be thread-safe enough for your purpose.
  *
  * @par Delegate Methods
  *
@@ -214,6 +222,8 @@
  * your subclass or another class posing as delegate can implement:
  *
  * @include bmScriptDelegateMethods.m
+ *
+ * @par Instance Local Execution History
  *
  * And last but not least, BMScript features an execution cache, called its history. This works like the Shell history
  * in that it will keep script sources as well as the results of the execution of those sources.
@@ -268,8 +278,6 @@
  * Any execution and its corresponding result are stored in the instance local
  * execution cache, also called its history. 
  * 
- * See the (TODO: history) example on the history if you would like to know 
- * more about that.
  */
 
 /*!
