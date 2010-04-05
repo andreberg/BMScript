@@ -612,7 +612,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  @protected
     NSString * script;
     NSDictionary * options;
-    __weak id delegate; 
+    id delegate; 
  @private
     NSString * result;
     NSString * partialResult;
@@ -662,7 +662,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Gets and sets the delegate for BMScript. It is not enforced that the object passed to the accessor conforms 
  * to the BMScriptLanguageProtocol. A compiler warning however should be issued. 
  */
-@property (BM_ATOMIC assign) __weak id<BMScriptDelegateProtocol> delegate;
+@property (BM_ATOMIC assign) id<BMScriptDelegateProtocol> delegate;
 
 /*! Gets the last execution result. May return nil if the script hasn't been executed yet. */
 @property (BM_ATOMIC copy, readonly, getter=lastResult) NSString * result;
