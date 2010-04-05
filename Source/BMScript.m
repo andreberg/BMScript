@@ -1105,24 +1105,6 @@ endnow:
 // - (NSString *) willSetScript:(NSString *)aScript { return aScript; }
 // - (NSDictionary *) willSetOptions:(NSDictionary *)opts { return opts; }
 
-// MARK BMScriptLanguage
-
-// Currently unused as BMScriptLanguageProtocol was initially intended for subclasses
-// It might change again but that's the status at the time of writing
-
-//- (NSDictionary *) defaultOptionsForLanguage {
-//     NSDictionary * opts = BMSynthesizeOptions(@"/bin/echo", @"");
-//     return opts;
-//}
-
-//- (NSString *) defaultScriptSourceForLanguage {
-//     return @"BMScript running default task (/bin/echo) with this message as script source.\n"
-//            @"If you want to customize BMScript you can create a subclass easily with help of the BMScriptLanguageProtocol\n "
-//            @"which describes a required method for supplying the default options dictionary and some optional methods.\n "
-//            @"You can also call one of BMScript's many initializer and convenience factory methods to provide default options\n "
-//            @"such as task launch path and arguments and a default script to execute.\n";  
-//    return nil;
-//}
 
 // MARK: NSCopying
 
