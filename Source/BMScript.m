@@ -223,6 +223,14 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
     [super dealloc];
 }
 
+- (void) finalize {
+    
+    if (BM_EXPECTED([task isRunning], 0)) [task terminate];
+    if (BM_EXPECTED([bgTask isRunning], 0)) [bgTask terminate];
+        
+    [super finalize];
+}
+
 // MARK: Initializer Methods
 
 - (id)init {
