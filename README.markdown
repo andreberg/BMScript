@@ -59,11 +59,12 @@ Usage
 
 4. If you do not want to use the dTrace probes leave BMSCRIPT_ENABLE_DTRACE at 0.
    If you _do_ however need the dTrace probes set the define to 1 and add the BMScriptProbes.d dTrace script to your Compile Sources phase.
-   Xcode should automatically generate BMScriptProbes.h from that D script. Of course this build step has to come first before the compilation of your real app sources (drag it to the top of target build phases list).
-   If it doesn't, you can either use BMScriptProbes.h from this BMScript project or add a Run Script phase with the following code
+   Xcode should automatically generate BMScriptProbes.h from that D script. If it doesn't, you can either use BMScriptProbes.h from this BMScript project or add a Run Script phase with the following code
 
         echo "Generating header files for dtrace probes matching pattern ${PROJECT_DIR}/DTrace/Probes/*Probes.d"
         dtrace -h -s "${PROJECT_DIR}"/DTrace/Probes/*Probes.d -o "${PROJECT_DIR}"/DTrace/Probes/BMScriptProbes.h
+        
+    Of course the run script phase has to come first before the compilation of your real app sources (drag it to the top of target build phases list).
 
 5. Details on how to fully utilize BMScript can be found in it's documentation.
 
