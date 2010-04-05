@@ -329,8 +329,9 @@
 
 #ifndef BMSCRIPT_ENABLE_DTRACE
     /*! Toggle for DTrace probes. */
-    #define BMSCRIPT_ENABLE_DTRACE 1
+    #define BMSCRIPT_ENABLE_DTRACE 0
 #endif
+
 
 
 /*!
@@ -338,12 +339,16 @@
  * Toggles the atomicity attribute for Objective-C 2.0 properties. 
  * Will be set to <span class="sourcecode">nonatomic,</span> if #BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
  */
-#if !BMSCRIPT_THREAD_SAFE
+
+#ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
     #define BM_ATOMIC nonatomic,
 #else
-    #define BM_ATOMIC 
+    #if BMSCRIPT_THREAD_SAFE
+        #define BM_ATOMIC 
+    #else
+        #define BM_ATOMIC nonatomic,
+    #endif
 #endif
-
 
 /*! 
  * @def BM_PROBE(name, ...) 
