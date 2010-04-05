@@ -79,7 +79,7 @@
  *
  * If you initialize BMScript directly without specifying options and script source
  * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
- * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/sh", @"-c", nil)</span>
+ * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", @"")</span>
  * and the script source will default to <span class="sourcecode">@"echo '<script source placeholder>'"</span>.
  *
  * <div class="box warning">
@@ -329,7 +329,7 @@
 
 #ifndef BMSCRIPT_ENABLE_DTRACE
     /*! Toggle for DTrace probes. */
-    #define BMSCRIPT_ENABLE_DTRACE 0
+    #define BMSCRIPT_ENABLE_DTRACE 1
 #endif
 
 
