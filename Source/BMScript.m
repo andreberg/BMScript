@@ -160,10 +160,10 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 
 - (NSString *) description {
     return [NSString stringWithFormat:@"%@\n"
-            @"  script: '%@'\n"
-            @"  result: '%@'\n"
-            @"delegate: '%@'\n"
-            @" options: '%@'", 
+                                      @"  script: '%@'\n"
+                                      @"  result: '%@'\n"
+                                      @"delegate: '%@'\n"
+                                      @" options: '%@'", 
             [super description], 
             [script quote], 
             [result quote], 
@@ -173,11 +173,11 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 
 - (NSString *) debugDescription {
     return [NSString stringWithFormat:@"%@\n"
-            @" history (%d item%@): '%@'\n"
-            @"    task: '%@'\n"
-            @"    pipe: '%@'\n"
-            @"  bgTask: '%@'\n"
-            @"  bgPipe: '%@'\n", 
+                                      @" history (%d item%@): '%@'\n"
+                                      @"    task: '%@'\n"
+                                      @"    pipe: '%@'\n"
+                                      @"  bgTask: '%@'\n"
+                                      @"  bgPipe: '%@'\n", 
             [self description], [history count], ([history count] == 1 ? @"" : @"s"), history, task, pipe, bgTask, bgPipe ];
 }
 
@@ -257,7 +257,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
             if ([self isDescendantOfClass:[BMScript class]] && ![self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
                 @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
                                                reason:@"BMScript Error: Descendants of BMScript must implement "
-                        @"-[<BMScriptLanguageProtocol> defaultOptionsForLanguage]." 
+                                                      @"-[<BMScriptLanguageProtocol> defaultOptionsForLanguage]." 
                                              userInfo:nil];
             } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
                 options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
@@ -897,7 +897,7 @@ endnow:
                 if (error) {
                     NSString * reason = [NSString stringWithFormat:@"BMScript Error: Unable to execute task."];
                     NSString * suggestion = [NSString stringWithFormat:@"Check launch path (path to the executable) and task arguments. "
-                                             @"Most of the time an exception is raised because either or both are inappropriate."];
+                                                                       @"Most of the time an exception is raised because either or both are inappropriate."];
                     NSDictionary * errorDict = [NSDictionary dictionaryWithObjectsAndKeys:
                                                         reason, NSLocalizedFailureReasonErrorKey, 
                                                     suggestion, NSLocalizedRecoverySuggestionErrorKey, nil];
