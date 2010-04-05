@@ -80,7 +80,7 @@
  * If you initialize BMScript directly without specifying options and script source
  * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
  * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", @"")</span>
- * and the script source will default to <span class="sourcecode">@"echo '<script source placeholder>'"</span>.
+ * and the script source will default to <span class="sourcecode">@"'<script source placeholder>'"</span>.
  *
  * <div class="box warning">
  *      <div class="table">
