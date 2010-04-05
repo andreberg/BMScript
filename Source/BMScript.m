@@ -411,7 +411,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 /* fires a one-off (blocking or synchroneous) task and stores the result */
 - (TerminationStatus) launchTaskAndStoreResult {
     
-    TerminationStatus status = BMScriptNotExecutedTerminationStatus;
+    TerminationStatus status = BMScriptNotExecuted;
     NSData * data = nil;
     
     BM_LOCK(task)
@@ -422,7 +422,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
         [task launch];
     }
     @catch (NSException * e) {
-        self.returnValue = status = BMScriptExceptionTerminationStatus;
+        self.returnValue = status = BMScriptFailedWithException;
         #if (BMSCRIPT_ENABLE_DTRACE)
                 BM_PROBE(NET_EXECUTION_END, (char *) [[BMStringFromTerminationStatus(status) wrapSingleQuotes] UTF8String]);
         #endif
@@ -531,7 +531,7 @@ endnow:
                 [bgTask launch];
             }
             @catch (NSException * e) {
-                self.bgTaskReturnValue = BMScriptExceptionTerminationStatus;
+                self.bgTaskReturnValue = BMScriptFailedWithException;
                 [self cleanupTask:bgTask];
             }
 
@@ -857,7 +857,7 @@ endnow:
     #endif
     
     BOOL success = NO;
-    TerminationStatus status = BMScriptNotExecutedTerminationStatus;
+    TerminationStatus status = BMScriptNotExecuted;
     
     if (self.isTemplate) {
         if (error) {
@@ -882,7 +882,7 @@ endnow:
             
             status = [self launchTaskAndStoreResult];
             
-            if (status == BMScriptExceptionTerminationStatus) {
+            if (status == BMScriptFailedWithException) {
                 if (error) {
                     NSString * reason = [NSString stringWithFormat:@"BMScript Error: Executing the task raised an exception."];
                     NSString * suggestion = [NSString stringWithFormat:@"Check launch path (path to the executable) and task arguments. "
@@ -893,7 +893,7 @@ endnow:
                     
                     *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:0 userInfo:errorDict];
                 }
-            } else if (status == BMScriptNotExecutedTerminationStatus) {
+            } else if (status == BMScriptNotExecuted) {
                 if (error) {
                     NSString * reason = [NSString stringWithFormat:@"BMScript Error: Unable to execute task."];
                     NSString * suggestion = [NSString stringWithFormat:@"Check launch path (path to the executable) and task arguments. "

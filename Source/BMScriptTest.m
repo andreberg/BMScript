@@ -128,7 +128,7 @@ int main (int argc, const char * argv[]) {
     NSString * result2;
     success = [script2 executeAndReturnResult:&result2];
    
-    if (success == BMScriptFinishedSuccessfullyTerminationStatus) {
+    if (success == BMScriptFinishedSuccessfully) {
         NSLog(@"script2 (BMRubyScript 'puts 1+2') result = %@", result2);
     };
     

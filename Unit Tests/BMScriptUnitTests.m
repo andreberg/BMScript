@@ -263,7 +263,7 @@
     BMScript * script1 = [[BMScript alloc] init];
     success = [script1 execute];
     
-    STAssertTrue(success != BMScriptExceptionTerminationStatus && success != BMScriptNotExecutedTerminationStatus, @"script1 execution should return YES, but returned %@", (success ? @"YES" : @"NO"));
+    STAssertTrue(success != BMScriptFailedWithException && success != BMScriptNotExecuted, @"script1 execution should return YES, but returned %@", (success ? @"YES" : @"NO"));
     STAssertFalse([[script1 lastResult] isEqualToString:@""], @"script1's lastResult shouldn't be equal to an empty string");
     
     [script1 release];    

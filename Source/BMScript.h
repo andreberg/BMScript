@@ -399,13 +399,13 @@ typedef NSInteger TerminationStatus;
 
 enum {
     /*! task not executed yet */
-    BMScriptNotExecutedTerminationStatus = -(NSIntegerMax-1),
+    BMScriptNotExecuted = -(NSIntegerMax-1),
     /*! task finished successfully */
-    BMScriptFinishedSuccessfullyTerminationStatus = 0,
+    BMScriptFinishedSuccessfully = 0,
     /*! task failed */
-    BMScriptFailedTerminationStatus,
+    BMScriptFailed,
     /*! task failed with an exception */
-    BMScriptExceptionTerminationStatus = (NSIntegerMax-1)
+    BMScriptFailedWithException = (NSIntegerMax-1)
 };
 
 /*!
@@ -426,13 +426,13 @@ NS_INLINE NSString * BMStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
  */
 NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
     switch (status) {
-        case BMScriptNotExecutedTerminationStatus:
+        case BMScriptNotExecuted:
             return @"task not executed";
             break;
-        case BMScriptFinishedSuccessfullyTerminationStatus:
+        case BMScriptFinishedSuccessfully:
             return @"task finished successfully";
             break;
-        case BMScriptExceptionTerminationStatus:
+        case BMScriptFailedWithException:
             return @"task failed with an exception. check if launch path and/or arguments are appropriate";
             break;
         default:

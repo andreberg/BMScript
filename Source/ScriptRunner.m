@@ -75,7 +75,7 @@
         }
         
         results = nil;
-        status = BMScriptNotExecutedTerminationStatus;
+        status = BMScriptNotExecuted;
         
         taskHasEnded = NO;
         
