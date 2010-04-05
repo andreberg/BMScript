@@ -1177,6 +1177,14 @@ endnow:
     return self;
 }
 
+- (id) replacementObjectForPortCoder:(NSPortCoder *)encoder {
+    if ([encoder isByref])
+        return [NSDistantObject proxyWithLocal:self
+                                    connection:[encoder connection]];
+    else
+        return self;
+}
+
 @end
 
 @implementation BMScript (CommonScriptLanguagesFactories)
