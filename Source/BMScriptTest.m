@@ -18,10 +18,13 @@
 //  limitations under the License.
 
 #import <Foundation/Foundation.h>
+#import "BMDefines.h"
 #import "BMScript.h"
 #import "BMRubyScript.h"
 #import "ScriptRunner.h"
 #include <unistd.h>
+#include <sys/param.h>
+#include <objc/objc-auto.h>
 
 #if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS) && DEBUG)
     #define BMAssertLog(_COND_) if (!(_COND_)) \
@@ -40,15 +43,13 @@
     #endif
 #define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
 
-#include <unistd.h>
-#include <sys/param.h>
+
 
 // MARK: PATHS
 
 #define BASEPATH ([[NSFileManager defaultManager] currentDirectoryPath])
 #define TEMPLATEPATH [NSString stringWithFormat:@"%@%@", BASEPATH, @"/Unit Tests/Resources/Templates"]
 #define RUBY19_EXE_PATH @"/usr/local/bin/ruby1.9"
-
 
 
 // ---------------------------------------------------------------------------------------- 
@@ -60,6 +61,10 @@ int main (int argc, const char * argv[]) {
 #pragma unused(argc, argv)
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    
+    #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
+        objc_startCollectorThread();
+    #endif
     
     NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED = %i", MAC_OS_X_VERSION_MIN_REQUIRED);
     NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED = %i", MAC_OS_X_VERSION_MAX_ALLOWED);
@@ -275,6 +280,12 @@ int main (int argc, const char * argv[]) {
     [script2 release];
         
     [pool drain];
+    
+    #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
+        objc_collect(OBJC_COLLECT_IF_NEEDED);
+    #endif
+    
+    getchar();
     return 0;
 }
 

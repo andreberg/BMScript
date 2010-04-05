@@ -17,10 +17,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+#import <Foundation/Foundation.h>
 
 #include <unistd.h>
-#import <Foundation/Foundation.h>
-#import <objc/objc-auto.h>
+#include <objc/objc-auto.h>
 
 #import "BMScript.h"
 #import "BMRubyScript.h"
@@ -39,11 +39,11 @@
 #endif 
 
 int main (int argc, const char * argv[]) {
-    #pragma unused(argc, argv)
+#pragma unused(argc, argv)
     
-    #if __OBJC_GC__
-    // start gc thread
-    objc_startCollectorThread();
+    #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
+        // start gc thread
+        objc_startCollectorThread();
     #endif
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -68,5 +68,11 @@ int main (int argc, const char * argv[]) {
     [scriptRunner2 release], scriptRunner2 = nil;
     
     [pool drain];
+    
+    #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
+        objc_collect(OBJC_COLLECT_IF_NEEDED);
+    #endif
+    
+    getchar();
     return 0;
 }
