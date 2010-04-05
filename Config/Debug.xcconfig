@@ -32,7 +32,7 @@
 USE_DEBUG_ENVIRONMENT_SCRIPT = 0
 
 // saves some build time
-ONLY_ACTIVE_ARCH = YES
+//ONLY_ACTIVE_ARCH = YES
 
 // Might be nice to have for better Shark et al. support
 GENERATE_PROFILING_CODE = YES
@@ -42,3 +42,7 @@ WARNING_CFLAGS = $(inherited) -Winit-self -Wformat=2 -Wsequence-point -Wstrict-a
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1
 
 DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+
+GCC_OPTIMIZATION_LEVEL = 0
+
+COPY_PHASE_STRIP = NO

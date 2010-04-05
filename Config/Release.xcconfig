@@ -20,3 +20,5 @@
 #include "Common.xcconfig"
 
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG=0
+
+GCC_OPTIMIZATION_LEVEL = s

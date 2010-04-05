@@ -19,8 +19,8 @@
 
 // This file defines build settings to be included by all modes (debug and release)
 
-// SDKROOT is set via "Base SDK for All Configurations" popup on General tab on the Project Info page
-
-ARCHS = $(ARCHS_STANDARD_32_64_BIT)
+ARCHS = ppc i386 x86_64
 
 PREBINDING = NO
+
+SDKROOT = macosx10.5

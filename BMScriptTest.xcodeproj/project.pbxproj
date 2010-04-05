@@ -728,11 +728,9 @@
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
@@ -779,6 +777,398 @@
 			};
 			name = Release;
 		};
+		65335DE51169BC7000EBEFE7 /* Debug Analyze Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65DB4CFD1084B5BC005E7765 /* Debug Analyze.xcconfig */;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = "Debug Analyze Clang GC";
+		};
+		65335DE61169BC7000EBEFE7 /* Debug Analyze Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			buildSettings = {
+				PRODUCT_NAME = All;
+			};
+			name = "Debug Analyze Clang GC";
+		};
+		65335DE71169BC7000EBEFE7 /* Debug Analyze Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65DB4CFD1084B5BC005E7765 /* Debug Analyze.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Debug Analyze Clang GC";
+		};
+		65335DE81169BC7000EBEFE7 /* Debug Analyze Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65DB4CFD1084B5BC005E7765 /* Debug Analyze.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Debug Analyze Clang GC";
+		};
+		65335DE91169BC7000EBEFE7 /* Debug Analyze Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65DB4CFD1084B5BC005E7765 /* Debug Analyze.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BMScriptTest";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = "Debug Analyze Clang GC";
+		};
+		65335DEA1169BC7000EBEFE7 /* Debug Analyze Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
+			buildSettings = {
+				PRODUCT_NAME = Documentation;
+			};
+			name = "Debug Analyze Clang GC";
+		};
+		65335DF41169BDFC00EBEFE7 /* Release Clang */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+			};
+			name = "Release Clang";
+		};
+		65335DF51169BDFC00EBEFE7 /* Release Clang */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = "Release Clang";
+		};
+		65335DF61169BDFC00EBEFE7 /* Release Clang */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Release Clang";
+		};
+		65335DF71169BDFC00EBEFE7 /* Release Clang */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Release Clang";
+		};
+		65335DF81169BDFC00EBEFE7 /* Release Clang */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = "Release Clang";
+		};
+		65335DF91169BDFC00EBEFE7 /* Release Clang */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Documentation;
+				ZERO_LINK = NO;
+			};
+			name = "Release Clang";
+		};
+		65335DFA1169BE0600EBEFE7 /* Release Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = "Release Clang GC";
+		};
+		65335DFB1169BE0600EBEFE7 /* Release Clang GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = "Release Clang GC";
+		};
+		65335DFC1169BE0600EBEFE7 /* Release Clang GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Release Clang GC";
+		};
+		65335DFD1169BE0600EBEFE7 /* Release Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Release Clang GC";
+		};
+		65335DFE1169BE0600EBEFE7 /* Release Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = "Release Clang GC";
+		};
+		65335DFF1169BE0600EBEFE7 /* Release Clang GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Documentation;
+				ZERO_LINK = NO;
+			};
+			name = "Release Clang GC";
+		};
+		65335E001169BE5D00EBEFE7 /* Release LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+			};
+			name = "Release LLVM GC";
+		};
+		65335E011169BE5D00EBEFE7 /* Release LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = "Release LLVM GC";
+		};
+		65335E021169BE5D00EBEFE7 /* Release LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = BMScriptTest;
+			};
+			name = "Release LLVM GC";
+		};
+		65335E031169BE5D00EBEFE7 /* Release LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptBareBonesTest;
+			};
+			name = "Release LLVM GC";
+		};
+		65335E041169BE5D00EBEFE7 /* Release LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653D01761074BB4400C9F7CC /* UnitTests.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "BMScriptUnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = BMScriptUnitTests;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = "Release LLVM GC";
+		};
+		65335E051169BE5D00EBEFE7 /* Release LLVM GC */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Documentation;
+				ZERO_LINK = NO;
+			};
+			name = "Release LLVM GC";
+		};
 		653D01711074BAAB00C9F7CC /* Debug GC */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
@@ -809,11 +1199,9 @@
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
@@ -918,13 +1306,12 @@
 		};
 		654FF151115A3A27004C8721 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = /usr/local/bin;
@@ -941,6 +1328,7 @@
 		};
 		654FF152115A3A27004C8721 /* Debug GC */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -961,6 +1349,7 @@
 		};
 		654FF153115A3A27004C8721 /* Debug LLVM */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -981,6 +1370,7 @@
 		};
 		654FF154115A3A27004C8721 /* Debug LLVM GC */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1001,12 +1391,14 @@
 		};
 		654FF155115A3A27004C8721 /* Debug Clang */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1021,12 +1413,15 @@
 		};
 		654FF156115A3A27004C8721 /* Debug Clang GC */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1041,6 +1436,7 @@
 		};
 		654FF157115A3A27004C8721 /* Debug Analyze Clang */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65DB4CFD1084B5BC005E7765 /* Debug Analyze.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1061,6 +1457,7 @@
 		};
 		654FF158115A3A27004C8721 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
@@ -1084,6 +1481,7 @@
 		};
 		654FF159115A3A27004C8721 /* Release LLVM */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6592D50F108015A600C7B887 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1237,11 +1635,9 @@
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
@@ -1298,11 +1694,9 @@
 			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
@@ -1368,9 +1762,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = BMScriptTest;
 			};
@@ -1437,14 +1831,13 @@
 		};
 		65DB4D051084B607005E7765 /* Debug Analyze Clang */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 652085F4107163DC00BA57EC /* Debug.xcconfig */;
+			baseConfigurationReference = 65DB4CFD1084B5BC005E7765 /* Debug Analyze.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
@@ -1496,9 +1889,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				PREBINDING = NO;
 				SDKROOT = macosx10.5;
 			};
 			name = "Debug Clang GC";
@@ -1521,7 +1912,6 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BMScriptTest_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1621,8 +2011,12 @@
 				65DB4D001084B601005E7765 /* Debug Clang */,
 				65DB4D1B1084B729005E7765 /* Debug Clang GC */,
 				65DB4D051084B607005E7765 /* Debug Analyze Clang */,
+				65335DE71169BC7000EBEFE7 /* Debug Analyze Clang GC */,
 				1DEB927608733DD40010E9CD /* Release */,
 				6592D4D810800B9100C7B887 /* Release LLVM */,
+				65335E021169BE5D00EBEFE7 /* Release LLVM GC */,
+				65335DF61169BDFC00EBEFE7 /* Release Clang */,
+				65335DFC1169BE0600EBEFE7 /* Release Clang GC */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1637,8 +2031,12 @@
 				65DB4CFE1084B601005E7765 /* Debug Clang */,
 				65DB4D191084B729005E7765 /* Debug Clang GC */,
 				65DB4D031084B607005E7765 /* Debug Analyze Clang */,
+				65335DE51169BC7000EBEFE7 /* Debug Analyze Clang GC */,
 				1DEB927A08733DD40010E9CD /* Release */,
 				6592D4D610800B9100C7B887 /* Release LLVM */,
+				65335E001169BE5D00EBEFE7 /* Release LLVM GC */,
+				65335DF41169BDFC00EBEFE7 /* Release Clang */,
+				65335DFA1169BE0600EBEFE7 /* Release Clang GC */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1653,8 +2051,12 @@
 				65DB4D011084B601005E7765 /* Debug Clang */,
 				65DB4D1C1084B729005E7765 /* Debug Clang GC */,
 				65DB4D061084B607005E7765 /* Debug Analyze Clang */,
+				65335DE91169BC7000EBEFE7 /* Debug Analyze Clang GC */,
 				654295A5105FE22C0037E0C8 /* Release */,
 				6592D4D910800B9100C7B887 /* Release LLVM */,
+				65335E041169BE5D00EBEFE7 /* Release LLVM GC */,
+				65335DF81169BDFC00EBEFE7 /* Release Clang */,
+				65335DFE1169BE0600EBEFE7 /* Release Clang GC */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1669,8 +2071,12 @@
 				654FF155115A3A27004C8721 /* Debug Clang */,
 				654FF156115A3A27004C8721 /* Debug Clang GC */,
 				654FF157115A3A27004C8721 /* Debug Analyze Clang */,
+				65335DE81169BC7000EBEFE7 /* Debug Analyze Clang GC */,
 				654FF158115A3A27004C8721 /* Release */,
 				654FF159115A3A27004C8721 /* Release LLVM */,
+				65335E031169BE5D00EBEFE7 /* Release LLVM GC */,
+				65335DF71169BDFC00EBEFE7 /* Release Clang */,
+				65335DFD1169BE0600EBEFE7 /* Release Clang GC */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1685,8 +2091,12 @@
 				65DB4D021084B601005E7765 /* Debug Clang */,
 				65DB4D1D1084B729005E7765 /* Debug Clang GC */,
 				65DB4D071084B607005E7765 /* Debug Analyze Clang */,
+				65335DEA1169BC7000EBEFE7 /* Debug Analyze Clang GC */,
 				657323ED1067BF6A001E9123 /* Release */,
 				6592D4DA10800B9100C7B887 /* Release LLVM */,
+				65335E051169BE5D00EBEFE7 /* Release LLVM GC */,
+				65335DF91169BDFC00EBEFE7 /* Release Clang */,
+				65335DFF1169BE0600EBEFE7 /* Release Clang GC */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1701,8 +2111,12 @@
 				65DB4CFF1084B601005E7765 /* Debug Clang */,
 				65DB4D1A1084B729005E7765 /* Debug Clang GC */,
 				65DB4D041084B607005E7765 /* Debug Analyze Clang */,
+				65335DE61169BC7000EBEFE7 /* Debug Analyze Clang GC */,
 				65EEC192106A340B00E2E451 /* Release */,
 				6592D4D710800B9100C7B887 /* Release LLVM */,
+				65335E011169BE5D00EBEFE7 /* Release LLVM GC */,
+				65335DF51169BDFC00EBEFE7 /* Release Clang */,
+				65335DFB1169BE0600EBEFE7 /* Release Clang GC */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
