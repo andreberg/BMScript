@@ -932,12 +932,12 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /*! String truncation modes￼￼ */
 typedef enum {
     /*! <string_start> ... <string_end>. */
-    PBNSStringTruncateModeCenter = 0,
+    BMNSStringTruncateModeCenter = 0,
     /*! ... <string_end>. */
-    PBNSStringTruncateModeStart = 1,
+    BMNSStringTruncateModeStart = 1,
     /*! <string_start> ... */
-    PBNSStringTruncateModeEnd = 2
-} PBNSStringTruncateMode;
+    BMNSStringTruncateModeEnd = 2
+} BMNSStringTruncateMode;
 /*!
  * Replaces all occurrences of newlines, carriage returns, backslashes, single/double quotes and percentage signs with their escaped versions 
  * @return the quoted string

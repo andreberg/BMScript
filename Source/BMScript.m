@@ -1312,7 +1312,7 @@ endnow:
     return [[self substringWithRange:(NSMakeRange(0, len))] stringByAppendingString:@"..."];
 }
 
-- (NSString *) truncateToLength:(NSUInteger)targetLength mode:(PBNSStringTruncateMode)mode indicator:(NSString *)indicatorString {
+- (NSString *) truncateToLength:(NSUInteger)targetLength mode:(BMNSStringTruncateMode)mode indicator:(NSString *)indicatorString {
     
     NSString * res = nil;
     NSString * firstPart;
@@ -1331,15 +1331,15 @@ endnow:
         return nil;
     } else {
         switch (mode) {
-            case PBNSStringTruncateModeCenter:
+            case BMNSStringTruncateModeCenter:
                 firstPart = [self substringToIndex:(targetLength/2)];
                 lastPart = [self substringFromIndex:(stringLength-((targetLength/2))+ilength)];
                 res = [NSString stringWithFormat:@"%@%@%@", firstPart, indicatorString, lastPart];                
                 break;
-            case PBNSStringTruncateModeStart:
+            case BMNSStringTruncateModeStart:
                 res = [NSString stringWithFormat:@"%@%@", indicatorString, [self substringFromIndex:((stringLength-targetLength)+ilength)]];
                 break;
-            case PBNSStringTruncateModeEnd:
+            case BMNSStringTruncateModeEnd:
                 res = [NSString stringWithFormat:@"%@%@", [self substringToIndex:(targetLength-ilength)], indicatorString];
                 break;
             default:
