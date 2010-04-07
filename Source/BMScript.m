@@ -92,7 +92,6 @@ NSString * const BMScriptNotificationTaskResults           = @"BMScriptNotificat
 NSString * const BMScriptNotificationTaskTerminationStatus = @"BMScriptNotificationTaskTerminationStatus";
 
 NSString * const BMScriptTemplateArgumentMissingException  = @"BMScriptTemplateArgumentMissingException";
-NSString * const BMScriptTemplateArgumentsMissingException = @"BMScriptTemplateArgumentsMissingException";
 
 NSString * const BMScriptLanguageProtocolDoesNotConformException = @"BMScriptLanguageProtocolDoesNotConformException";
 NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLanguageProtocolMethodMissingException";
