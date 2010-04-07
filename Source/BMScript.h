@@ -259,7 +259,7 @@
  */
 
 /*!
- * @example BlockingExecutionExamples3.m
+ * @example BlockingExecutionExamples.m
  * Usage examples for the blocking execution model.
  * 
  * This is the default way of using BMScript:
@@ -267,7 +267,7 @@
  * 
  * @include BlockingExecutionExamples1.m
  * 
- * Here are a couple of other examples of the blocking execution model:
+ * Another way of using the blocking execution model:
  * 
  * @include BlockingExecutionExamples2.m
  * 
@@ -275,8 +275,17 @@
  * Normally NSTasks are one-shot (not for re-use), so it is convenient that
  * BMScript handles all the boilerplate setup for you in an opaque way.
  *
+ * @include BlockingExecutionExamples3.m
+ *
  * Any execution and its corresponding result are stored in the instance local
- * execution cache, also called its history. 
+ * execution cache, also called its history. Usage is pretty self explanatory. 
+ * Take a look at #scriptSourceFromHistoryAtIndex: et al.
+ * You can a script source from history by supplying an index or you can get the 
+ * last one executed. Same goes for the execution results.
+ * 
+ * Currently the return values (exit codes) are not stored in the history. Might
+ * be added at a later time, but for now you can just save the TerminationStatus 
+ * in a variable of your own before you do anything else with your BMScript instance.
  * 
  */
 
@@ -472,7 +481,7 @@ OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
 OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
 
 /*!
- * Thrown when the template is not saturated with an argument. 
+ * Thrown during BMScript execution when a template is not saturated with an argument. 
  * Call BMScript.saturateTemplateWithArgument: before calling BMScript.execute or one of its variants 
  */
 OBJC_EXPORT NSString * const BMScriptTemplateArgumentMissingException;
@@ -684,8 +693,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (id) init;
 /*!
  * Initialize a new BMScript instance with a script source. This is the designated initializer.
- * @throw BMScriptLanguageProtocolDoesNotConformException Thrown when a subclass of BMScript does not conform to the BMScriptLanguageProtocol
- * @throw BMScriptLanguageProtocolMethodMissingException Thrown when a subclass of BMScript does not implement all required methods of the BMScriptLanguageProtocol
+ * @throw BMScriptLanguageProtocolDoesNotConformException thrown when a subclass of BMScript does not conform to the BMScriptLanguageProtocol
+ * @throw BMScriptLanguageProtocolMethodMissingException thrown when a subclass of BMScript does not implement all required methods of the BMScriptLanguageProtocol
  * @param scriptSource a string containing commands to execute
  * @param scriptOptions a dictionary containing the task options
  */
@@ -732,7 +741,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * 
  * If you use this method you need to saturate the script template with values in order to 
  * turn it into an executable script source.
- * 
+ *
  * @see #saturateTemplateWithArgument: at al.
  * @see #initWithScriptSource:options: et al.
  */
@@ -743,25 +752,36 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 
 /*!
- * Executes the script with a synchroneous (blocking) task. You get the result with BMScript.lastResult.
- * @return YES if the execution was successful, NO on error
+ * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
+ * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
+ * @return the return value obtained by NSTask's terminationStatus 
+ * @see TerminationStatus
  */
 - (TerminationStatus) execute;
 /*!
  * Executes the script with a synchroneous (blocking) task and stores the result in &result.
+ * If the BMScript instance was initialized with a template, the template must first be saturated
+ * before the BMScript instance can be executed.
+ *
  * @param results a pointer to an NSString where the result should be written to
- * @return YES if the execution was successful, NO on error
+ * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
+ * @return the return value obtained by NSTask's terminationStatus 
+ * @see TerminationStatus
  */
 - (TerminationStatus) executeAndReturnResult:(NSString **)results;
 /*!
- * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
+ * Executes the script with a synchroneous (blocking) task and stores the result in the string pointed to by results.
  * @param results a pointer to an NSString where the result should be written to
  * @param error a pointer to an NSError where errors should be written to
- * @return YES if the execution was successful, NO on error
+ * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
+ * @return the return value obtained by NSTask's terminationStatus 
+ * @see TerminationStatus
  */
 - (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error;
 /*!
- * Executes the script with a asynchroneous (non-blocking) task. The result will be posted with the help of a notifcation item.
+ * Executes the script with a asynchroneous (non-blocking) task. 
+ * The results (string) and the return value (int) will be posted with a notifcation.
+ * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @see @link NonBlockingExecutionExample.m @endlink
  */
 - (void) executeInBackgroundAndNotify; 
@@ -960,8 +980,8 @@ typedef enum {
  * indicator should appear: start, middle or end.
  * The indicator itself is also specifyable.
  * @param len new length including ellipsis.
- * @param mode the truncate mode. start, middle or end.
- * @param indidcator the indicator string (typically an ellipsis sysmbol) 
+ * @param mode the truncate mode. start, center or end.
+ * @param indidcator the indicator string (typically an ellipsis sysmbol, if nil an NSString containing 3 periods will be used)
  * @return the truncated string
  */ 
 - (NSString *) truncateToLength:(NSUInteger)length mode:(BMNSStringTruncateMode)mode indicator:(NSString *)indicatorString;

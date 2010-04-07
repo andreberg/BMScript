@@ -1,5 +1,3 @@
-// Here are a couple of other examples of the blocking execution model:
-
 NSString * result2 = nil;
 BMScript * script2 = [BMScript perlScriptWithSource:@"print 2**64;"];
 NSInteger retVal = [script2 executeAndReturnResult:&result2];

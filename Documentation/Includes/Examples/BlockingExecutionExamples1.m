@@ -1,6 +1,3 @@
-// This is the default way of using BMScript:
-// Initialize with the designated initializer and supply script and options
-
 BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" 
                                                     options:BMSynthesizeOptions(@"/bin/echo", @"-n")];
 NSInteger retVal = [script1 execute];
