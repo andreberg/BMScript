@@ -393,9 +393,9 @@
     STAssertTrue([@"\"test\"" isEqualToString:[@"test" wrapDoubleQuotes]], @"but is %i", [@"'test'" isEqualToString:[@"test" wrapDoubleQuotes]]);
     
     NSInteger l = 50;    
-    STAssertEquals([[testString1 truncateToLength:l mode:PBNSStringTruncateModeCenter indicator:nil] isEqualToString:@"Lorem ipsum dolor sit ame...it in voluptate velit."], YES, @"center mode");
-    STAssertEquals([[testString1 truncateToLength:l mode:PBNSStringTruncateModeStart indicator:nil] isEqualToString:@"...rure dolor in reprehenderit in voluptate velit."], YES, @"start mode");
-    STAssertEquals([[testString1 truncateToLength:l mode:PBNSStringTruncateModeEnd indicator:nil] isEqualToString:@"Lorem ipsum dolor sit amet, consectetur adipisi..."], YES, @"end mode");
+    STAssertEquals([[testString1 truncateToLength:l mode:BMNSStringTruncateModeCenter indicator:nil] isEqualToString:@"Lorem ipsum dolor sit ame...it in voluptate velit."], YES, @"center mode");
+    STAssertEquals([[testString1 truncateToLength:l mode:BMNSStringTruncateModeStart indicator:nil] isEqualToString:@"...rure dolor in reprehenderit in voluptate velit."], YES, @"start mode");
+    STAssertEquals([[testString1 truncateToLength:l mode:BMNSStringTruncateModeEnd indicator:nil] isEqualToString:@"Lorem ipsum dolor sit amet, consectetur adipisi..."], YES, @"end mode");
     STAssertThrows([testString1 truncateToLength:l mode:-1 indicator:nil], @"this should throw an NSInvalidArgumentException");    
 }
 

@@ -963,7 +963,7 @@ typedef enum {
  * @param indidcator the indicator string (typically an ellipsis sysmbol) 
  * @return the truncated string
  */ 
-- (NSString *) truncateToLength:(NSUInteger)length mode:(PBNSStringTruncateMode)mode indicator:(NSString *)indicatorString;
+- (NSString *) truncateToLength:(NSUInteger)length mode:(BMNSStringTruncateMode)mode indicator:(NSString *)indicatorString;
 /*!
  * Counts the number of occurrences of a string in another string 
  * @param aString the string to count occurrences of
