@@ -1312,6 +1312,51 @@ endnow:
     return [[self substringWithRange:(NSMakeRange(0, len))] stringByAppendingString:@"..."];
 }
 
+- (NSString *) truncateToLength:(NSUInteger)targetLength mode:(PBNSStringTruncateMode)mode indicator:(NSString *)indicatorString {
+    
+    NSString * res = nil;
+    NSString * firstPart;
+    NSString * lastPart;
+    
+    if (!indicatorString) {
+        indicatorString = @"...";
+    }
+    
+    NSUInteger stringLength = [self length];
+    NSUInteger ilength = [indicatorString length];
+    
+    if (stringLength <= targetLength) {
+        return self;
+    } else if (stringLength <= 0 || (!self)) {
+        return nil;
+    } else {
+        switch (mode) {
+            case PBNSStringTruncateModeCenter:
+                firstPart = [self substringToIndex:(targetLength/2)];
+                lastPart = [self substringFromIndex:(stringLength-((targetLength/2))+ilength)];
+                res = [NSString stringWithFormat:@"%@%@%@", firstPart, indicatorString, lastPart];                
+                break;
+            case PBNSStringTruncateModeStart:
+                res = [NSString stringWithFormat:@"%@%@", indicatorString, [self substringFromIndex:((stringLength-targetLength)+ilength)]];
+                break;
+            case PBNSStringTruncateModeEnd:
+                res = [NSString stringWithFormat:@"%@%@", [self substringToIndex:(targetLength-ilength)], indicatorString];
+                break;
+            default:
+                ;
+                NSException * myException = [NSException exceptionWithName:NSInvalidArgumentException 
+                                                                    reason:[NSString stringWithFormat:
+                                                                            @"[%@ %s] called with nonsensical value for 'mode' (mode = %d) ***",
+                                                                            [self class], _cmd, mode]
+                                                                  userInfo:nil];
+                @throw myException;
+                return res;
+                break;
+        };
+    }
+    return res;
+}
+
 - (NSInteger) countOccurrencesOfString:(NSString *)aString {
     NSInteger num = ((NSInteger)[[NSArray arrayWithArray:[self componentsSeparatedByString:aString]] count] - 1);
     if (num > 0) {

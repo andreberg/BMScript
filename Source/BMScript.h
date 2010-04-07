@@ -929,6 +929,15 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * for end user display of strings. 
  */
 @interface NSString (BMScriptStringUtilities)
+/*! String truncation modes￼￼ */
+typedef enum {
+    /*! <string_start> ... <string_end>. */
+    PBNSStringTruncateModeCenter = 0,
+    /*! ... <string_end>. */
+    PBNSStringTruncateModeStart = 1,
+    /*! <string_start> ... */
+    PBNSStringTruncateModeEnd = 2
+} PBNSStringTruncateMode;
 /*!
  * Replaces all occurrences of newlines, carriage returns, backslashes, single/double quotes and percentage signs with their escaped versions 
  * @return the quoted string
@@ -945,6 +954,16 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @return the truncated string
  */ 
 - (NSString *) truncateToLength:(NSUInteger)len;
+/*! 
+ * Truncates a string to len characters while giving control over where the
+ * indicator should appear: start, middle or end.
+ * The indicator itself is also specifyable.
+ * @param len new length including ellipsis.
+ * @param mode the truncate mode. start, middle or end.
+ * @param indidcator the indicator string (typically an ellipsis sysmbol) 
+ * @return the truncated string
+ */ 
+- (NSString *) truncateToLength:(NSUInteger)length mode:(PBNSStringTruncateMode)mode indicator:(NSString *)indicatorString;
 /*!
  * Counts the number of occurrences of a string in another string 
  * @param aString the string to count occurrences of

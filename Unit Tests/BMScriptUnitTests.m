@@ -27,6 +27,8 @@
     NSString * rubyConvertToHexTemplatePath;
     NSString * rubyConvertToDecimalTemplatePath;
     
+    NSString * testString1;
+    
     NSString * bgResults;
     TerminationStatus bgStatus;
 }
@@ -79,6 +81,8 @@
     rubyConvertToOctPath = PATHFOR(@"Convert To Oct", @"rb");
     rubyConvertToHexTemplatePath = PATHFOR(@"Convert To Hex Template", @"rb");
     rubyConvertToDecimalTemplatePath = PATHFOR(@"Convert To Decimal Template", @"rb");
+    
+    testString1 = @"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.";
 }
 
 - (void) tearDown {
@@ -89,7 +93,7 @@
     rubyConvertToOctPath = nil;
     rubyConvertToHexTemplatePath = nil;
     rubyConvertToDecimalTemplatePath = nil;
-    
+    testString1 =  nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -351,19 +355,19 @@
     NSString * quotedString = [unquotedString quote];
     
     STAssertTrue([quotedString isEqualToString:@"str = %%{}\\n"
-                  @"begin\\n"
-                  @"   print \\\"%%#x\\\" %% str\\n"
-                  @"rescue\\n"
-                  @"   print \\\'Error: Cannot convert to hexadecimal. String not a number?\\\'\\n"
-                  @"   print str\\n"
-                  @"end"], @"but is '%@'", quotedString);
+                                               @"begin\\n"
+                                               @"   print \\\"%%#x\\\" %% str\\n"
+                                               @"rescue\\n"
+                                               @"   print \'Error: Cannot convert to hexadecimal. String not a number?\'\\n"
+                                               @"   print str\\n"
+                                               @"end"], @"but is '%@'", quotedString);
     
     // if truncate length unspecifified uses a default of 20 or BM_NSSTRING_TRUNCATE_LENGTH if defined
     NSString * truncatedQuotedString = [quotedString truncate];
     
     STAssertTrue([truncatedQuotedString isEqualToString:@"str = %%{}\\n"
-                  @"begin\\n"
-                  @" ..."], @"but is '%@'", truncatedQuotedString);
+                                                        @"begin\\n"
+                                                        @" ..."], @"but is '%@'", truncatedQuotedString);
     
     // test that too large length returns unmodified string
     NSString * truncatedQuotedString2 = [quotedString truncateToLength:200];
@@ -373,8 +377,8 @@
     NSString * truncatedQuotedString3 = [quotedString truncateToLength:30];
     
     STAssertTrue([truncatedQuotedString3 isEqualToString:@"str = %%{}\\n"
-                  @"begin\\n"
-                  @"   print \\\"..."], @"but is '%@'", truncatedQuotedString3);
+                                                         @"begin\\n"
+                                                         @"   print \\\"..."], @"but is '%@'", truncatedQuotedString3);
     
     NSInteger numPercentageChars = [unquotedString countOccurrencesOfString:@"%"];
     
@@ -386,7 +390,13 @@
     
     STAssertTrue([@"'test'" isEqualToString:[@"test" wrapSingleQuotes]], @"but is %i", [@"'test'" isEqualToString:[@"test" wrapSingleQuotes]]);
     
-    STAssertTrue([@"\"test\"" isEqualToString:[@"test" wrapDoubleQuotes]], @"but is %i", [@"'test'" isEqualToString:[@"test" wrapDoubleQuotes]]);    
+    STAssertTrue([@"\"test\"" isEqualToString:[@"test" wrapDoubleQuotes]], @"but is %i", [@"'test'" isEqualToString:[@"test" wrapDoubleQuotes]]);
+    
+    NSInteger l = 50;    
+    STAssertEquals([[testString1 truncateToLength:l mode:PBNSStringTruncateModeCenter indicator:nil] isEqualToString:@"Lorem ipsum dolor sit ame...it in voluptate velit."], YES, @"center mode");
+    STAssertEquals([[testString1 truncateToLength:l mode:PBNSStringTruncateModeStart indicator:nil] isEqualToString:@"...rure dolor in reprehenderit in voluptate velit."], YES, @"start mode");
+    STAssertEquals([[testString1 truncateToLength:l mode:PBNSStringTruncateModeEnd indicator:nil] isEqualToString:@"Lorem ipsum dolor sit amet, consectetur adipisi..."], YES, @"end mode");
+    STAssertThrows([testString1 truncateToLength:l mode:-1 indicator:nil], @"this should throw an NSInvalidArgumentException");    
 }
 
 - (void) testDictionaryUtilities {
@@ -418,8 +428,7 @@
 
 - (void) testMacros {
     NSDictionary * opts = BMSynthesizeOptions(@"/usr/local/bin/ruby1.9", @"-EUTF-8", @"-e");
-    STAssertTrue([[opts descriptionInStringsFileFormat] 
-                    isEqualToString:[alternativeOptions descriptionInStringsFileFormat]], 
+    STAssertTrue([[opts descriptionInStringsFileFormat] isEqualToString:[alternativeOptions descriptionInStringsFileFormat]], 
                     @"but is '%@'", [opts descriptionInStringsFileFormat]);
 }
 
