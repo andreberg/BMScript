@@ -394,19 +394,19 @@
 #define BMSCRIPT_UNIT_TEST (int) (getenv("BMScriptUnitTestsEnabled") || getenv("BMSCRIPT_UNIT_TEST_ENABLED"))
 /// @endcond
 
-/*! Provides a clearer indication of the task's termination status than simple integers.￼￼ */
-typedef NSInteger TerminationStatus;
-
-enum {
+/*! Provides a default indicator of the task's termination status.
+ *
+ * Unfortunately there is no universally accepted return code for a failed task.<br>
+ * Read the UNIX™ tool's man page to get the value for it's failed status.
+ ￼￼*/
+typedef enum {
     /*! task not executed yet */
     BMScriptNotExecuted = -(NSIntegerMax-1),
     /*! task finished successfully */
     BMScriptFinishedSuccessfully = 0,
-    /*! task failed */
-    BMScriptFailed,
     /*! task failed with an exception */
     BMScriptFailedWithException = (NSIntegerMax-1)
-};
+} TerminationStatus;
 
 /*!
  * @addtogroup functions Functions and Global Variables
@@ -432,6 +432,9 @@ NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
         case BMScriptFinishedSuccessfully:
             return @"task finished successfully";
             break;
+//         case BMScriptFailed:
+//             return @"task failed. check script source for errors and if launch path and/or arguments are appropriate";
+//             break;
         case BMScriptFailedWithException:
             return @"task failed with an exception. check if launch path and/or arguments are appropriate";
             break;
