@@ -28,8 +28,10 @@
 #include <unistd.h>             /* for usleep       */
 #include <pthread.h>            /* for pthread_*    */
 
-#define BMSCRIPT_INSERTION_TOKEN    @"%@"   /* used by templates to mark locations where a replacement insertions should occur */
-#define BM_NSSTRING_TRUNCATE_LENGTH 20      /* used by -truncate, defined in NSString (BMScriptUtilities) */
+#define BM_NSSTRING_TRUNCATE_LENGTH     20      /* used by -truncate, defined in NSString (BMScriptUtilities) */
+#define BMSCRIPT_INSERTION_TOKEN        @"%@"   /* used by templates to mark locations where a replacement insertions should occur */
+#define BMSCRIPT_DEFAULT_OPTIONS        @"BMSynthesizeOptions(@\"/bin/echo\", @\"\")"   /* default script option for display in warnings etc. */
+#define BMSCRIPT_DEFAULT_SCRIPT_SOURCE  @"'<script source placeholder>'"                /* default script source for display in warnings etc. */
 
 #ifndef BMSCRIPT_DEBUG_HISTORY
     #define BMSCRIPT_DEBUG_HISTORY  0
@@ -269,7 +271,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
             } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
                 options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
             } else {
-                NSLog(@"BMScript Warning: Initializing instance %@ with default options: BMSynthesizeOptions(@\"/bin/echo\", @\"\")", [super description]);
+                NSLog(@"BMScript Warning: Initializing instance %@ with default options: %@", [super description], BMSCRIPT_DEFAULT_OPTIONS);
                 options = [BMSynthesizeOptions(@"/bin/echo", @"") retain];
             }
             
@@ -289,7 +291,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
             if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
                 script = [[self performSelector:@selector(defaultScriptSourceForLanguage)] retain];
             } else {
-                NSLog(@"BMScript Warning: Initializing instance %@ with default script: '<script source placeholder>'", [super description]);
+                NSLog(@"BMScript Warning: Initializing instance %@ with default script: %@", [super description], BMSCRIPT_DEFAULT_SCRIPT_SOURCE);
                 script = @"'<script source placeholder>'";
             }
         }
