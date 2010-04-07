@@ -470,12 +470,6 @@ OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
  */
 OBJC_EXPORT NSString * const BMScriptTemplateArgumentMissingException;
 /*!
- * Thrown when the template is not saturated with arguments. 
- * Call BMScript.saturateTemplateWithArguments: before calling BMScript.execute or one of its variants 
- */
-OBJC_EXPORT NSString * const BMScriptTemplateArgumentsMissingException;
-
-/*!
  * Thrown when a subclass promises to conform to the BMScriptLanguageProtocol 
  * but consequently fails to declare the proper header. 
  */
