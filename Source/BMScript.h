@@ -286,6 +286,10 @@
  * This shows just one possible way out of many to utilize the notification send from the async execution.
  */
 
+/*!
+ * @example TemplateKeywordSaturationExample.m
+ * Shows how to saturate a keyword based template.
+ */
 
 
 /*!
