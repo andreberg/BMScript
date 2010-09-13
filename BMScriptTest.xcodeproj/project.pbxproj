@@ -212,7 +212,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				659D40E81071001500051C57 /* Defines, Macros, etc. */,
+				6583FB79106FA7C30073983C /* BMDefines.h */,
 				654295CF105FE2A90037E0C8 /* BMScript.h */,
 				654295D0105FE2A90037E0C8 /* BMScript.m */,
 			);
@@ -286,8 +286,6 @@
 			children = (
 				654E9D56106C2082008CC673 /* ScriptRunner.h */,
 				654E9D57106C2082008CC673 /* ScriptRunner.m */,
-				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
-				65429596105FE1D00037E0C8 /* BMRubyScript.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -367,6 +365,7 @@
 			children = (
 				651407F710758E6B00AB47BA /* Categories */,
 				6504F47E1154EC95003EFB50 /* Helpers */,
+				65BFFCAB123DD10C00C1B7DC /* Subclass Example */,
 				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
 			);
@@ -379,14 +378,6 @@
 				32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */,
 			);
 			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		659D40E81071001500051C57 /* Defines, Macros, etc. */ = {
-			isa = PBXGroup;
-			children = (
-				6583FB79106FA7C30073983C /* BMDefines.h */,
-			);
-			name = "Defines, Macros, etc.";
 			sourceTree = "<group>";
 		};
 		659D7A9A107F99A20032B0B1 /* Scripts */ = {
@@ -436,6 +427,15 @@
 				6547BCCC10698F2400B3A390 /* Probes */,
 			);
 			path = DTrace;
+			sourceTree = "<group>";
+		};
+		65BFFCAB123DD10C00C1B7DC /* Subclass Example */ = {
+			isa = PBXGroup;
+			children = (
+				65429595105FE1D00037E0C8 /* BMRubyScript.h */,
+				65429596105FE1D00037E0C8 /* BMRubyScript.m */,
+			);
+			name = "Subclass Example";
 			sourceTree = "<group>";
 		};
 		65C8429910804454009B369D /* Instruments */ = {
