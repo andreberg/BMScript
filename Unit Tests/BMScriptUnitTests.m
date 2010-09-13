@@ -310,7 +310,7 @@
     
     NSError * error;
     
-    [script1 setScript:rubyDecScript];
+    [script1 setSource:rubyDecScript];
     [script1 executeAndReturnResult:nil error:&error];
     
     STAssertTrue([[script1 lastResult] isEqualToString:@"255"], @"but is '%@'", [script1 lastResult]);
