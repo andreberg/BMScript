@@ -43,7 +43,7 @@
  * @include bmScriptCreationMethods.m
  *
  * You typically use the designated initializer for which you supply the script
- * source and script options yourself.<br>
+ * source and task options yourself.<br>
  * The options dictionary then looks like this:
  *
  * @include bmScriptOptionsDictionary.m
