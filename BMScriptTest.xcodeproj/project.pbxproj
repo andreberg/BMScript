@@ -114,8 +114,6 @@
 		6503F24A1072DE5A00B260F7 /* BlockingExecutionExamples3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingExecutionExamples3.m; sourceTree = "<group>"; };
 		6503F2CC1073754100B260F7 /* common.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = common.css; path = "CSS/Third-Party/common.css"; sourceTree = "<group>"; };
 		6503F2CD1073754100B260F7 /* content.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content.css; path = "CSS/Third-Party/content.css"; sourceTree = "<group>"; };
-		651407DD10758BDA00AB47BA /* NSObject_MemoryLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSObject_MemoryLogger.h; sourceTree = "<group>"; };
-		651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSObject_MemoryLogger.m; sourceTree = "<group>"; };
 		652085F01071634600BA57EC /* DebugEnvironment.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = DebugEnvironment.sh; sourceTree = "<group>"; };
 		652085F4107163DC00BA57EC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; wrapsLines = 1; };
 		653A09E61067CB5A0027DF98 /* bmScriptLanguageProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptLanguageProtocol.m; sourceTree = "<group>"; };
@@ -290,15 +288,6 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		651407F710758E6B00AB47BA /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				651407DD10758BDA00AB47BA /* NSObject_MemoryLogger.h */,
-				651407DE10758BDA00AB47BA /* NSObject_MemoryLogger.m */,
-			);
-			name = Categories;
-			sourceTree = "<group>";
-		};
 		65349A1E1075611300376626 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -363,9 +352,7 @@
 		654FF263115A4744004C8721 /* Executables */ = {
 			isa = PBXGroup;
 			children = (
-				651407F710758E6B00AB47BA /* Categories */,
 				6504F47E1154EC95003EFB50 /* Helpers */,
-				65BFFCAB123DD10C00C1B7DC /* Subclass Example */,
 				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
 			);
@@ -413,6 +400,7 @@
 		65BA2D2D106776E5000B5D3B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				65BFFCAB123DD10C00C1B7DC /* Subclass Example */,
 				654FF263115A4744004C8721 /* Executables */,
 				65429588105FE1B80037E0C8 /* Unit Tests */,
 			);
