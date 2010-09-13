@@ -73,6 +73,8 @@ int main (int argc, const char * argv[]) {
         objc_collect(OBJC_COLLECT_IF_NEEDED);
     #endif
     
+    puts("Press enter to end...");
     getchar();
-    return 0;
+    
+    return EXIT_SUCCESS;
 }

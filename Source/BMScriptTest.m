@@ -64,6 +64,7 @@ int main (int argc, const char * argv[]) {
     
     #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
         objc_startCollectorThread();
+        NSLog(@"ENABLE_MACOSX_GARBAGE_COLLECTION = YES");
     #endif
     
     NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED = %i", MAC_OS_X_VERSION_MIN_REQUIRED);
@@ -142,10 +143,10 @@ int main (int argc, const char * argv[]) {
                                  RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
                                                    newArgs, BMScriptOptionsTaskArgumentsKey, nil];
 
-    NSError * error;
-    NSString * newResult1;
+    NSError * error = nil;
+    NSString * newResult1 = nil;
     
-    [script1 setScript:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
+    [script1 setSource:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
     [script1 setOptions:newOptions];
     success = [script1 executeAndReturnResult:&newResult1 error:&error];
     
@@ -170,7 +171,7 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * result4;
+    NSString * result4 = nil;
     
     path = [TEMPLATEPATH stringByAppendingPathComponent:@"Multiple Tokens Template.rb"];
     
@@ -185,8 +186,8 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * result5;
-    NSString * result6;
+    NSString * result5 = nil;
+    NSString * result6 = nil;
     
     // alternative options (ruby 1.9)
     NSArray * alternativeArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
@@ -236,16 +237,12 @@ int main (int argc, const char * argv[]) {
     NSLog(@"ScriptRunner 2 (sr2) results = %@", [sr2.results quote]);
     
     BMAssertLog([sr1.results isEqualToString:@"\"this is ScriptRunner\'s script calling...\" CHANGED"]);
-    BMAssertLog([sr2.results isEqualToString:@"515377520732011331036461129765621272702107522001\n CHANGED"]);
-    
-    [sr1 release];
-    [sr2 release];
-    
+    BMAssertLog([sr2.results isEqualToString:@"515377520732011331036461129765621272702107522001\n CHANGED"]);    
 
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * result8;
+    NSString * result8 = nil;
     
     BMScript * script8 = [BMScript perlScriptWithSource:@"print 2**64;"];
     [script8 executeAndReturnResult:&result8 error:&error];
@@ -253,21 +250,25 @@ int main (int argc, const char * argv[]) {
     BMAssertLog([result8 isEqualToString:@"1.84467440737096e+19"]);    
     NSLog(@"result8 = %@", result8);
     
+    [result8 release], result8 = nil;    
 
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSLog(@"The following should return NO: isEqual is only true if both scriptSource and task launchPath are equal.");
+    NSLog(@"The following should return NO: isEqual is only true if both scriptSource and task launchPath are equal to both instances.");
     NSLog(@"[script4 isEqual:script7]? %@", BMStringFromBOOL([script4 isEqual:script7]));
 
     NSLog(@"The following should return YES, obviously...");
     NSLog(@"[script4 isEqual:script4]? %@", BMStringFromBOOL([script4 isEqual:script4]));
-
-    NSLog(@"The following should return NO: isEqual is only true if both scriptSource and task launchPath are equal.");
+// 
+    NSLog(@"The following should return NO: isEqualToScript is true if the scriptSource is equal to both instances.");
     NSLog(@"[script4 isEqualToScript:script7]? %@", BMStringFromBOOL([script4 isEqualToScript:script7]));
-
-    NSLog(@"The following should return YES, obviously...");
-    NSLog(@"[script4 isEqualToScript:script4]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
+    
+    NSLog(@"Setting script4's source equal to script7's...");
+    script4.source = script7.source;
+    
+    NSLog(@"The following should now return YES");
+    NSLog(@"[script4 isEqualToScript:script7]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
     
     NSLog(@"[script4 lastResult] = %@", [[script4 lastResult] quote]);
     NSLog(@"[script7 lastResult] = %@", [[script7 lastResult] quote]);
@@ -276,17 +277,17 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    [script1 release];
-    [script2 release];
+    [sr1 release], sr1 = nil;
+    [sr2 release], sr2 = nil;
+    [script1 release], script1 = nil;
+    [script2 release], script2 = nil;
         
     [pool drain];
     
-    #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
-        objc_collect(OBJC_COLLECT_IF_NEEDED);
-    #endif
-    
+    puts("Press Enter to end...");
     getchar();
-    return 0;
+    
+    return EXIT_SUCCESS;
 }
 
 #undef PATHFOR
