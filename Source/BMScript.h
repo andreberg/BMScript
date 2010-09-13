@@ -625,7 +625,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 @interface BMScript : NSObject <NSCoding, NSCopying, NSMutableCopying, BMScriptDelegateProtocol> {
  @protected
-    NSString * script;
+    NSString * source;
     NSDictionary * options;
     id delegate; 
  @private
@@ -648,8 +648,9 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 // to appear in the docs anyway.
 @property (BM_ATOMIC retain) NSMutableArray * history;
 
-/*! Gets or sets the script to execute. It's safe to change the script after a preceeding execution. */
-@property (BM_ATOMIC copy) NSString * script;
+
+/*! Gets or sets the script source to execute. It's safe to change the script source after a preceeding execution. */
+@property (BM_ATOMIC copy) NSString * source;
 /*! 
  * Gets or sets options for the command line tool used to execute the script. 
  * The options consist of a dictionary with two keys:

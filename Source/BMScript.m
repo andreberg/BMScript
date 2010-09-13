@@ -129,7 +129,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 
 @dynamic delegate;
 
-@synthesize script;
+@synthesize source;
 @synthesize options;
 @synthesize partialResult;
 @synthesize result;
@@ -166,7 +166,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
                                       @"delegate: '%@'\n"
                                       @" options: '%@'", 
             [super description], 
-            [script quote], 
+            [source quote], 
             [result quote], 
             (delegate == self? (id)@"self" : delegate), 
             [options descriptionInStringsFileFormat]];
@@ -195,7 +195,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
     NSString * desc = [NSString stringWithFormat:@"options = %@%@script = %@, result = %@, isTemplate = %@", 
                        (launchPath ? launchPath : @"nil, "),
                        (accString ? accString : @"nil, "),
-                       (script ? [[script quote] truncate] : @"nil"), 
+                       (source ? [[source quote] truncate] : @"nil"), 
                        (result ? [[result quote] truncate] : @"nil"),
                        BMStringFromBOOL(isTemplate)];
     
@@ -211,7 +211,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
     if (BM_EXPECTED([task isRunning], 0)) [task terminate];
     if (BM_EXPECTED([bgTask isRunning], 0)) [bgTask terminate];
     
-    [script release], script = nil;
+    [source release], source = nil;
     [history release], history = nil;
     [options release], options = nil;
     [result release], result = nil;
@@ -250,6 +250,9 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
                  (char *) (scriptSource ? [[scriptSource quote] UTF8String] : "(null)"), 
                  (char *) (scriptOptions ? [[[scriptOptions descriptionInStringsFileFormat] quote] UTF8String] : "(null)"));
     #endif
+    
+    self.source = nil;
+    self.options = nil;
         
     if ([self isDescendantOfClass:[BMScript class]] && ![self conformsToProtocol:@protocol(BMScriptLanguageProtocol)]) {
         @throw [NSException exceptionWithName:BMScriptLanguageProtocolDoesNotConformException 
@@ -279,20 +282,20 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
         
         if (scriptSource) {
             if (scriptOptions || options) {
-                script = [scriptSource retain];
+                self.source = scriptSource;
             } else {
                 // if scriptOptions == nil, we run with default options, namely /bin/echo so it might be better 
                 // to put quotes around the scriptSource
                 NSLog(@"BMScript Info: Wrapping script source with single quotes. This is a precautionary measure "
                       @"because we are using default script options (instance initialized with options:nil).");
-                script = [[scriptSource wrapSingleQuotes] retain];
+                self.source = [scriptSource wrapSingleQuotes];
             }
         } else {
             if ([self respondsToSelector:@selector(defaultScriptSourceForLanguage)]) {
-                script = [[self performSelector:@selector(defaultScriptSourceForLanguage)] retain];
+                self.source = [self performSelector:@selector(defaultScriptSourceForLanguage)];
             } else {
-                NSLog(@"BMScript Warning: Initializing instance %@ with default script: %@", [super description], BMSCRIPT_DEFAULT_SCRIPT_SOURCE);
-                script = @"'<script source placeholder>'";
+                // NSLog(@"BMScript Warning: Initializing instance %@ with default script: %@", [super description], BMSCRIPT_DEFAULT_SCRIPT_SOURCE);
+                self.source = @"'<script source placeholder>'";
             }
         }
         
@@ -390,9 +393,9 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
             // [NSArray arrayWithObjects:nil] which in turn becomes a "__NSArray0"
             if (!args || [args isEmptyStringArray] || [args isZeroArray]) {
                 //NSLog(@"BMScript Warning: Zero array set as task arguments.\n args = %@, args class = %@", args, NSStringFromClass([args class]));
-                args = [NSArray arrayWithObject:script];
+                args = [NSArray arrayWithObject:source];
             } else {
-                args = [args arrayByAddingObject:script];
+                args = [args arrayByAddingObject:source];
             }  
             
             [task setLaunchPath:path];
@@ -497,9 +500,9 @@ endnow:
             // object named "__NSArray0"
             if (!args || [args isEmptyStringArray] || [args isZeroArray]) {
                 //NSLog(@"args = %@, args class = %@", args, NSStringFromClass([args class]));
-                args = [NSArray arrayWithObject:script];
+                args = [NSArray arrayWithObject:source];
             } else {
-                args = [args arrayByAddingObject:script];
+                args = [args arrayByAddingObject:source];
             }  
             
             // set options for background task
@@ -688,8 +691,8 @@ endnow:
         BM_PROBE(BG_EXECUTE_END, (char *) [[result quote] UTF8String]);
     #endif
 
-    NSArray * historyItem = [NSArray arrayWithObjects:script, result, nil];
     BM_LOCK(history)
+    NSArray * historyItem = [NSArray arrayWithObjects:source, result, nil];
     if ([delegate respondsToSelector:@selector(shouldAddItemToHistory:)]) {
         if ([delegate shouldAddItemToHistory:historyItem]) {
             [history addObject:historyItem];
@@ -701,7 +704,7 @@ endnow:
     
     if (BMSCRIPT_DEBUG_HISTORY) {
         NSLog(@"BMScript Debug: Script '%@' executed successfully.\n"
-              @"Added to history = %@", [[script quote] truncate], history);
+              @"Added to history = %@", [[source quote] truncate], history);
     }
     
     NSDictionary * info = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -728,15 +731,13 @@ endnow:
         BM_PROBE(SATURATE_WITH_ARGUMENT_BEGIN, (char *) [tArg UTF8String]);
     #endif
     if (self.isTemplate) {
-        BM_LOCK(script)
-        self.script = [NSString stringWithFormat:script, tArg];
+        self.source = [NSString stringWithFormat:source, tArg];
         self.isTemplate = NO;
-        BM_UNLOCK(script)
         return YES;
     }
     return NO;
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(SATURATE_WITH_ARGUMENT_END, (char *) [[script quote] UTF8String]);
+        BM_PROBE(SATURATE_WITH_ARGUMENT_END, (char *) [[source quote] UTF8String]);
     #endif
 }
 
@@ -749,12 +750,12 @@ endnow:
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
         // determine how many replacements we need to make
-        NSInteger numTokens = [script countOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN];
+        NSInteger numTokens = [source countOccurrencesOfString:BMSCRIPT_INSERTION_TOKEN];
         if (numTokens == NSNotFound) {
             goto endnow;
         }
         
-        NSString * accumulator = self.script;
+        NSString * accumulator = self.source;
         NSString * arg;
         
         va_list arglist;
@@ -779,7 +780,7 @@ endnow:
         
         va_end(arglist);
         
-        self.script = [accumulator stringByReplacingOccurrencesOfString:@"%%" withString:@"%"];
+        self.source = [accumulator stringByReplacingOccurrencesOfString:@"%%" withString:@"%"];
         self.isTemplate = NO;
 
         [pool drain];
@@ -788,7 +789,7 @@ endnow:
     }
 endnow:
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(SATURATE_WITH_ARGUMENTS_END, (char *) [[script quote] UTF8String]);
+        BM_PROBE(SATURATE_WITH_ARGUMENTS_END, (char *) [[source quote] UTF8String]);
     #endif
     return success;
 }
@@ -801,7 +802,7 @@ endnow:
     #endif
     if (self.isTemplate) {
         
-        NSString * accumulator = self.script;
+        NSString * accumulator = self.source;
         
         NSArray * keys = [dictionary allKeys];
         NSArray * values = [dictionary allValues];
@@ -815,15 +816,13 @@ endnow:
             i++;
         }
         
-        BM_LOCK(script)
-        self.script = [accumulator stringByReplacingOccurrencesOfString:@"%" withString:@""];
+        self.source = [accumulator stringByReplacingOccurrencesOfString:@"%" withString:@""];
         self.isTemplate = NO;
-        BM_UNLOCK(script)
         
         success = YES;
     }
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(SATURATE_WITH_DICTIONARY_END, (char *) [[script quote] UTF8String]);
+        BM_PROBE(SATURATE_WITH_DICTIONARY_END, (char *) [[source quote] UTF8String]);
     #endif
     return success;
 }
@@ -861,7 +860,7 @@ endnow:
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(EXECUTE_BEGIN, 
                  (char *) [[[task launchPath] wrapSingleQuotes] UTF8String],
-                 (char *) [[script quote] UTF8String], 
+                 (char *) [[source quote] UTF8String], 
                  (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
     #endif
     
@@ -919,7 +918,7 @@ endnow:
                 }
                 
                 BM_LOCK(history)
-                NSArray * historyItem = [NSArray arrayWithObjects:script, result, nil];
+                NSArray * historyItem = [NSArray arrayWithObjects:source, result, nil];
                 if ([delegate respondsToSelector:@selector(shouldAddItemToHistory:)]) {
                     if ([delegate shouldAddItemToHistory:historyItem]) {
                         [history addObject:historyItem];
@@ -930,7 +929,7 @@ endnow:
                 BM_UNLOCK(history)
                 if (BMSCRIPT_DEBUG_HISTORY) {
                     NSLog(@"BMScript Debug: Script '%@' executed successfully.\n"
-                          @"Added to history = %@", [[script quote] truncate], history);
+                          @"Added to history = %@", [[source quote] truncate], history);
                 }
             }
         } else {
@@ -962,7 +961,7 @@ endnow:
     #if (BMSCRIPT_ENABLE_DTRACE)    
         BM_PROBE(BG_EXECUTE_BEGIN, 
                  (char *) [[[options objectForKey:BMScriptOptionsTaskLaunchPathKey] wrapSingleQuotes] UTF8String],
-                 (char *) [[script quote] UTF8String], 
+                 (char *) [[source quote] UTF8String], 
                  (char *) [BMStringFromBOOL(isTemplate) UTF8String]);
     #endif
     
@@ -1070,11 +1069,12 @@ endnow:
 // MARK: Equality
 
 - (BOOL) isEqualToScript:(BMScript *)other {
-    return [script isEqualToString:other.script];
+    return [source isEqualToString:other.source ];
 }
 
 - (BOOL) isEqual:(BMScript *)other {
-    BOOL sameScript = [script isEqualToString:other.script];
+    if (other == self) return YES;
+    BOOL sameScript = [source isEqualToString:other.source];
     BOOL sameLaunchPath = [[options objectForKey:BMScriptOptionsTaskLaunchPathKey] 
                            isEqualToString:[other.options objectForKey:BMScriptOptionsTaskLaunchPathKey]];
     return sameScript && sameLaunchPath;
@@ -1132,8 +1132,9 @@ endnow:
 
 // MARK: NSCoding
 
-- (void) encodeWithCoder:(NSCoder *)coder { 
-    [coder encodeObject:script];
+- (void) encodeWithCoder:(NSCoder *)coder {
+    // [super encodeWithCoder:coder]; // superclass (NSObject) doesn't implement NSCoding protocol
+    [coder encodeObject:source];
     [coder encodeObject:result];
     [coder encodeObject:options];
     [coder encodeObject:history];
@@ -1152,7 +1153,7 @@ endnow:
     if ((self = [super init])) { 
         //int version = [coder versionForClassName:NSStringFromClass([self class])]; 
         //NSLog(@"class version = %i", version);
-        script      = [[coder decodeObject] retain];
+        source      = [[coder decodeObject] retain];
         result      = [[coder decodeObject] retain];
         options     = [[coder decodeObject] retain];
         history     = [[coder decodeObject] retain];
