@@ -15,6 +15,10 @@ build/
 *.mode1v3
 *.mode2v3
 
+# Xcode 4 stuff
+
+xcuserdata/
+
 # TextMate stuff
 
 *.tm_build_errors
