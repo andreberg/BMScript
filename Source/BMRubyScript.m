@@ -32,6 +32,8 @@
     NSDictionary * defaultOpts = [NSDictionary dictionaryWithObjectsAndKeys:
                                         @"/usr/bin/ruby", BMScriptOptionsTaskLaunchPathKey, 
                                                  newArgs, BMScriptOptionsTaskArgumentsKey, nil];
+
+    // or: BMSynthesizeOptions(@"/usr/bin/ruby", @"-Ku", @"-e");
     
     return defaultOpts;
 }
