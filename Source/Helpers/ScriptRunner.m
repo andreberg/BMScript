@@ -96,7 +96,7 @@
     self.status = stats;
     self.taskHasEnded = YES;
     
-    NSLog(@"Inside %s: task finished with status = %ld, result = '%@'\n", __PRETTY_FUNCTION__, status, [results quote]);
+    NSLog(@"Inside %s: task finished with status = %u, result = '%@'\n", __PRETTY_FUNCTION__, (unsigned)self.status, [self.results quotedString]);
     NSLog(@"Inside %s\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
@@ -108,19 +108,19 @@
                 @" willSetScriptCalled?   %@\n"
                 @" shouldSetResultCalled? %@\n"
                 @" shouldSetScriptCalled? %@", 
-                [self description], 
-                [BMStringFromBOOL(taskHasEnded) UTF8String], [BMStringFromTerminationStatus(status) UTF8String], [results quote], 
-                BMStringFromBOOL(willSetResultCalled), 
-                BMStringFromBOOL(willSetScriptCalled), 
-                BMStringFromBOOL(shouldSetResultCalled), 
-                BMStringFromBOOL(shouldSetScriptCalled)];
+                [self description],
+                [BMNSStringFromBOOL(self.taskHasEnded) UTF8String], [BMNSStringFromTerminationStatus(self.status) UTF8String], [self.results quotedString],
+                 BMNSStringFromBOOL(self.willSetResultCalled),
+                 BMNSStringFromBOOL(self.willSetScriptCalled),
+                 BMNSStringFromBOOL(self.shouldSetResultCalled),
+                 BMNSStringFromBOOL(self.shouldSetScriptCalled)];
 }
 
 
 - (void) run {
     NSError * err = nil;
     NSString * res = nil;
-    self.status = [script executeAndReturnResult:&res error:&err];
+    self.status = [self.script executeAndReturnResult:&res error:&err];
     self.results = res;
     if (err) {
         NSLog(@"Inside %s: err = %@", __PRETTY_FUNCTION__, [err description]);

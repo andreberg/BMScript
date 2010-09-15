@@ -26,6 +26,8 @@
 			buildPhases = (
 			);
 			dependencies = (
+				65893FF2123E9969002F5AB0 /* PBXTargetDependency */,
+				652156F5123FE2D800682E05 /* PBXTargetDependency */,
 				65EEC196106A341400E2E451 /* PBXTargetDependency */,
 				65EEC198106A341600E2E451 /* PBXTargetDependency */,
 			);
@@ -59,6 +61,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		652156F4123FE2D800682E05 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 654FF14E115A3A27004C8721 /* BMScriptBareBonesTest */;
+			remoteInfo = BMScriptBareBonesTest;
+		};
 		654FF254115A4689004C8721 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -67,6 +76,13 @@
 			remoteInfo = BMScriptBareBonesTest;
 		};
 		6581A39210675DA300558062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
+			remoteInfo = BMScriptTest;
+		};
+		65893FF1123E9969002F5AB0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
@@ -103,7 +119,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* BMScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptTest.m; sourceTree = "<group>"; wrapsLines = 1; };
+		08FB7796FE84155DC02AAC07 /* BMScriptTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMScriptTest.m; path = "Test Executables/BMScriptTest.m"; sourceTree = "<group>"; wrapsLines = 1; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* BMScriptTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptTest_Prefix.pch; sourceTree = "<group>"; };
 		6503F08810729F9A00B260F7 /* SubclassingExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubclassingExample.m; sourceTree = "<group>"; };
@@ -132,30 +148,30 @@
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
 		6542958F105FE1B80037E0C8 /* Multiple Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Tokens Template.rb"; sourceTree = "<group>"; };
-		65429595105FE1D00037E0C8 /* BMRubyScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMRubyScript.h; sourceTree = "<group>"; };
-		65429596105FE1D00037E0C8 /* BMRubyScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMRubyScript.m; sourceTree = "<group>"; };
+		65429595105FE1D00037E0C8 /* BMRubyScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMRubyScript.h; path = "Subclass Example/BMRubyScript.h"; sourceTree = "<group>"; };
+		65429596105FE1D00037E0C8 /* BMRubyScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMRubyScript.m; path = "Subclass Example/BMRubyScript.m"; sourceTree = "<group>"; };
 		654295A2105FE22B0037E0C8 /* BMScriptUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BMScriptUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		654295A3105FE22B0037E0C8 /* BMScriptUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BMScriptUnitTests-Info.plist"; sourceTree = "<group>"; };
 		654295A8105FE2410037E0C8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 0; };
+		654295CF105FE2A90037E0C8 /* BMScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScript.h; sourceTree = "<group>"; wrapsLines = 1; };
 		654295D0105FE2A90037E0C8 /* BMScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScript.m; sourceTree = "<group>"; wrapsLines = 1; };
 		654548181069F4E900E03140 /* BMScriptProbes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMScriptProbes.h; sourceTree = "<group>"; };
 		65454AB6106A00E100E03140 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = doxygen.css; path = CSS/doxygen.css; sourceTree = "<group>"; };
 		6547BCCE10698F7A00B3A390 /* BMScriptProbes.d */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.dtrace; path = BMScriptProbes.d; sourceTree = "<group>"; };
 		654E9CE3106BEFB0008CC673 /* Documentation.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Documentation.xcconfig; sourceTree = "<group>"; };
-		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptRunner.h; sourceTree = "<group>"; wrapsLines = 0; };
-		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptRunner.m; sourceTree = "<group>"; wrapsLines = 1; };
+		654E9D56106C2082008CC673 /* ScriptRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScriptRunner.h; path = Helpers/ScriptRunner.h; sourceTree = "<group>"; wrapsLines = 0; };
+		654E9D57106C2082008CC673 /* ScriptRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScriptRunner.m; path = Helpers/ScriptRunner.m; sourceTree = "<group>"; wrapsLines = 1; };
 		654FF14F115A3A27004C8721 /* BMScriptBareBonesTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BMScriptBareBonesTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65731FD110677891001E9123 /* Multiple Defined Tokens Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Multiple Defined Tokens Template.rb"; sourceTree = "<group>"; };
 		6583FB79106FA7C30073983C /* BMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDefines.h; sourceTree = "<group>"; wrapsLines = 1; };
 		6592D50F108015A600C7B887 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		65957A141162B53A00CEA800 /* TemplateKeywordSaturationExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateKeywordSaturationExample.m; sourceTree = "<group>"; };
-		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptBareBonesTest.m; sourceTree = "<group>"; wrapsLines = 1; };
+		6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMScriptBareBonesTest.m; path = "Test Executables/BMScriptBareBonesTest.m"; sourceTree = "<group>"; wrapsLines = 1; };
 		659D7A9B107F99C70032B0B1 /* Saturate Doxygen Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Saturate Doxygen Template.rb"; sourceTree = "<group>"; };
 		659D7AB1107F9AE30032B0B1 /* Run Doxygen.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Run Doxygen.sh"; sourceTree = "<group>"; };
 		659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "Import DocSet into Xcode.sh"; sourceTree = "<group>"; };
 		65ACBD7F10802DFB00B21D55 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
-		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; };
+		65C58143106745FE00BE26F6 /* BMScriptUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMScriptUnitTests.m; sourceTree = "<group>"; wrapsLines = 1; };
 		65C8429C10804467009B369D /* BMScript - Acquire Lock Time.instrument */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "BMScript - Acquire Lock Time.instrument"; sourceTree = "<group>"; };
 		65C8429D10804467009B369D /* BMScript - Net Execution Time.instrument */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "BMScript - Net Execution Time.instrument"; sourceTree = "<group>"; };
 		65C8429E10804467009B369D /* BMScript - Trace Call Graph.instrument */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "BMScript - Trace Call Graph.instrument"; sourceTree = "<group>"; };
@@ -353,8 +369,8 @@
 			isa = PBXGroup;
 			children = (
 				6504F47E1154EC95003EFB50 /* Helpers */,
-				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 				6597ED07106E0F0100487C1E /* BMScriptBareBonesTest.m */,
+				08FB7796FE84155DC02AAC07 /* BMScriptTest.m */,
 			);
 			name = Executables;
 			sourceTree = "<group>";
@@ -672,6 +688,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		652156F5123FE2D800682E05 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 654FF14E115A3A27004C8721 /* BMScriptBareBonesTest */;
+			targetProxy = 652156F4123FE2D800682E05 /* PBXContainerItemProxy */;
+		};
 		654FF255115A4689004C8721 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 654FF14E115A3A27004C8721 /* BMScriptBareBonesTest */;
@@ -681,6 +702,11 @@
 			isa = PBXTargetDependency;
 			target = 8DD76F960486AA7600D96B5E /* BMScriptTest */;
 			targetProxy = 6581A39210675DA300558062 /* PBXContainerItemProxy */;
+		};
+		65893FF2123E9969002F5AB0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* BMScriptTest */;
+			targetProxy = 65893FF1123E9969002F5AB0 /* PBXContainerItemProxy */;
 		};
 		65EEC196106A341400E2E451 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

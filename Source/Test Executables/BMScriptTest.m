@@ -26,14 +26,14 @@
 #include <sys/param.h>
 #include <objc/objc-auto.h>
 
-#if (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS) && DEBUG)
+#if (DEBUG && (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS)))
     #define BMAssertLog(_COND_) if (!(_COND_)) \
         NSLog(@"*** AssertionFailure: %s should be YES but is %@", #_COND_, ((_COND_) ? @"YES" : @"NO"))
     #define BMAssertThrow(_COND_, _DESC_) if (!(_COND_)) \
         @throw [NSException exceptionWithName:@"*** AssertionFailure" reason:[NSString stringWithFormat:@"%s should be YES but is %@", #_COND_, (_DESC_)] userInfo:nil]
 #else
-    #define BMAsssertLog
-    #define BMAssertThrow
+    #define BMAssertLog(_COND_)
+    #define BMAssertThrow(_COND_, _DESC_)
     #define NS_BLOCK_ASSERTIONS 1
 #endif
 
@@ -41,7 +41,11 @@
     #define OLD_PATHFOR PATHFOR
 #undef PATHFOR
     #endif
-#define PATHFOR(_CLASS_, _NAME_, _TYPE_) ([[NSBundle bundleForClass:[(_CLASS_) class]] pathForResource:(_NAME_) ofType:(_TYPE_)])
+#define PATHFOR(_NAME_) ([[[[[NSString stringWithUTF8String:(__FILE__)]                             \
+                                stringByDeletingLastPathComponent]                                  \
+                                    stringByAppendingFormat:@"/../Unit Tests/Resources/Templates"]  \
+                                        stringByStandardizingPath]                                  \
+                                            stringByAppendingPathComponent:(_NAME_)])
 
 
 
@@ -71,7 +75,7 @@ int main (int argc, const char * argv[]) {
     NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED = %i", MAC_OS_X_VERSION_MAX_ALLOWED);
     NSLog(@"BMSCRIPT_THREAD_SAFE = %i", BMSCRIPT_THREAD_SAFE);
     NSLog(@"BMSCRIPT_FAST_LOCK = %i", BMSCRIPT_FAST_LOCK);
-    NSLog(@"GarbageCollector enabled? %@", BMStringFromBOOL([[NSGarbageCollector defaultCollector] isEnabled]));
+    NSLog(@"GarbageCollector enabled? %@", BMNSStringFromBOOL([[NSGarbageCollector defaultCollector] isEnabled]));
     NSLog(@"NSFileManager currentDirectoryPath = %@", [[NSFileManager defaultManager] currentDirectoryPath]);
     
     BOOL success = NO;
@@ -95,20 +99,20 @@ int main (int argc, const char * argv[]) {
     BOOL respondsToShouldAppendPartialResult    = [sr1 respondsToSelector:@selector(shouldAppendPartialResult:)];
     BOOL respondsToShouldSetOptions             = [sr1 respondsToSelector:@selector(shouldSetOptions:)];
     
-    NSLog(@"ScriptRunner conforms to BMScriptLanguageProtocol? %@", BMStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
-    NSLog(@"ScriptRunner implements required methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts));
-    NSLog(@"ScriptRunner implements all methods for %@? %@", @"BMScriptLanguageProtocol", BMStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript));
+    NSLog(@"ScriptRunner conforms to BMScriptLanguageProtocol? %@", BMNSStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptLanguageProtocol)]));
+    NSLog(@"ScriptRunner implements required methods for %@? %@", @"BMScriptLanguageProtocol", BMNSStringFromBOOL(respondsToDefaultOpts));
+    NSLog(@"ScriptRunner implements all methods for %@? %@", @"BMScriptLanguageProtocol", BMNSStringFromBOOL(respondsToDefaultOpts && respondsToDefaultScript));
 
-    NSLog(@"ScriptRunner conforms to BMScriptDelegateProtocol? %@", BMStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptDelegateProtocol)]));
+    NSLog(@"ScriptRunner conforms to BMScriptDelegateProtocol? %@", BMNSStringFromBOOL([ScriptRunner conformsToProtocol:@protocol(BMScriptDelegateProtocol)]));
     NSLog(@"ScriptRunner implements some methods for %@? %@", @"BMScriptLanguageProtocol", 
-          BMStringFromBOOL(respondsToShouldSetScript 
+          BMNSStringFromBOOL(respondsToShouldSetScript 
                            || respondsToShouldLastResult 
                            || respondsToShouldAddItemToHistory 
                            || respondsToShouldReturnItemFromHistory 
                            || respondsToShouldAppendPartialResult 
                            || respondsToShouldSetOptions));
     NSLog(@"ScriptRunner implements all methods for %@? %@", @"BMScriptLanguageProtocol", 
-          BMStringFromBOOL(respondsToShouldSetScript 
+          BMNSStringFromBOOL(respondsToShouldSetScript 
                            && respondsToShouldLastResult 
                            && respondsToShouldAddItemToHistory 
                            && respondsToShouldReturnItemFromHistory 
@@ -151,15 +155,15 @@ int main (int argc, const char * argv[]) {
     success = [script1 executeAndReturnResult:&newResult1 error:&error];
     
     if (success) {
-        NSLog(@"script1 new result (unquoted) = %@ (%@)", [newResult1 quote], newResult1);
+        NSLog(@"script1 new result (unquoted) = %@ (%@)", [newResult1 quotedString], newResult1);
     }
     
     
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    
-    NSString * path = [TEMPLATEPATH stringByAppendingPathComponent:@"Convert To Oct.rb"];
+    //NSString * path = [TEMPLATEPATH stringByAppendingPathComponent:@"Convert To Oct.rb"];
+    NSString * path = PATHFOR(@"Convert To Oct.rb");
     
     BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path options:nil];
     [script3 saturateTemplateWithArgument:@"100"];
@@ -173,7 +177,8 @@ int main (int argc, const char * argv[]) {
     
     NSString * result4 = nil;
     
-    path = [TEMPLATEPATH stringByAppendingPathComponent:@"Multiple Tokens Template.rb"];
+    //path = [TEMPLATEPATH stringByAppendingPathComponent:@"Multiple Tokens Template.rb"];
+    path = PATHFOR(@"Multiple Tokens Template.rb");
     
     BMRubyScript * script4 = [BMRubyScript scriptWithContentsOfTemplateFile:path options:nil];
     [script4 saturateTemplateWithArguments:@"template", @"1", @"tokens"];
@@ -204,7 +209,7 @@ int main (int argc, const char * argv[]) {
     
     BMAssertLog([result5 isEqualToString:result6]);    
     if (![result5 isEqualToString:result6]) {
-        NSLog(@"*** AssertionFailure: result3 should be equal to result4!");
+        NSLog(@"*** AssertionFailure: result5 should be equal to result6!");
     }
     
     NSLog(@"script5 (alternative options) result = %@", result5);
@@ -233,8 +238,8 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSLog(@"ScriptRunner 1 (sr1) results = %@", [sr1.results quote]);
-    NSLog(@"ScriptRunner 2 (sr2) results = %@", [sr2.results quote]);
+    NSLog(@"ScriptRunner 1 (sr1) results = %@", [sr1.results quotedString]);
+    NSLog(@"ScriptRunner 2 (sr2) results = %@", [sr2.results quotedString]);
     
     BMAssertLog([sr1.results isEqualToString:@"\"this is ScriptRunner\'s script calling...\" CHANGED"]);
     BMAssertLog([sr2.results isEqualToString:@"515377520732011331036461129765621272702107522001\n CHANGED"]);    
@@ -250,33 +255,85 @@ int main (int argc, const char * argv[]) {
     BMAssertLog([result8 isEqualToString:@"1.84467440737096e+19"]);    
     NSLog(@"result8 = %@", result8);
     
-    [result8 release], result8 = nil;    
-
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
     NSLog(@"The following should return NO: isEqual is only true if both scriptSource and task launchPath are equal to both instances.");
-    NSLog(@"[script4 isEqual:script7]? %@", BMStringFromBOOL([script4 isEqual:script7]));
+    NSLog(@"[script4 isEqual:script7]? %@", BMNSStringFromBOOL([script4 isEqual:script7]));
 
     NSLog(@"The following should return YES, obviously...");
-    NSLog(@"[script4 isEqual:script4]? %@", BMStringFromBOOL([script4 isEqual:script4]));
-// 
+    NSLog(@"[script4 isEqual:script4]? %@", BMNSStringFromBOOL([script4 isEqual:script4]));
+
     NSLog(@"The following should return NO: isEqualToScript is true if the scriptSource is equal to both instances.");
-    NSLog(@"[script4 isEqualToScript:script7]? %@", BMStringFromBOOL([script4 isEqualToScript:script7]));
+    NSLog(@"[script4 isEqualToScript:script7]? %@", BMNSStringFromBOOL([script4 isEqualToScript:script7]));
     
     NSLog(@"Setting script4's source equal to script7's...");
     script4.source = script7.source;
     
     NSLog(@"The following should now return YES");
-    NSLog(@"[script4 isEqualToScript:script7]? %@", BMStringFromBOOL([script4 isEqualToScript:script4]));
+    NSLog(@"[script4 isEqualToScript:script7]? %@", BMNSStringFromBOOL([script4 isEqualToScript:script4]));
     
-    NSLog(@"[script4 lastResult] = %@", [[script4 lastResult] quote]);
-    NSLog(@"[script7 lastResult] = %@", [[script7 lastResult] quote]);
+    NSLog(@"[script4 lastResult] = %@", [[script4 lastResult] quotedString]);
+    NSLog(@"[script7 lastResult] = %@", [[script7 lastResult] quotedString]);
     
 
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
+    
+    NSString * pathForRubyHexScript = PATHFOR(@"Convert To Hex Template.rb");
+    
+    NSString * unquotedString = [NSString stringWithContentsOfFile:pathForRubyHexScript 
+                                                          encoding:NSUTF8StringEncoding 
+                                                             error:&error];
+    
+    NSLog(@"unquotedString  = '%@'", unquotedString);
+    NSLog(@"quotedString    = '%@'", [unquotedString quotedString]);
+    NSLog(@"escapedString f = '%@'", [unquotedString stringByEscapingStringUsingOrder:BMNSStringEscapeTraversingOrderFirst]);
+    NSLog(@"escapedString l = '%@'", [unquotedString stringByEscapingStringUsingOrder:BMNSStringEscapeTraversingOrderLast]);
+    NSLog(@"truncatedString = '%@'", [unquotedString truncatedString]);
+    
+    NSString * testString1 = @"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+    
+    NSString * testString2 = @"This is an urgent \bbackspace \aalert that was \fform fed into a \vvertical \ttab by \rreturning a \nnew line. \"Quick!\", shouts the 'single to the \"double quote. \"Engard\u00e9!\", ye scuvvy \\backslash";
+    
+    NSLog(@"testString1 = %@", testString1);
+    NSLog(@"testString2 = %@", testString2);
+    
+    NSString * truncatedTestString1       = [testString1 stringByTruncatingToLength:50 mode:BMNSStringTruncateModeCenter indicator:nil];
+    NSString * truncatedTestString1Target = @"Lorem ipsum dolor sit ame\u2026ex ea commodo consequat.";
+    
+    NSLog(@"truncatedTestString1 c        = '%@'", truncatedTestString1);
+    NSLog(@"truncatedTestString1 target   = '%@'", truncatedTestString1Target);
+    NSLog(@"truncatedTestString1 equal?      %@ ", BMNSStringFromBOOL([truncatedTestString1 isEqualToString:truncatedTestString1Target]));
+    
+    NSString * quotedTestString2          = [testString2 quotedString];
+    NSString * quotedTestString2Target    = @"This is an urgent \bbackspace \aalert that was \fform fed into a \vvertical \\ttab by \\rreturning a \\nnew line. \\\"Quick!\\\", shouts the 'single to the \\\"double quote. \\\"Engard\u00e9!\\\", ye scuvvy \\\\backslash";
+    
+    NSLog(@"quotedTestString2             = '%@'", quotedTestString2);
+    NSLog(@"quotedTestString2 target      = '%@'", quotedTestString2Target);
+    NSLog(@"quotedTestString2 equal?         %@ ", BMNSStringFromBOOL([quotedTestString2 isEqualToString:quotedTestString2Target]));
+    
+    NSString * escapedTestString2         = [testString2 stringByEscapingStringUsingOrder:BMNSStringEscapeTraversingOrderLast];
+    NSString * escapedTestString2Target   = @"This is an urgent \\\\bbackspace \\\\aalert that was \\\\fform fed into a \\\\vvertical \\\\ttab by \\\\rreturning a \\\\nnew line. \\\\\"Quick!\\\\\", shouts the 'single to the \\\\\"double quote. \\\\\"Engard\u00e9!\\\\\", ye scuvvy \\\\backslash";
+    
+    NSLog(@"escapedTestString2 l          = '%@'", escapedTestString2);
+    NSLog(@"escapedTestString2 target     = '%@'", escapedTestString2Target);
+    NSLog(@"escapedTestString2 equal?        %@ ", BMNSStringFromBOOL([escapedTestString2 isEqualToString:escapedTestString2Target]));
+    
+    escapedTestString2 = [testString2 escapedString]; // same as: [testString2 stringByEscapingStringUsingOrder:BMNSStringEscapeTraversingOrderFirst];
+    escapedTestString2Target = @"This is an urgent \\bbackspace \\aalert that was \\fform fed into a \\vvertical \\ttab by \\rreturning a \\nnew line. \\\"Quick!\\\", shouts the 'single to the \\\"double quote. \\\"Engard\u00e9!\\\", ye scuvvy \\\\backslash";
+    
+    NSLog(@"escapedTestString2 f          = '%@'", escapedTestString2);
+    NSLog(@"escapedTestString2 target     = '%@'", escapedTestString2Target);
+    NSLog(@"escapedTestString2 equal?        %@ ", BMNSStringFromBOOL([escapedTestString2 isEqualToString:escapedTestString2Target]));
+    
+    NSString * escapedUnescapedString = [[testString2 escapedString] unescapedStringUsingOrder:BMNSStringEscapeTraversingOrderFirst];
+
+    NSLog(@"testString2                   = '%@'", testString2);
+    NSLog(@"escaped/unescaped testString2 = '%@'", escapedUnescapedString);
+    NSLog(@"escaped/unescaped equal?         %@ ", BMNSStringFromBOOL([escapedUnescapedString isEqualToString:testString2]));
+
     [sr1 release], sr1 = nil;
     [sr2 release], sr2 = nil;
     [script1 release], script1 = nil;
@@ -284,7 +341,7 @@ int main (int argc, const char * argv[]) {
         
     [pool drain];
     
-    puts("Press Enter to end...");
+    puts("Press return to exit...");
     getchar();
     
     return EXIT_SUCCESS;

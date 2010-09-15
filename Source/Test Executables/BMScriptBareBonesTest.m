@@ -23,7 +23,6 @@
 #include <objc/objc-auto.h>
 
 #import "BMScript.h"
-#import "BMRubyScript.h"
 #import "BMDefines.h"
 
 #import "ScriptRunner.h"
@@ -57,12 +56,12 @@ int main (int argc, const char * argv[]) {
     BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"test test" options:nil]; // options:nil == BMSynthesizeOptions(@"/bin/echo", @"")
     [script1 execute];
     
-    NSLog(@"script1 result = '%@'\n", [[script1 lastResult] quote]);
+    NSLog(@"script1 result = '%@'\n", [[script1 lastResult] quotedString]);
 
     [script1 release], script1 = nil;
     
-    NSLog(@"scriptRunner1 results = '%@'", [[scriptRunner1 results] quote]);
-    NSLog(@"scriptRunner2 results = '%@'", [[scriptRunner2 results] quote]);
+    NSLog(@"scriptRunner1 results = '%@'", [[scriptRunner1 results] quotedString]);
+    NSLog(@"scriptRunner2 results = '%@'", [[scriptRunner2 results] quotedString]);
     
     [scriptRunner1 release], scriptRunner1 = nil;
     [scriptRunner2 release], scriptRunner2 = nil;
@@ -73,7 +72,7 @@ int main (int argc, const char * argv[]) {
         objc_collect(OBJC_COLLECT_IF_NEEDED);
     #endif
     
-    puts("Press enter to end...");
+    puts("Press return to exit...");
     getchar();
     
     return EXIT_SUCCESS;
