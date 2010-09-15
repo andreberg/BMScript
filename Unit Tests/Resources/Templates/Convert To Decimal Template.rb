@@ -5,7 +5,7 @@ def decimal(x)
    elsif /^0\\d+$/ =~ x
       x.oct
    else
-      'Error: Cannot convert to decimal. String not a hexadecimal or octal number?'
+      'Cannot convert to decimal. String not a hexadecimal or octal number?'
       x
    end
 end
