@@ -127,7 +127,7 @@ FILE_PATTERNS          = *.c \
                          *.vhd \
                          *.vhdl \
                          *.include
-RECURSIVE              = YES
+RECURSIVE              = NO
 EXCLUDE                = *.d \
                          *BMScriptProbes* \
                          *NSObject_MemoryLogger* \

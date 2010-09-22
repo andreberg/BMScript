@@ -95,7 +95,6 @@ NSString * const BMScriptNotificationExecutionStatus             = @"BMScriptNot
 
 NSString * const BMScriptOptionsTaskLaunchPathKey                = @"BMScriptOptionsTaskLaunchPathKey";
 NSString * const BMScriptOptionsTaskArgumentsKey                 = @"BMScriptOptionsTaskArgumentsKey";
-NSString * const BMScriptOptionsVersionKey                       = @"BMScriptOptionsVersionKey";
 
 NSString * const BMScriptTemplateTokenStartKey                   = @"BMScriptTemplateTokenStartKey";
 NSString * const BMScriptTemplateTokenEndKey                     = @"BMScriptTemplateTokenEndKey";
@@ -112,7 +111,6 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 
 @property (BM_ATOMIC copy, readwrite) NSString * result;
 @property (BM_ATOMIC assign) NSInteger returnValue;
-//@property (BM_ATOMIC assign) NSInteger bgTaskReturnValue;
 @property (BM_ATOMIC copy) NSString * partialResult;
 @property (BM_ATOMIC assign) BOOL isTemplate;
 @property (BM_ATOMIC retain) NSTask * task;
@@ -146,7 +144,6 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 @synthesize bgTask;
 @synthesize bgPipe;
 @synthesize returnValue;
-//@synthesize bgTaskReturnValue;
 @synthesize _history;
 
 
@@ -302,7 +299,6 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
         partialResult = [[NSString alloc] init];
         
         returnValue = BMScriptNotExecuted;
-        //bgTaskReturnValue = BMScriptNotExecuted;
         
         // tasks/pipes will be allocated, initialized (and destroyed) lazily
         // on an as-needed basis because NSTasks are one-shot (not for re-use)
@@ -521,12 +517,7 @@ endnow1:
             // is posted. Then, the partialResult is simply mirrored over to lastResult.
             // This gives the user the advantage for long running scripts to check partialResult
             // periodically and see if the task needs to be aborted.
-            
-            // [[NSNotificationCenter defaultCenter] addObserver:self 
-            //                                          selector:@selector(dataComplete:) 
-            //                                              name:NSFileHandleReadToEndOfFileCompletionNotification 
-            //                                            object:bgTask];
-            
+                        
             [[NSNotificationCenter defaultCenter] addObserver:self 
                                                      selector:@selector(dataReceived:) 
                                                          name:NSFileHandleReadCompletionNotification 
@@ -550,7 +541,6 @@ endnow1:
 
             // kick off pipe reading in background
             [[self.bgPipe fileHandleForReading] readInBackgroundAndNotify];
-            //[[bgPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
         }
     }
 }
@@ -662,7 +652,7 @@ endnow1:
     if (status == 0) {
         status = BMScriptFinishedSuccessfully;
     }
-    
+
     self.returnValue = [self.bgTask terminationStatus];
     
     // task is finished, copy over the accumulated partialResults into lastResult
@@ -1192,14 +1182,11 @@ endnow2:
     [coder encodeObject:delegate];
     [coder encodeValueOfObjCType:@encode(BOOL) at:&isTemplate];
     [coder encodeValueOfObjCType:@encode(NSInteger) at:&returnValue];
-    [coder encodeValueOfObjCType:@encode(NSInteger) at:&bgTaskReturnValue];
 }
 
 
 - (id) initWithCoder:(NSCoder *)coder { 
     if ((self = [super init])) { // invoke superclass' designated initializer if it doesn't conform to the NSCoding protocol
-        //int version = [coder versionForClassName:NSStringFromClass([self class])]; 
-        //NSLog(@"class version = %i", version);
         source      = [[coder decodeObject] retain];
         result      = [[coder decodeObject] retain];
         options     = [[coder decodeObject] retain];
@@ -1211,17 +1198,17 @@ endnow2:
         delegate    = [[coder decodeObject] retain];
         [coder decodeValueOfObjCType:@encode(BOOL) at:&isTemplate];
         [coder decodeValueOfObjCType:@encode(NSInteger) at:&returnValue];
-        [coder decodeValueOfObjCType:@encode(NSInteger) at:&bgTaskReturnValue];
     }
     return self;
 }
 
 - (id) replacementObjectForPortCoder:(NSPortCoder *)encoder {
-    if ([encoder isByref])
+    if ([encoder isByref]) {
         return [NSDistantObject proxyWithLocal:self
                                     connection:[encoder connection]];
-    else
+    } else {
         return self;
+    }
 }
 
 @end
@@ -1557,6 +1544,7 @@ endnow2:
 }
 
 - (NSArray *) bytesForEncoding:(NSStringEncoding)enc asHex:(BOOL)asHex {
+    
     if (!self) return nil;
     if ([self length] == 0) return [NSArray array];
     if (!enc) {

@@ -358,10 +358,18 @@
 /*!
  * 
  */
-#ifdef BMSCRIPT_THREAD_SAFE
+#ifndef BMSCRIPT_THREAD_SAFE
+    #define BMSCRIPT_THREAD_SAFE 0
+#else
     #undef BMSCRIPT_THREAD_SAFE
     #define BMSCRIPT_THREAD_SAFE 1
-#else
+#endif
+
+/*!
+ * Enables synchronization locks and toggles the atomicity attribute of property declarations. 
+ * If not defined, synchronization locks will be noop and properties will be nonatomic.
+ */
+#ifndef BMSCRIPT_THREAD_SAFE
     #define BMSCRIPT_THREAD_SAFE 0
 #endif
 
@@ -405,17 +413,7 @@
     #define BMSCRIPT_ENABLE_DTRACE 0
 #endif
 
-#undef BMSCRIPT_THREAD_SAFE
-/*!
- * Enables synchronization locks and toggles the atomicity attribute of property declarations. 
- * If set to 0, synchronization locks will be noop and properties will be nonatomic.
- */
-#ifdef BMSCRIPT_THREAD_SAFE
-    #undef BMSCRIPT_THREAD_SAFE
-    #define BMSCRIPT_THREAD_SAFE 1
-#else
-    #define BMSCRIPT_THREAD_SAFE 0
-#endif
+
 
 /*! 
  * DTrace probe macro. Combines testing if a probe is enabled and actually calling this probe. 
@@ -484,11 +482,12 @@
 #define BMSCRIPT_UNIT_TEST (int) (getenv("BMScriptUnitTestsEnabled") || getenv("BMSCRIPT_UNIT_TEST_ENABLED"))
 /// @endcond
 
-/*! Provides a default indicator of the task's execution status.
+/*! Provides a default indicator of the script's execution status.
  *
  * Unfortunately there is no universally accepted return code for a failed task. 
  * Read the UNIX™ tool's man page to get the value for it's various failed stati 
  * and then compare it to the value returned by BMScript#lastReturnValue.
+ * @sa BMNSStringFromExecutionStatus
  ￼￼*/
 typedef enum {
     /*! script not executed yet */
@@ -559,8 +558,6 @@ OBJC_EXPORT NSString * const BMScriptNotificationTaskReturnValue;
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
 /*! Key incorporated by the options dictionary. Contains the arguments array for the task */
 OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
-/*! Currently unused. */
-OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
 /*! 
  * Used by the template saturation dictionary to define the start (first part) of a custom magic (replacement) token. 
  * The default token is '<##>' where '<#' would be the start and '#>' the end. 
@@ -730,7 +727,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
     NSTask * bgTask;
     NSPipe * bgPipe;
     NSInteger returnValue;
-    NSInteger bgTaskReturnValue;
 }
 
 // Doxygen seems to "swallow" the first property item and not generate any documentation for it

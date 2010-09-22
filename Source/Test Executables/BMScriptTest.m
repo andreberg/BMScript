@@ -17,6 +17,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+//#define BMSCRIPT_THREAD_SAFE
+
 #import <Foundation/Foundation.h>
 
 #import "BMDefines.h"
