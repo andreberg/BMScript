@@ -61,7 +61,7 @@ extern "C" {
          * @def ￼__GNUSTEP_RUNTIME__
          * Determine runtime environment.
          * Defined if running GNUStep. Mac OS X will not have this defined.
-         */
+         */    
         #define __GNUSTEP_RUNTIME__
     #endif // Not Mac OS X or GNUstep, that's a problem.
 #endif // !defined(__MACOSX_RUNTIME__) && !defined(__GNUSTEP_RUNTIME__)
@@ -71,47 +71,34 @@ extern "C" {
     #error Unable to determine run time environment, automatic Mac OS X and GNUstep detection failed
 #endif
 
-/*!
- * @def ENABLE_MACOSX_GARBAGE_COLLECTION
- * Preprocessor definition to enable Mac OS X 10.5 (Leopard) Garbage Collection.
- * This preprocessor define enables support for Garbage Collection on Mac OS X 10.5 (Leopard).
- * 
- * Traditional retain / release functionality remains allowing the framework to be used in either 
- * Garbage Collected enabled applications or reference counting applications. 
- * 
- * The framework dynamically picks which mode to use at run-time base on whether or not the 
- * Garbage Collection system is active.
- * 
- * @sa <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/GarbageCollection/index.html" class="external">Garbage Collection Programming Guide</a>
- * @sa <a href="http://developer.apple.com/documentation/Cocoa/Reference/NSGarbageCollector_class/index.html" class="external">NSGarbageCollector Class Reference</a>
- */
 #if defined(__MACOSX_RUNTIME__) && defined(MAC_OS_X_VERSION_10_5) && defined(__OBJC_GC__)
+    /*!
+     * Preprocessor definition to enable Mac OS X 10.5 (Leopard) Garbage Collection.
+     * This preprocessor define enables support for Garbage Collection on Mac OS X 10.5 (Leopard).
+     * 
+     * Traditional retain / release functionality remains allowing the framework to be used in either 
+     * Garbage Collected enabled applications or reference counting applications. 
+     * 
+     * The framework dynamically picks which mode to use at run-time base on whether or not the 
+     * Garbage Collection system is active.
+     * 
+     * @sa <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/GarbageCollection/index.html" class="external">Garbage Collection Programming Guide</a>
+     * @sa <a href="http://developer.apple.com/documentation/Cocoa/Reference/NSGarbageCollector_class/index.html" class="external">NSGarbageCollector Class Reference</a>
+     */
     #define ENABLE_MACOSX_GARBAGE_COLLECTION
+    /*! Support for Garbage Collection qualifiers. Marks an object reference as strong. */
     #define BM_STRONG_REF                     __strong
+    /*! Support for Garbage Collection qualifiers. Marks an object reference as weak. */
     #define BM_WEAK_REF                       __weak
 #else
+    /*! Support for Garbage Collection qualifiers. Noop if GC is not enabled. */
     #define BM_STRONG_REF
+    /*! Support for Garbage Collection qualifiers. Noop if GC is not enabled. */
     #define BM_WEAK_REF
 #endif
     
 #if defined(ENABLE_MACOSX_GARBAGE_COLLECTION) && !defined(MAC_OS_X_VERSION_10_5)
 #error The Mac OS X Garbage Collection feature requires at least Mac OS X 10.5
-#endif
-
-    
-/*! 
- * A note to Clang's static analyzer. 
- * It tells about the returning onwnership intentions of methods. 
- * The header documentation of Apple follows:
- * "Marks methods and functions which return an object that needs to be released by the caller but whose names are not consistent with Cocoa naming rules. The recommended fix to this is the rename the methods or functions, but this macro can be used to let the clang static analyzer know of any exceptions that cannot be fixed."
- *
- */
-#ifndef NS_RETURNS_RETAINED
-    #if defined(__clang__)
-        #define NS_RETURNS_RETAINED __attribute__((ns_returns_retained))
-    #else
-        #define NS_RETURNS_RETAINED
-    #endif
 #endif
     
     
@@ -167,19 +154,17 @@ extern "C" {
 #endif  // MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
 /*!
- * @def ￼BM_C99(keyword)
  * C99 conformance defines.
  * Make it possible to safely use keywords and features of the C99 standard.
  * @param keyword a C99 keyword (e.g. restrict)
  */
-#if __STDC_VERSION__ >= 199901L
+#if (__STDC_VERSION__ >= 199901L)
     #define BM_C99(keyword) keyword
 #else
     #define BM_C99(keyword) 
 #endif
-    
+
 /*!
- * @def ￼BM_REQUIRES_NIL_TERMINATION
  * Used to mark variadic methods and functions as requiring nil termination.
  * Nil termination means the last argument of their variable argument list must be nil.
  */
@@ -195,21 +180,67 @@ extern "C" {
     #endif
 #endif
 
+
 /*!
- * @def ￼BM_EXTERN
- * Defines for the extern keyword.
- * Makes it possible to use extern in the proper sense in C++ context included.
+ * Support for testing if the compiler supports a given feature.
+ * Clang specific.
+ * @sa http://clang-analyzer.llvm.org/annotations
  */
-/*!
- * @def ￼BM_PRIVATE_EXTERN
- * Defines for the __private_extern__ Apple compiler directive.
- * Makes a symbol public in the binrary (e.g. a library), but hidden outside of it. 
+#ifndef __has_feature           // Optional.
+    #define __has_feature(x) 0  // Compatibility with non-clang compilers.
+#endif
+
+/*! ￼
+ * Can be used to mark for the compiler/analyzer a method which returns an object owned by caller 
+ * if it is not otherwise obvious from the method name (following Cocoa memory management conventions). 
+ * The header documentation of Apple follows:
+ * "Marks methods and functions which return an object that needs to be released by the caller but whose names are not consistent with Cocoa naming rules. The recommended fix to this is the rename the methods or functions, but this macro can be used to let the clang static analyzer know of any exceptions that cannot be fixed."
+ * Clang specific. 
+ * @sa http://clang-analyzer.llvm.org/annotations
  */
+#ifndef BM_RETURNS_RETAINED
+    #if __has_feature(attribute_ns_returns_retained)
+        #define BM_RETURNS_RETAINED __attribute__((ns_returns_retained))
+    #else
+        #define BM_RETURNS_RETAINED
+    #endif
+#endif
+    
+/*! ￼
+ * Can be used to mark for the compiler/analyzer a method which returns an object not owned by caller 
+ * if it is not otherwise obvious from the method name (following Cocoa memory management conventions). 
+ * Clang specific.
+ * @sa http://clang-analyzer.llvm.org/annotations
+ */
+#ifndef BM_RETURNS_NOT_RETAINED
+    #if __has_feature(attribute_ns_returns_not_retained)
+        #define BM_RETURNS_NOT_RETAINED __attribute__((ns_returns_not_retained))
+    #else
+        #define BM_RETURNS_NOT_RETAINED
+    #endif
+#endif
+
 #ifdef __cplusplus
+    /*!
+     * Defines for the extern keyword.
+     * Makes it possible to use extern in the proper sense in C++ context included.
+     */
     #define BM_EXTERN           extern "C"
+    /*!
+     * Defines for the __private_extern__ Apple compiler directive.
+     * Makes a symbol public in the binary (e.g. a library), but hidden outside of it. 
+     */    
     #define BM_PRIVATE_EXTERN   __private_extern__
 #else
+    /*!
+     * Defines for the extern keyword.
+     * Makes it possible to use extern in the proper sense in C++ context included.
+     */
     #define BM_EXTERN           extern
+    /*!
+     * Defines for the __private_extern__ Apple compiler directive.
+     * Makes a symbol public in the binary (e.g. a library), but hidden outside of it. 
+     */
     #define BM_PRIVATE_EXTERN   __private_extern__
 #endif
     
@@ -237,6 +268,18 @@ extern "C" {
  *
  * @note If a compiler other than GCC 4+ is used then the macro leaves the conditional expression unaltered.
  */
+/*!
+ * ￼@def BM_STATIC_INLINE
+ * Always inline and compatibility inline.
+ */
+/*!
+ * ￼@def BM_STATIC_PURE_INLINE
+ * Always inline and compatibility inline.
+ */
+/*!
+ * ￼@def BM_ALIGNED
+ * Boundary alignment.
+ */
 #if defined (__GNUC__) && (__GNUC__ >= 4)
     #define BM_STATIC_INLINE static __inline__ __attribute__((always_inline))
     #define BM_STATIC_PURE_INLINE static __inline__ __attribute__((always_inline, pure))
@@ -250,7 +293,6 @@ extern "C" {
     #define BM_ALIGNED(boundary)
     #define BM_ATTRIBUTES(attr, ...)
 #endif
-    
 
 /*!
  * @def BM_DEBUG_RETAIN_INIT

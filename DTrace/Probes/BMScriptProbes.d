@@ -25,7 +25,7 @@
 typedef long NSInteger;
 typedef unsigned long NSUInteger;
 typedef int BOOL;
-typedef NSInteger TerminationStatus;
+typedef NSInteger ExecutionStatus;
 
 typedef struct {
   NSUInteger location;

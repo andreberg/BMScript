@@ -1,4 +1,4 @@
-str = %{}
+str = %{<##>}
 begin
    print "%#x" % str
 rescue

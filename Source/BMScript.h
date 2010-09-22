@@ -33,12 +33,19 @@
  *
  * @par Usage
  *
- * BMScript can be used in two ways:
+ * First off, to use BMScript in your own project, all you need to do is add the three
+ * files that comprise BMScript:
+ *
+ * -# BMDefines.h
+ * -# BMScript.h
+ * -# BMScript.m
+ *
+ * Then BMScript can be used in in your own code one of two ways:
  *
  * -# Use it directly
  * -# Guided by the BMScriptLanguageProtocol, make a subclass from it
  *
- * The easiest way to use BMScript is, of course, to instanciate it directly:
+ * The easiest way to use BMScript is, of course, to instantiate it directly:
  *
  * @include bmScriptCreationMethods.m
  *
@@ -65,22 +72,10 @@
  *
  * @include bmScriptSynthesizeOptions.m
  *
- * <div class="box important">
- *      <div class="table">
- *          <div class="row">
- *              <div class="label cell">Important:</div>
- *              <div class="message cell">
- *                  Don't forget the <b>nil</b> at the end even
- *                  if you don't need to supply any task arguments.
- *              </div>
- *          </div>
- *      </div>
- * </div>
- *
  * If you initialize BMScript directly without specifying options and script source
- * (e.g. using <span class="sourcecode">[[%BMScript alloc] init]</span>) the options
- * will default to <span class="sourcecode">BMSynthesizeOptions(@"/bin/echo", @"")</span>
- * and the script source will default to <span class="sourcecode">@"'<script source placeholder>'"</span>.
+ * (e.g. using <span class="sourcecode">[[BMScript alloc] init]</span>) the options
+ * will default to <span class="sourcecode">BMSynthesizeOptions(\@&quot;/bin/echo&quot;, &quot;&quot;)</span> 
+ * and the script source will default to <span class="sourcecode">\@&quot;&apos;&lt;script source placeholder&gt;&apos;&quot;</span>.
  *
  * <div class="box warning">
  *      <div class="table">
@@ -103,7 +98,8 @@
  * @include bmScriptConvenienceMethods.m
  *
  * As you can see loading scripts from source files is also supported, including a small
- * and lightweight template system.
+ * and lightweight template system. Before moving on to templates, though, it is important
+ * to note that BMScript always expects any external data (files) to be in <b>UTF-8</b> encoding.
  *
  * @par Templates
  *
@@ -119,13 +115,13 @@
  * @include bmScriptSaturateTemplate.m
  *
  * So how does a template look like then? We use standard text files which have special
- * token strings bound to get replaced. If you are familiar with Ruby, the magic template token
- * looks a lot like Ruby's double quoted string literal:
+ * token strings bound to get replaced. If you are familiar with Xcode text macros, the
+ * magic token literals look like .xctxtmacro replacement tokens:
  *
- * @verbatim %{} @endverbatim
+ * @verbatim <##> @endverbatim
  *
- * If this pattern structure is empty it will be replaced in the order of occurrence. The first
- * two saturate methods are good for this.
+ * If this pattern structure is empty (like shown) it will be replaced in the order of occurrence. 
+ * The first two saturate methods are good for this.
  * If the magic tokens wrap other values, a more flexible dictionary based system can be used
  * with the third saturate method. There, the magic tokens must wrap names of keys defined in the
  * dictionary. The keys will correspond to what the replacement value will be. <br>
@@ -137,6 +133,25 @@
  * Here's a short example how you'd use keyword based templates:
  *
  * @include TemplateKeywordSaturationExample.m
+ *
+ * Note: In BMScript v0.1 the magic token was equivalent to one form of Ruby's double qouted string literal: <span class="sourcecode">%{}</span>.
+ * The concept behind this was that the concept should be somewhat familiar and easy to grasp and it should be easy 
+ * to transform these constructs into a string that would be passed as the format string to some NSString creation methods.
+ * I have since changed this as it introduced too many and often times confusing back and forth escapes of the percent signs
+ * in order to be used as format strings. 
+ *
+ * I have since decided to use Xcode's text macro tokens instead. 
+ * There are two benefits to this:
+ *
+ *      -# No escaping necessary to use as format strings.
+ *      -# Xcode shows them graphically in the source text as replacement values.
+ *
+ * If you want to change the magic token string to something else you can either change the #BMSCRIPT_TEMPLATE_TOKEN_START and #BMSCRIPT_TEMPLATE_TOKEN_END defines,
+ * or, if you are using the dictionary based saturation method (BMScript#saturateTemplateWithDictionary:) you can set two keys in the dictionary which correspond to the defines
+ * mentioned previously. The keys are #BMScriptTemplateTokenStartKey and #BMScriptTemplateTokenEndKey respectively.
+ * 
+ * I am also thinking about including an additional set of saturation methods which will allow you to pass in magic token start and end strings for the sequential saturation methods.
+ * If there is demand for it I will try to include them in the next version.
  *
  * @par Subclassing BMScript
  *
@@ -164,14 +179,17 @@
  * @par Execution
  *
  * After you have obtained and configured a BMScript instance, you need to tell it to execute.
- * This can be done by telling it to excute synchroneously (blocking), or asynchroneously (non-blocking):
+ * This can be done by telling it to excute synchroneously (blocking), <b>or</b> asynchroneously (non-blocking).
+ * Note the "or": you should not use the same BMScript instance for blocking and non-blocking execution
+ * at the same time.
  *
  * @include bmScriptExecution.m
  *
  * Using the blocking execution model you can either pass a pointer to NSString where the result will be
  * written to (including NSError if needed), or just use plain BMScript.execute. 
- * This will return the TerminationStatus, or the return value the underlying process exited with.
- * You can then obtain the script execution result by accessing BMScript.lastResult.
+ * This will return the script's ExecutionStatus, giving you an indication if the script was executed, 
+ * if it is executing, if an exception was encountered or if it finished successfully.
+ * You can then obtain the script execution result by accessing BMScript.result by calling <span class="sourcecode">lastResult</span>.
  *
  * The non-blocking execution model works by means of <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/CocoaFundamentals/CommunicatingWithObjects/CommunicateWithObjects.html#//apple_ref/doc/uid/TP40002974-CH7-SW7" class="external">notifications</a>.
  * You register your class as observer with the default notification center for a notification called
@@ -180,7 +198,7 @@
  * the object paramater (see inline example below).
  *
  * Then you tell the BMScript instance to BMScript.executeInBackgroundAndNotify. When execution finishes and your
- * selector is called it will be passed an NSNotification object which encapsulates an NSDictionary with two keys:
+ * selector is called it will be passed an NSNotification object which encapsulates an NSDictionary with three keys:
  *
  * <div class="box hasRows noshadow">
  *      <div class="row odd firstRow">
@@ -188,8 +206,12 @@
  *          <span class="cell rightCell lastCell">contains the results returned by the execution as NSString.</span>
  *      </div>
  *      <div class="row even">
- *          <span class="cell left firstCell">#BMScriptNotificationTaskTerminationStatus</span>
- *          <span class="cell rightCell lastCell">contains the termination status (aka return/exit code)</span>
+ *          <span class="cell left firstCell">#BMScriptNotificationTaskReturnValue</span>
+ *          <span class="cell rightCell lastCell">contains the underlying task's exit code (aka return value)</span>
+ *      </div>
+ *      <div class="row odd">
+ *          <span class="cell left firstCell">#BMScriptNotificationExecutionStatus</span>
+ *          <span class="cell rightCell lastCell">contains the script's execution status</span>
  *      </div>
  * </div>
  *
@@ -203,18 +225,27 @@
  * @par On The Topic Of Concurrency
  *
  * All access to global data, shared variables and mutable objects has been
- * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a>
- * (in Xcode: right-click and choose "Open Link in Browser").
- * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not 1.
- * #BMSCRIPT_THREAD_SAFE will also set #BM_ATOMIC to 1 which will make all accessor methods atomic.
- * Note that there haven't been enough tests yet to say that BMScript is thread-safe. 
+ * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> <small>*</small>.
+ * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not <span class="sourcecode">1</span>.
+ * #BMSCRIPT_THREAD_SAFE will also set #BM_ATOMIC to <span class="sourcecode">1</span> which will make all accessors atomic.
+ * 
+ * However, to make it clear as crystal: <b>for the moment BMScript is not classified as being thread-safe!</b>
+ * 
+ * Especially as there haven't been enough tests in a multi-threaded environment yet as to say much 
+ * about BMScript's thread-safety status. 
  *
- * It is likely thread-safe enough, but still, care has to be taken when two different threads want to access
- * internal state of the same BMScript instance. 
+ * That doesn't mean that you can't use BMScript in a threaded application. It really depends on the usage.
+ * Be very careful, though, about passing around a single BMScript instance from thread to thread and also restrict
+ * shared access to one BMScript instance. BMScript was designed such that each instance can fully encapsulate
+ * the behaviour and state it needs to do its thing.
  *
- * BMScript was also designed such that re-use is possible. Unfortunately this does not automatically mean it's 
- * intrinsically thread-safe or that it does promote re-entrant code. 
- * You are encouraged to look through the source in order to determine if it may be thread-safe enough for your purpose.
+ * BMScript was also designed such that re-use is possible. Unfortunately this does not automatically mean it 
+ * intrinsically promotes re-entrant code. 
+ *
+ * You are encouraged to look through the source code in order to determine how you may use BMScript safely in a threaded
+ * application.
+ *
+ * <small>*) in Xcode: right-click and choose "Open Link in Browser"</small>.
  *
  * @par Delegate Methods
  *
@@ -279,13 +310,14 @@
  *
  * Any execution and its corresponding result are stored in the instance local
  * execution cache, also called its history. Usage is pretty self explanatory. 
- * Take a look at #scriptSourceFromHistoryAtIndex: et al.
+ * Take a look at BMScript#scriptSourceFromHistoryAtIndex: et al.
  * You can a script source from history by supplying an index or you can get the 
  * last one executed. Same goes for the execution results.
  * 
  * Currently the return values (exit codes) are not stored in the history. Might
- * be added at a later time, but for now you can just save the TerminationStatus 
- * in a variable of your own before you do anything else with your BMScript instance.
+ * be added at a later time, but for now you can just save the value returned by
+ * BMScript#lastReturnValue in a variable of your own before you do anything else with your 
+ * BMScript instance.
  * 
  */
 
@@ -315,58 +347,82 @@
  * @{
  */
 
-#ifndef BMSCRIPT_THREAD_SAFE
-    /*!
-     * @def BMSCRIPT_THREAD_SAFE
-     * Enables synchronization locks and toggles the atomicity attribute of property declarations. 
-     * If set to 0, synchronization locks will be noop and properties will be nonatomic.
-     */
+// Note: Doxygen 1.6.3 seems to have an issue with the order of the defines.
+// To get BMSCRIPT_THREAD_SAFE to show up at all I have to put its define block
+// up front but with empty doc comment. Further down you will see that I undefine
+// it and define it again with the same define construct but this time with non-empty
+// doc comment. Apparently for this file this was the only way so that it shows up
+// and properly at that - meaning: it doesn't shuffle the doc comment descriptions around
+// between the other defines defined here.
+
+/*!
+ * 
+ */
+#ifdef BMSCRIPT_THREAD_SAFE
+    #undef BMSCRIPT_THREAD_SAFE
+    #define BMSCRIPT_THREAD_SAFE 1
+#else
     #define BMSCRIPT_THREAD_SAFE 0
-    #ifndef BMSCRIPT_FAST_LOCK
-        /*!
-         * @def BMSCRIPT_FAST_LOCK
-         * Toggles usage of <a href="x-man-page://pthread_mutex_lock" class="external">pthread_mutex_lock(3)</a>* as opposed to <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/ObjectiveC/Articles/ocThreading.html" class="external">\@synchronized(self)</a>.
-         *
-         %*) In Xcode right-click and choose "Open Link in Browser"
-         *
-         * Set this to 1 to use the pthread library directly instead of Cocoa's \@synchronized directive which is reported to live a bit on the slow side.
-         * @see <a href="http://googlemac.blogspot.com/2006/10/synchronized-swimming.html" class="external">Synchronized Swimming (Google Mac Blog)</a>
-         * 
-         * You'd have to evaluate yourself if the article still holds true. I'm mearly pointing you to it. <br>
-         * (Though utilizing the locking DTrace probes, I couldn't find much of difference between the two)
-         */
-        #define BMSCRIPT_FAST_LOCK 0
-    #endif
 #endif
 
+/*!
+ * Toggles the atomicity attribute for Objective-C 2.0 properties. 
+ * Will be set to <span class="sourcecode">nonatomic,</span> if ::BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
+ */
+#if BMSCRIPT_THREAD_SAFE
+    #define BM_ATOMIC 
+#else
+    #define BM_ATOMIC nonatomic,
+#endif
 
+/*!
+ * Toggles usage of <a href="x-man-page://pthread_mutex_lock" class="external">pthread_mutex_lock(3) *</a>
+ * as opposed to <a href="http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/ObjectiveC/Articles/ocThreading.html" class="external">\@synchronized(self)</a>.
+ *
+ *
+ * Set this to 1 to use the pthread library directly instead of Cocoa's <span class="sourcecode">\@synchronized</span> directive which is reported to live a bit on the slow side.
+ * @see <a href="http://googlemac.blogspot.com/2006/10/synchronized-swimming.html" class="external">Synchronized Swimming (Google Mac Blog)</a>
+ * 
+ * You may have to evaluate yourself if the article still holds true. I'm mearly pointing you to it. <br>
+ * (Though, utilizing the locking DTrace probes, I couldn't find much of a difference between the two).
+ *<br/>
+ *<hr>
+ <small>%*) In Xcode right-click and choose Open Link in Browser</small>
+ */
+#if BMSCRIPT_THREAD_SAFE
+    #ifndef BMSCRIPT_FAST_LOCK
+        #define BMSCRIPT_FAST_LOCK 0
+    #else
+        #undef BMSCRIPT_FAST_LOCK
+        #define BMSCRIPT_FAST_LOCK 1
+    #endif
+#else
+    #define BMSCRIPT_FAST_LOCK 0
+#endif
+
+/*! Toggle for DTrace probes. */
 #ifndef BMSCRIPT_ENABLE_DTRACE
-    /*! Toggle for DTrace probes. */
     #define BMSCRIPT_ENABLE_DTRACE 0
 #endif
 
-
-
+#undef BMSCRIPT_THREAD_SAFE
 /*!
- * @def BM_ATOMIC
- * Toggles the atomicity attribute for Objective-C 2.0 properties. 
- * Will be set to <span class="sourcecode">nonatomic,</span> if #BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
+ * Enables synchronization locks and toggles the atomicity attribute of property declarations. 
+ * If set to 0, synchronization locks will be noop and properties will be nonatomic.
  */
-
-#ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
-    #define BM_ATOMIC nonatomic,
+#ifdef BMSCRIPT_THREAD_SAFE
+    #undef BMSCRIPT_THREAD_SAFE
+    #define BMSCRIPT_THREAD_SAFE 1
 #else
-    #if BMSCRIPT_THREAD_SAFE
-        #define BM_ATOMIC 
-    #else
-        #define BM_ATOMIC nonatomic,
-    #endif
+    #define BMSCRIPT_THREAD_SAFE 0
 #endif
 
 /*! 
- * @def BM_PROBE(name, ...) 
  * DTrace probe macro. Combines testing if a probe is enabled and actually calling this probe. 
  * If #BMSCRIPT_ENABLE_DTRACE is not set to 1 this macro evaluates to nothing.
+ * @param name name of the dtrace probe (macro expanded and concatenated between BMSCRIPT_ and _ENABLED()). 
+ * @param ... arguments to supply to the dtrace probe.
+ * @returns if construct with expanded dtrace probe name
  */
 #ifdef BMSCRIPT_ENABLE_DTRACE
     #define BM_PROBE(name, ...) \
@@ -374,8 +430,29 @@
 #else
     #define BM_PROBE(name, ...)
 #endif
+
+/*! 
+ * The insertion token sandwiched between start and end token. 
+ * As this is passed as an NSString format string the insertion token should always be <span class="sourcecode">\@&quot;%\@&quot;</span>. 
+ * It is then used by template initialization and saturation methods to mark locations where a replacement should occur.
+ */
+#define BMSCRIPT_INSERTION_TOKEN        @"%@"
 /*!
- * @def BMSynthesizeOptions(path, ...)
+ * The beginning part of the magic (replacement) token that wraps the insertion token. 
+ * Thus used in templates together with the end token to precisely indicate the location of an insertion token. 
+ * Note: with dictionary based saturation methods you can specify start and end tokens yourself without changing both start and end defines.
+ * @sa BMScriptTemplateTokenStartKey, BMScriptTemplateTokenEndKey
+ */
+#define BMSCRIPT_TEMPLATE_TOKEN_START   @"<#"
+/*!
+ * The ending part of the magic (replacement) token that wraps the insertion token. 
+ * Thus used in templates together with the start token to precisely indicate the location of an insertion token. 
+ * Note: with dictionary based saturation methods you can specify start and end tokens yourself without changing both start and end defines.
+ * @sa BMScriptTemplateTokenStartKey, BMScriptTemplateTokenEndKey
+ */
+#define BMSCRIPT_TEMPLATE_TOKEN_END     @"#>"
+
+/*!
  * Used to synthesize a valid options dictionary. 
  * You can use this convenience macro to generate the boilerplate code for the options dictionary 
  * containing both the #BMScriptOptionsTaskLaunchPathKey and #BMScriptOptionsTaskArgumentsKey keys.
@@ -407,19 +484,20 @@
 #define BMSCRIPT_UNIT_TEST (int) (getenv("BMScriptUnitTestsEnabled") || getenv("BMSCRIPT_UNIT_TEST_ENABLED"))
 /// @endcond
 
-/*! Provides a default indicator of the task's termination status.
+/*! Provides a default indicator of the task's execution status.
  *
- * Unfortunately there is no universally accepted return code for a failed task.<br>
- * Read the UNIX™ tool's man page to get the value for it's failed status.
+ * Unfortunately there is no universally accepted return code for a failed task. 
+ * Read the UNIX™ tool's man page to get the value for it's various failed stati 
+ * and then compare it to the value returned by BMScript#lastReturnValue.
  ￼￼*/
 typedef enum {
-    /*! task not executed yet */
-    BMScriptNotExecuted = -(NSIntegerMax-1),
-    /*! task finished successfully */
-    BMScriptFinishedSuccessfully = 0,
-    /*! task failed with an exception */
-    BMScriptFailedWithException = (NSIntegerMax-1)
-} TerminationStatus;
+    /*! script not executed yet */
+    BMScriptNotExecuted = (NSInteger)-(NSIntegerMax-10),
+    /*! script finished successfully */
+    BMScriptFinishedSuccessfully = (NSInteger)0,
+    /*! script task failed with an exception */
+    BMScriptFailedWithException = (NSInteger)(NSIntegerMax-10)
+} ExecutionStatus;
 
 /*!
  * @addtogroup functions Functions and Global Variables
@@ -432,27 +510,24 @@ typedef enum {
  * Creates an NSString representaton from a BOOL.
  * @param b the boolean to convert
  */
-NS_INLINE NSString * BMStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
+NS_INLINE NSString * BMNSStringFromBOOL(BOOL b) { return (b ? @"YES" : @"NO"); }
 /*!
- * Converts a TerminationStatus to a human-readable form.
- * @param status the TerminationStatus to convert
+ * Converts an ExecutionStatus to a human-readable form.
+ * @param status the ExecutionStatus to convert
  */
-NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
+NS_INLINE NSString * BMNSStringFromExecutionStatus(ExecutionStatus status) {
     switch (status) {
         case BMScriptNotExecuted:
-            return @"task not executed";
+            return @"script not executed";
             break;
         case BMScriptFinishedSuccessfully:
-            return @"task finished successfully";
+            return @"script finished successfully";
             break;
-//         case BMScriptFailed:
-//             return @"task failed. check script source for errors and if launch path and/or arguments are appropriate";
-//             break;
         case BMScriptFailedWithException:
-            return @"task failed with an exception. check if launch path and/or arguments are appropriate";
+            return @"script task failed with an exception. check if launch path and/or arguments are appropriate";
             break;
         default:
-            return [NSString stringWithFormat:@"task finished with return code %d", status];
+            return [NSString stringWithFormat:@"script terminated", status];
             break;
     }
 }
@@ -470,8 +545,15 @@ NS_INLINE NSString * BMStringFromTerminationStatus(TerminationStatus status) {
 OBJC_EXPORT NSString * const BMScriptTaskDidEndNotification;
 /*! Key incorporated by the notification's userInfo dictionary. Contains the result string of the finished task */
 OBJC_EXPORT NSString * const BMScriptNotificationTaskResults;
-/*! Key incorporated by the notification's userInfo dictionary. Contains the termination status of the finished task */
-OBJC_EXPORT NSString * const BMScriptNotificationTaskTerminationStatus;
+/*! 
+ * Key incorporated by the notification's userInfo dictionary. 
+ * Contains the execution status of the finished script. 
+ * @note This is <b><i>NOT</i></b> the same as the task's exit code (return value). 
+ * For the exit code see #BMScriptNotificationTaskReturnValue.
+ */
+OBJC_EXPORT NSString * const BMScriptNotificationExecutionStatus;
+/*! Key incorporated by the notification's userInfo dictionary. Contains the execution status of the finished task */
+OBJC_EXPORT NSString * const BMScriptNotificationTaskReturnValue;
 
 /*! Key incorporated by the options dictionary. Contains the launch path string for the task */
 OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
@@ -479,6 +561,16 @@ OBJC_EXPORT NSString * const BMScriptOptionsTaskLaunchPathKey;
 OBJC_EXPORT NSString * const BMScriptOptionsTaskArgumentsKey;
 /*! Currently unused. */
 OBJC_EXPORT NSString * const BMScriptOptionsVersionKey; /* currently unused */
+/*! 
+ * Used by the template saturation dictionary to define the start (first part) of a custom magic (replacement) token. 
+ * The default token is '<##>' where '<#' would be the start and '#>' the end. 
+ */
+OBJC_EXPORT NSString * const BMScriptTemplateTokenStartKey;
+/*! 
+ * Used by the template saturation dictionary to define the end (second part) of a custom magic (replacement) token. 
+ * The default token is '<##>' where '<#' would be the start and '#>' the end. 
+ */
+OBJC_EXPORT NSString * const BMScriptTemplateTokenEndKey;
 
 /*!
  * Thrown during BMScript execution when a template is not saturated with an argument. 
@@ -514,27 +606,27 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @protocol BMScriptLanguageProtocol
  * Must be implemented by subclasses to provide sensible defaults for language or tool specific values.
  */
-@protocol BMScriptLanguageProtocol
+@protocol BMScriptLanguageProtocol <NSObject>
 @required
 /*!
  * Returns the options dictionary. This is required.
  * @see #BMSynthesizeOptions and bmScriptOptionsDictionary.m
  */
-- (NSDictionary *) defaultOptionsForLanguage NS_RETURNS_RETAINED;
+- (NSDictionary *) defaultOptionsForLanguage;
 @optional
 /*!
  * Returns the default script source. This is optional and will be set to a placeholder if absent.
  * You might want to implement this if you plan on using plain alloc/init with your subclass a lot since 
  * alloc/init will pull this in as default script if no script source was supplied to the designated initalizer.
  */
-- (NSString *) defaultScriptSourceForLanguage NS_RETURNS_RETAINED; 
+- (NSString *) defaultScriptSourceForLanguage;
 @end
 
 /*!
  * @protocol BMScriptDelegateProtocol
  * Objects conforming to this protocol may pose as delegates for BMScript.
  */
-@protocol BMScriptDelegateProtocol
+@protocol BMScriptDelegateProtocol <NSObject>
 @optional
 /*!
  * If implemented, called whenever a history item is about to be added to the history. 
@@ -623,16 +715,16 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * @class BMScript
  * A decorator class to NSTask providing elegant and easy access to the shell.
  */
-@interface BMScript : NSObject <NSCoding, NSCopying, NSMutableCopying, BMScriptDelegateProtocol> {
+@interface BMScript : NSObject <NSCoding, NSCopying, BMScriptDelegateProtocol> {
  @protected
     NSString * source;
     NSDictionary * options;
-    id delegate; 
+    id<BMScriptDelegateProtocol> delegate;
  @private
     NSString * result;
     NSString * partialResult;
     BOOL isTemplate;
-    NSMutableArray * history;
+    NSMutableArray * _history;
     NSTask * task;
     NSPipe * pipe;
     NSTask * bgTask;
@@ -646,13 +738,13 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 // only for this particular file or if there is a bug that globally causes it. As a workaround
 // we take one of the hidden properties and put it up front to be swallowed since we don't want it
 // to appear in the docs anyway.
-@property (BM_ATOMIC retain) NSMutableArray * history;
+//@property (BM_ATOMIC readonly, copy) NSArray * history;
 
 
 /*! Gets or sets the script source to execute. It's safe to change the script source after a preceeding execution. */
 @property (BM_ATOMIC copy) NSString * source;
 /*! 
- * Gets or sets options for the command line tool used to execute the script. 
+ * Gets or sets (task) options for the command line tool used to execute the script. 
  * The options consist of a dictionary with two keys:
  * - #BMScriptOptionsTaskLaunchPathKey which is used to set the path to the executable of the tool, and
  * - #BMScriptOptionsTaskArgumentsKey an NSArray of strings to supply as the arguments to the tool
@@ -680,7 +772,10 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 @property (BM_ATOMIC assign) id<BMScriptDelegateProtocol> delegate;
 
-/*! Gets the last execution result. May return nil if the script hasn't been executed yet. */
+/** 
+ * Gets the last execution result (getter=<b>lastResult</b>). May return nil if the script hasn't been executed yet.
+ * @sa #lastResultWithoutTrailingNewline
+ */
 @property (BM_ATOMIC copy, readonly, getter=lastResult) NSString * result;
 
 // MARK: Initializer Methods
@@ -689,7 +784,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /*!
  * Initialize a new BMScript instance. If no options are specified and the class is a descendant of BMScript it will call the class' 
  * implementations of BMScriptLanguageProtocol-p.defaultOptionsForLanguage and, if implemented, BMScriptLanguageProtocol-p.defaultScriptSourceForLanguage.
- * BMScript on the other hand defaults to <span class="sourcecode">@"/bin/echo"</span> and <span class="sourcecode">@"<script source placeholder>"</span>.
+ * BMScript (meta) on the other hand defaults to <span class="sourcecode">\@&quot;/bin/echo&quot;</span> and <span class="sourcecode">\@&quot;&lt;script source placeholder&gt;&quot;</span>.
  */
 - (id) init;
 /*!
@@ -710,6 +805,16 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 - (id) initWithTemplateSource:(NSString *)templateSource options:(NSDictionary *)scriptOptions;
 /*!
  * Initialize a new BMScript instance. 
+ * <div class="box important">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Important:</div>
+                <div class="message cell">
+                    All BMScript creation methods that take content from files expect the file to have UTF-8 string encoding!
+                </div>
+            </div>
+        </div>
+ * </div>
  * @param path a string pointing to a file on disk. The contents of this file will be used as source script.
  * @param scriptOptions a dictionary containing the task options
  */
@@ -755,10 +860,10 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /*!
  * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
- * @return the return value obtained by NSTask's terminationStatus 
- * @see TerminationStatus
+ * @returns the script's execution status
+ * @see ExecutionStatus
  */
-- (TerminationStatus) execute;
+- (ExecutionStatus) execute;
 /*!
  * Executes the script with a synchroneous (blocking) task and stores the result in &result.
  * If the BMScript instance was initialized with a template, the template must first be saturated
@@ -766,50 +871,79 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  *
  * @param results a pointer to an NSString where the result should be written to
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
- * @return the return value obtained by NSTask's terminationStatus 
- * @see TerminationStatus
+ * @returns the script's execution status 
+ * @see ExecutionStatus
  */
-- (TerminationStatus) executeAndReturnResult:(NSString **)results;
+- (ExecutionStatus) executeAndReturnResult:(NSString **)results;
 /*!
  * Executes the script with a synchroneous (blocking) task and stores the result in the string pointed to by results.
  * @param results a pointer to an NSString where the result should be written to
  * @param error a pointer to an NSError where errors should be written to
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
- * @return the return value obtained by NSTask's terminationStatus 
- * @see TerminationStatus
+ * @returns the script's execution status
+ * @see ExecutionStatus
  */
-- (TerminationStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error;
+- (ExecutionStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error;
 /*!
  * Executes the script with a asynchroneous (non-blocking) task. 
- * The results (string) and the return value (int) will be posted with a notifcation.
+ * The script's execution status, results (string) and the task's return value will be posted with a notifcation.
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @see @link NonBlockingExecutionExample.m @endlink
+ * @sa BMScriptNotificationExecutionStatus, BMScriptNotificationTaskReturnValue, BMScriptNotificationTaskResults
  */
 - (void) executeInBackgroundAndNotify; 
+
+// MARK: Utilities
+
+/*! 
+ * A convenience method for stripping of the trailing newline when fetching the lastResult.
+ * The method checks if the last character actually is a new line character (<span class="sourcecode">\\n</span> or <span class="sourcecode">\\r</span>, 
+ * but not <span class="sourcecode">\\r\\n</span>!) and either modifies it to strip the new line character or it doesn't if there is no new line character.
+ * @note If <span class="sourcecode">self.result</span> is nil this method will log a warning and also return nil.
+ * @returns string with last result or nil if the script hasn't been executed yet.
+ */
+- (NSString *) lastResultWithoutTrailingNewline;
+
+
+/*!
+ * Returns an immutable copy of the receiver's instance local execution cache (aka its history).
+ * @returns an NSArray copied from the local execution history.
+ */
+- (NSArray *) history;
+
+/*!
+ * Returns the value returned by the last execution of the underlying NSTask. 
+ * Can be used to compare to expected return codes from various UNIX™ tools.
+ * This has to be exposed to the user of the class since there is no universally 
+ * agreed to meaning to return codes. Mostly its 0 for successful execution and
+ * 1 for faulty execution. Apart from this, each tool defines their own code ranges.
+ * @returns return code from the underlying NSTask as NSInteger or #BMScriptNotExecuted if the script wasn't executed yet. 
+ */
+- (NSInteger) lastReturnValue;
 
 
 // MARK: Templates
 
 
 /*!
- * Replaces a single %{} construct in the template.
+ * Replaces a single <##> construct in the template.
  * @param tArg the value that should be inserted
- * @return YES if the replacement was successful, NO on error
+ * @returns YES if the replacement was successful, NO on error
  */
 - (BOOL) saturateTemplateWithArgument:(NSString *)tArg;
 /*!
- * Replaces multiple %{} constructs in the template in the order of occurrence.
+ * Replaces multiple <##> constructs in the template in the order of occurrence.
  * @param firstArg the first value which should be inserted
  * @param ... the remaining values to be inserted in order of occurrence
- * @return YES if the replacements were successful, NO on error
+ * @returns YES if the replacements were successful, NO on error
  */
 - (BOOL) saturateTemplateWithArguments:(NSString *)firstArg, ...;
 /*!
- * Replaces multiple %{<i>KEY</i>} constructs in the template. 
- * The <i>KEY</i> phrase is a variant and describes the name of a key in the dictionary passed to this method.
+ * Replaces multiple <span class="sourcecode">&lt;\#KEY\#&gt;</span> constructs in the template. 
+ * The <span class="sourcecode">KEY</span> phrase is a variant and describes the name of a key in the dictionary passed to this method.<br/>
  * If the key is found in the dictionary its corresponding value will be used to replace the magic token in the template.
  * @param dictionary a dictionary with keys and their values which should be inserted
- * @return YES if the replacements were successful, NO on error
+ * @returns YES if the replacements were successful, NO on error
  */
 - (BOOL) saturateTemplateWithDictionary:(NSDictionary *)dictionary;
 
@@ -852,185 +986,330 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 
 /*!
+ * @category BMScript(CommonScriptLanguagesFactories)
  * A category on BMScript adding default factory methods for Ruby, Python and Perl.
  * The task options use default paths (for 10.5 and 10.6) for the task launch path.
  */
 @interface BMScript(CommonScriptLanguagesFactories)
 /*!
  * Returns an autoreleased Ruby script ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param scriptSource the script source containing the commands to execute.
  */
 + (id) rubyScriptWithSource:(NSString *)scriptSource;
 /*!
  * Returns an autoreleased Ruby script from a file ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a file containing the commands to execute.
  */
 + (id) rubyScriptWithContentsOfFile:(NSString *)path;
 /*!
  * Returns an autoreleased Ruby script template ready for saturation.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a template file containing the tokens to replace.
  */
 + (id) rubyScriptWithContentsOfTemplateFile:(NSString *)path;
 /*!
  * Returns an autoreleased Python script ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param scriptSource the script source containing the commands to execute.
  */
 + (id) pythonScriptWithSource:(NSString *)scriptSource;
 /*!
  * Returns an autoreleased Python script from a file ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a file containing the commands to execute.
  */
 + (id) pythonScriptWithContentsOfFile:(NSString *)path;
 /*!
  * Returns an autoreleased Python script template ready for saturation.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a template file containing the tokens to replace.
  */
 + (id) pythonScriptWithContentsOfTemplateFile:(NSString *)path;
 /*!
  * Returns an autoreleased Perl script ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param scriptSource the script source containing the commands to execute.
  */
 + (id) perlScriptWithSource:(NSString *)scriptSource;
 /*!
  * Returns an autoreleased Perl script from a file ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a file containing the commands to execute.
  */
 + (id) perlScriptWithContentsOfFile:(NSString *)path;
 /*!
  * Returns an autoreleased Perl script template ready for saturation.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a template file containing the tokens to replace.
  */
 + (id) perlScriptWithContentsOfTemplateFile:(NSString *)path;
 /*!
  * Returns an autoreleased Shell script ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param scriptSource the script source containing the commands to execute.
  */
 + (id) shellScriptWithSource:(NSString *)scriptSource;
 /*!
  * Returns an autoreleased Shell script from a file ready for execution.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a file containing the commands to execute.
  */
 + (id) shellScriptWithContentsOfFile:(NSString *)path;
 /*!
  * Returns an autoreleased Shell script template ready for saturation.
+ * @note Expects the file contents to be in UTF-8 encoding! 
  * @param path path to a template file containing the tokens to replace.
  */
 + (id) shellScriptWithContentsOfTemplateFile:(NSString *)path;
-
 @end
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
-/*!A category on NSString providing compatibility for missing methods on 10.4 (Tiger). */
-@interface NSString (BMScriptNSString10_4Compatibility)
-/*!
- * An implementation of the 10.5 (Leopard) method of NSString. 
- * Replaces all occurrences of a string with another string with the ability to define the search range and other comparison options.
- * @param target the string to replace
- * @param replacement the string to replace target with
- * @param options on 10.5 this parameter is of type NSStringCompareOptions an untagged enum. On 10.4 you can use the following options:
- *  - 1  (NSCaseInsensitiveSearch)
- *  - 2  (NSLiteralSearch: Exact character-by-character equivalence)
- *  - 4  (NSBackwardsSearch: Search from end of source string)
- *  - 8  (NSAnchoredSearch: Search is limited to start (or end, if NSBackwardsSearch) of source string)
- *  - 64 (NSNumericSearch: Numbers within strings are compared using numeric value, that is, Foo2.txt < Foo7.txt < Foo25.txt)
- * @param searchRange an NSRange defining the location and length the search should be limited to
- * @deprecated Deprecated in 10.5 (Leopard) in favor of NSString's own implementation.
- */
-- (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement options:(unsigned)options range:(NSRange)searchRange; DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER
-/*!
- * An implementation of the 10.5 (Leopard) method of NSString. Replaces all occurrences of a string with another string. 
- * Calls stringByReplacingOccurrencesOfString:withString:options:range: with default options 0 and searchRange the full length of the searched string.
- * @deprecated Deprecated in 10.5 (Leopard) in favor of NSString's own implementation.
- */
-- (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement; DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER
-@end
-#endif
-
-/*!
- * A category on NSString providing some handy utility functions
- * for end user display of strings. 
+/*! 
+ * @category NSString(BMScriptStringUtilities)
+ * A category on NSString providing some handy utility functions for end user display of strings. 
  */
 @interface NSString (BMScriptStringUtilities)
+
+/*!
+ * Defines a specific type of NSArray used for mapping target characters (which should be escaped) to their replacement counterparts.
+ * If you choose to make your own mappings, you need to adhere to a specific format: an NSArray containing 2-part NSArrays, which contain 
+ * (<span class="sourcecode">objectAtIndex:0</span>) the target string and
+ * (<span class="sourcecode">objectAtIndex:1</span>) the replacement string.
+ * @sa BMNSStringC99EscapeCharacterMapping
+ * @sa BMNSStringCommonEscapeCharacterMapping
+ */
+typedef NSArray BMNSStringEscapeCharacterMapping;
+
+/*! 
+ * ￼Defines an escape character mapping that includes almost all of standard C99's escape sequences minus di- and trigraphs, hexadecimal, octal and unicode literal notations. 
+ * This is because in order to use those notations in an NSString you need to escape them anyway, which means replacements made with targeting the 
+ * escape character itself (backslash) will also add another level of escaping to these notations. This is the default mapping used internally by <span class="sourcecode">escapedString</span>, 
+ * <span class="sourcecode">unescapedStringUsingOrder</span>, <span class="sourcecode">stringByEscapingStringUsingOrder:</span> and <span class="sourcecode">stringByEscapingStringUsingMapping:order:</span>. 
+ * This mapping was put in the public header file to make it easier to infer the format needed for constructing new <span class="sourcecode">BMNSStringEscapeCharacterMapping</span> instances 
+ * which can be passed to <span class="sourcecode">stringByEscapingStringUsingMapping:order:</span>  
+ * <div class="box important">
+        <div class="table">
+            <div class="row">
+                <div class="label cell">Note:</div>
+                <div class="message cell">
+                As you may have noticed by the inclusion of the <span class="sourcecode">order</span> paramater for several escaping methods, depending on the mapping, the order in which the mapping is traversed (and thus affecting how replacements are made) does matter.
+                The index of the escape character used by NSString literals (backslash) in the mapping also matters since it may happen that already escaped characters will be escaped again.
+                </div>
+            </div>
+        </div>
+ * </div>
+ * @sa BMNSStringCommonEscapeCharacterMapping
+ */
+#define BMNSStringC99EscapeCharacterMapping  [NSArray arrayWithObjects:                         \
+                                                [NSArray arrayWithObjects:@"\\", @"\\\\", nil], \
+                                                [NSArray arrayWithObjects:@"\n", @"\\n", nil],  \
+                                                [NSArray arrayWithObjects:@"\r", @"\\r", nil],  \
+                                                [NSArray arrayWithObjects:@"\t", @"\\t", nil],  \
+                                                [NSArray arrayWithObjects:@"\f", @"\\f", nil],  \
+                                                [NSArray arrayWithObjects:@"\a", @"\\a", nil],  \
+                                                [NSArray arrayWithObjects:@"\v", @"\\v", nil],  \
+                                                [NSArray arrayWithObjects:@"\b", @"\\b", nil],  \
+                                                [NSArray arrayWithObjects:@"\"", @"\\\"", nil], \
+                                             nil]
+/*! 
+ * ￼Defines an escape character mapping that includes the most common escapable characters for an NSString. This mapping is used internally by <span class="sourcecode">quotedString</span> and <span class="sourcecode">unquotedString</span>.
+ * It was put in the public header file to make it easier to infer the format needed for constructing new <span class="sourcecode">BMNSStringEscapeCharacterMapping</span> instances which can be passed to <span class="sourcecode">stringByEscapingStringUsingMapping:order:</span>.
+ * Contrary to #BMNSStringC99EscapeCharacterMapping the order here is not as important since <span class="sourcecode">quotedString</span> traverses the mapping in first order.
+ * @sa BMNSStringC99EscapeCharacterMapping
+ */
+#define BMNSStringCommonEscapeCharacterMapping [NSArray arrayWithObjects:                         \
+                                                  [NSArray arrayWithObjects:@"\\", @"\\\\", nil], \
+                                                  [NSArray arrayWithObjects:@"\n", @"\\n", nil],  \
+                                                  [NSArray arrayWithObjects:@"\r", @"\\r", nil],  \
+                                                  [NSArray arrayWithObjects:@"\t", @"\\t", nil],  \
+                                                  [NSArray arrayWithObjects:@"\"", @"\\\"", nil], \
+                                               nil]
+
 /*! String truncation modes￼￼ */
 typedef enum {
-    /*! <string_start> ... <string_end>. */
+    /*! &lt;string_start&gt;…&lt;string_end&gt;. */
     BMNSStringTruncateModeCenter = 0,
-    /*! ... <string_end>. */
+    /*! …&lt;string_end&gt;. */
     BMNSStringTruncateModeStart = 1,
-    /*! <string_start> ... */
+    /*! &lt;string_start&gt;…*/
     BMNSStringTruncateModeEnd = 2
 } BMNSStringTruncateMode;
+
 /*!
- * Replaces all occurrences of newlines, carriage returns, backslashes, single/double quotes and percentage signs with their escaped versions 
- * @return the quoted string
- */ 
-- (NSString *) quote;
+ * ￼String escaping modes￼￼. Since we are replacing all occurences of an escapable character at once, the order in which the replacements occur is important.
+ */
+typedef enum {
+    /*! Traverses the character mapping from bottom up (starting at <span class="sourcecode">objectAtIndex:0</span>). This is the order used by #quotedString. */
+    BMNSStringEscapeTraversingOrderFirst = 0,
+    /*! Traverses the character mapping from top down (starting at <span class="sourcecode">objectAtIndex:[mapping count]</span>). Reversing the order can at rare times be useful when the escape character mapping includes replacements for the escape character itself which is also included by all the other replacements in the mapping. In that case the output depends on the traversing order. Typically though, there is not much incentive to use a reverse order. */
+    BMNSStringEscapeTraversingOrderLast = 1
+} BMNSStringEscapeTraversingOrder;
+
 /*!
- * Truncates a string to 20 characters and adds an ellipsis ("...").
- * @return the truncated string
+ * Escapes all occurrences according to the specified escape character mapping. If nil is passed for the mapping, by default #BMNSStringC99EscapeCharacterMapping is used as the mapping. 
+ * The C99 mapping currently includes \\a (alert), \\b (backspace), \\f (form feed), \\n (newline), \\r (return), \\t (tab), \\v (vertical tab), \" (double quote) and \\ (backslash). 
+ * The remaining sequences such as hexadecimal, octal and unicode notations need to be specified already escaped anyway when constructing the script source via NSStrings. 
+ * Those sequences will then be escaped when the default escape character is transformed (the default escape character is the backslash character). If you read script sources from file, 
+ * depending on the behaviour of NSString in how it treats escaped sequences when reading the file data in, you may have to specifically escape any unicode literals yourself. 
+ * You can use #stringByEscapingUnicodeCharacters for this.
+ * 
+ * <i>Implementation note: before thinking about escape sequences and how to do the replacements some thought needs to be put in about what even needs escaping.
+ * By this I do not mean what parts of a string do need escaping, but rather the angle we are coming from. i.e.: when utilizing Ruby scripts 
+ * do we need to follow the conventions of the Ruby language for what needs escaping? My first instinct told me yes, but I have thought 
+ * long and hard about this: actually the carrier for transporting those scripts sources around is after all an NSString. 
+ * So regardless of what language we use for our sources, when feeding the script sources into Objective-C land we need to escape all entities 
+ * that need escaping in an NSString literal. However, while the assumption may be correct, it is also somewhat of a moot point since any and all 
+ * modern interpreted languages follow the C style for escape sequences anyway, as does Objective-C.</i>
+ *
+ * @param   mapping   a #BMNSStringEscapeCharacterMapping value which specifies the mapping of escapable characters to their escaped counterparts.
+ * @param   order     a #BMNSStringEscapeTraversingOrder value which specifies the order in which the escape character mapping should be traversed: first (normal) or last (reverse).
+ * @returns  the escaped string
+ * @sa #quotedString
  */ 
-- (NSString *) truncate;
+- (NSString *) stringByEscapingStringUsingMapping:(BMNSStringEscapeCharacterMapping *)mapping order:(BMNSStringEscapeTraversingOrder)order;
+
 /*! 
- * Truncates a string to len characters plus ellipsis.
+ * Calls #stringByEscapingStringUsingMapping:order: passing nil for mapping (and obviously <span class="sourcecode">order</span> for <span class="sourcecode">order</span>). 
+ * If nil is passed for the <span class="sourcecode">mapping</span> parameter, #BMNSStringC99EscapeCharacterMapping is used by default. 
+ * @sa #stringByEscapingStringUsingMapping:order:
+ */
+- (NSString *) stringByEscapingStringUsingOrder:(BMNSStringEscapeTraversingOrder)order;
+
+/*!
+ * Escapes all <span class="sourcecode">unichar</span> characters with their representation in \\uxxxx notation. 
+ * For example: é becomes \\u00e9. Can be used to escape unichars in script sources read from file.
+ * Note: The need for this depends on the behaviour of NSString when reading in the file.
+ */
+- (NSString *) stringByEscapingUnicodeCharacters;
+/*! 
+ * Replaces all % signs with %%. 
+ * This would be useful if you want to use a string as a format string for one of the NSString creation methods. 
+ */
+- (NSString *) stringByEscapingPercentSigns;
+/*! 
+ * Replaces all %% signs with %. 
+ * The reverse of <span class="sourcecode">stringByEscapingPercentSigns</span>. 
+ */
+- (NSString *) stringByUnescapingPercentSigns;
+/*! 
+ * Swallows multiple consecutive percent signs and replaces each multi-occurrence with one sign.
+ * Can be useful if, again, the need arises to use it as an NSString format or argument string. 
+ */
+- (NSString *) stringByNormalizingPercentSigns;
+/*! 
+ * Calls #stringByEscapingStringUsingOrder: passing #BMNSStringEscapeTraversingOrderFirst as <span class="sourcecode">order</span> argument. 
+ */
+- (NSString *) escapedString;
+/*! 
+ * Loops through #BMNSStringC99EscapeCharacterMapping performing the same operation as #escapedString while switching <span class="sourcecode">objectAtIndex:</span>(0) with (1) thus reversing the escaping replacements.
+ */
+- (NSString *) unescapedStringUsingOrder:(BMNSStringEscapeTraversingOrder)order;
+/*!
+ * Escapes a small subset of the C standard escape sequence set, specifically \\ (backslash), \\n (newline), \\r (return) and \" (double quotes), in that order.
+ * This is the little brother of #stringByEscapingStringUsingOrder: and most of the time sufficient for day-to-day work with script sources supplied in NSStrings.
+ * @returns the quoted string
+ * @sa #stringByEscapingStringUsingOrder:
+ */ 
+- (NSString *) quotedString;
+/*! 
+ * Loops through #BMNSStringCommonEscapeCharacterMapping performing the same operation as #quotedString while switching <span class="sourcecode">objectAtIndex:</span>(0) with (1) thus reversing the escaping replacements.
+ */
+- (NSString *) unquotedString;
+/*!
+ * Truncates a string to 20 characters (by default) and adds a horizontal ellipsis … (U+2026) character.
+ * @returns the truncated string
+ * @sa stringByTruncatingToLength:
+ */ 
+- (NSString *) truncatedString;
+/*! 
+ * Truncates a string to len characters plus horizontal ellipsis.
  * @param len new length. ellipsis will be added.
- * @return the truncated string
+ * @returns the truncated string
+ * @sa stringByTruncatingToLength:mode:indicator:
  */ 
-- (NSString *) truncateToLength:(NSUInteger)len;
+- (NSString *) stringByTruncatingToLength:(NSUInteger)len;
 /*! 
- * Truncates a string to len characters while giving control over where the
+ * Truncates a string to length characters while giving control over where the
  * indicator should appear: start, middle or end.
  * The indicator itself is also specifyable.
- * @param len new length including ellipsis.
- * @param mode the truncate mode. start, center or end.
- * @param indidcator the indicator string (typically an ellipsis sysmbol, if nil an NSString containing 3 periods will be used)
- * @return the truncated string
+ * @param length            new length including ellipsis.
+ * @param mode              the truncate mode. start, center or end.
+ * @param indicatorString   the indicator string (typically an ellipsis sysmbol, if nil an NSString containing 3 periods will be used)
+ * @returns the truncated string
  */ 
-- (NSString *) truncateToLength:(NSUInteger)length mode:(BMNSStringTruncateMode)mode indicator:(NSString *)indicatorString;
+- (NSString *) stringByTruncatingToLength:(NSUInteger)length mode:(BMNSStringTruncateMode)mode indicator:(NSString *)indicatorString;
 /*!
  * Counts the number of occurrences of a string in another string 
  * @param aString the string to count occurrences of
- * @return NSInteger with the amount of occurrences
+ * @returns NSInteger with the amount of occurrences
  */
 - (NSInteger) countOccurrencesOfString:(NSString *)aString;
 /*!
- * Returns a string wrapped with single quotes. 
+ * Returns a string wrapped in single quotes. 
  */
-- (NSString *) wrapSingleQuotes;
+- (NSString *) stringByWrappingSingleQuotes;
 /*!
- * Returns a string wrapped with double quotes. 
+ * Returns a string wrapped in double quotes. 
  */
-- (NSString *) wrapDoubleQuotes;
+- (NSString *) stringByWrappingDoubleQuotes;
+/*! 
+ * Returns an array of strings representing the reciever's bytes in hexadecimal or decimal notation. 
+ * Uses getBytes:maxLength:usedLength:encoding:options:range:remainingRange: with option NSStringEncodingConversionExternalRepresentation to get the BOM included (if needed).
+ * See NSString.h for more details.
+ * @param enc Usually you want NSUTF8StringEncoding but if you're interested in the BOM pass NSUnicodeStringEncoding or NSUTF16StringEncoding (which is an alias for the former)
+ * @param asHex specify YES if for example you want "0x42" for 'A' ("65" if NO)
+ */
+- (NSArray *) bytesForEncoding:(NSStringEncoding)enc asHex:(BOOL)asHex;
+/*!
+ * From the String Programming Guide. Adjusts a range so that it includes composed grapheme clusters at the range's boundaries. 
+ * Needed for any UTF/Unicode string.
+ * @param aRange an arbitrary NSRange on a string, captured without consideration of grapheme clusters.
+ * @returns the adjusted range, now including composed character sequences at the beginning and end of the range.
+ */
+- (NSRange) adjustRangeToIncludeComposedCharacterSequencesForRange:(NSRange)aRange;
 @end
 
-/*! A category on NSDictionary providing handy utility and convenience functions. */
+/*! 
+ * @category NSDictionary(BMScriptUtilities)
+ * A category on NSDictionary providing handy utility and convenience functions. 
+ */
 @interface NSDictionary (BMScriptUtilities)
 /*!
  * Returns a new dictionary by adding another object. 
  * @param object the object to add
  * @param key the key to add it for
- * @return the modified dictionary
+ * @returns the modified dictionary
  */
 - (NSDictionary *) dictionaryByAddingObject:(id)object forKey:(id)key;
 @end
 
-/*! A category on NSObject. Provides introspection and other utility methods. */
+/*! 
+ * @category NSObject(BMScriptUtilities)
+ * A category on NSObject. Provides introspection and other utility methods. 
+ */
 @interface NSObject (BMScriptUtilities)
 
 /*!
- * Returns YES if self is a descendant of another class.
+ * Returns YES if self is a descendant (and only a descendant) of another class.
+ *
  * This differs from <span class="sourcecode">-[NSObject isMemberOfClass:someClass]</span> 
  * and <span class="sourcecode">-[NSObject isKindOfClass:someClass]</span> in that it
  * excludes anotherClass (the parent) in the comparison. Normally -isKindOfClass: returns 
  * YES for all instances, and -isMemberOfClass: for all instances plus inherited subclasses,
  * both including their parent class anotherClass. Here we return NO if <span class="sourcecode">[self class]</span>
  * is equal to <span class="sourcecode">[anotherClass class]</span>.
+ *
  * @param anotherClass the class type to check against
  */
 - (BOOL) isDescendantOfClass:(Class)anotherClass;
 
 @end
 
-/*! A category on NSArray. Provides introspection and other utility methods. */
+/*! 
+ * @category NSArray(BMScriptUtilities)
+ * A category on NSArray. Provides introspection and other utility methods. 
+ */
 @interface NSArray (BMScriptUtilities)
 /*! Returny YES if the array consists only of empty strings. */
 - (BOOL) isEmptyStringArray;

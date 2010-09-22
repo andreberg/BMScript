@@ -51,7 +51,11 @@ INPUT_DIRECTORY=$(PROJECT_DIR)/Source
 OUTPUT_DIRECTORY=$(DOCROOT)/$(DOCSET_NAME)
 
 // path to the doxygen resources folder in its .app bundle
-DOXYGEN_RES_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen.app/Contents/Resources
+DOXYGEN15_RES_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen 1.5.6.app/Contents/Resources
+DOXYGEN16_RES_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen 1.6.3.app/Contents/Resources
+DOXYGEN17_RES_PATH=/Developer/Applications/Utilities/Third-Party/Doxygen 1.7.app/Contents/Resources
+
+DOXYGEN_RES_PATH=$(DOXYGEN16_RES_PATH)
 
 // path to the doxygen executable
 DOXYGEN_PATH=$(DOXYGEN_RES_PATH)/doxygen
@@ -64,7 +68,7 @@ DOXYFILE=Doxyfile
 DOXYFILE_TEMPLATE=DoxyfileTemplate
 
 // css for docs
-HTML_STYLESHEET=$(DOCRES)/CSS/doxygen.css
+HTML_STYLESHEET=$(DOCRES)/CSS/doxygen_1.6.3.css
 
 // path to Graphviz "dot" executable, default is "...Doxygen.app/Contents/Resources"
 DOT_PATH=/opt/local/bin

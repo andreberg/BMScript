@@ -1,4 +1,4 @@
-str = %{}
+str = %{<##>}
 def decimal(x)
    if /^0x[abcdefABCDEF0123456789]+$/ =~ x
       x.hex

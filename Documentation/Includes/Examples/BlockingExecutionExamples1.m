@@ -1,8 +1,12 @@
 BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"\"test test\"" 
-                                                    options:BMSynthesizeOptions(@"/bin/echo", @"-n")];
-NSInteger retVal = [script1 execute];
+                                                    options:BMSynthesizeOptions(@"/bin/echo", @"")];
 
-NSLog(@"script1 result = %@\n", [[script1 lastResult] quote]);
-NSLog(@"script1 retVal = %d\n", retVal);
-// script1 result = script1 result = \"test test\"
+ExecutionStatus status = [script1 execute];
+
+NSLog(@"script1 status = %@", BMNSStringFromExecutionStatus(status));
+NSLog(@"script1 result = %@", [[script1 lastResultWithoutTrailingNewline] quotedString]);
+NSLog(@"script1 retVal = %d", [script1 lastReturnValue]);
+
+// script1 status = script finished successfully
+// script1 result = \"test test\"
 // script1 retVal = 0

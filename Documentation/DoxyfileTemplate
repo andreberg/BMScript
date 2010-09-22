@@ -1,4 +1,4 @@
-# Doxyfile 1.5.6
+# Doxyfile 1.6.3
 
 # **** Auto-generated from DoxyfileTemplate ****
 
@@ -33,7 +33,6 @@ SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = YES
 QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
-DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = NO
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 6
@@ -128,7 +127,7 @@ FILE_PATTERNS          = *.c \
                          *.vhd \
                          *.vhdl \
                          *.include
-RECURSIVE              = NO
+RECURSIVE              = YES
 EXCLUDE                = *.d \
                          *BMScriptProbes* \
                          *NSObject_MemoryLogger* \

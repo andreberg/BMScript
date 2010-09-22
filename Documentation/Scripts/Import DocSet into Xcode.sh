@@ -18,11 +18,8 @@ make -C "$DOCROOT/$DOCSET_NAME/html" install
 # TMPSCRIPT=`echo -e "tell application \"Xcode\" to load documentation set with path \"/Users/$USER/Library/Developer/Shared/Documentation/DocSets/\""`
 # arch -i386 osascript -e "${TMPSCRIPT}"
 
-# Run the load-docset applescript command. Use arch -i386 in front of it
-# to silence Scripting Addition x86_64 incompatibility errors.
-
 arch -i386 osascript << APPLESCRIPT
 tell application "Xcode"
-    load documentation set with path "/Users/$USER/Library/Developer/Shared/Documentation/DocSets/"
+    load documentation set with path "/Users/$USER/Library/Developer/Shared/Documentation/DocSets/" -- (re)load all DocSets present in folder
 end tell
 APPLESCRIPT

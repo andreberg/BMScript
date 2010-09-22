@@ -89,14 +89,14 @@
 
 - (void) taskFinished:(NSNotification *)aNotification {
     
-    TerminationStatus stats = [[[aNotification userInfo] objectForKey:BMScriptNotificationTaskTerminationStatus] intValue];
+    ExecutionStatus stats = [[[aNotification userInfo] objectForKey:BMScriptNotificationExecutionStatus] intValue];
     NSString * result = [[aNotification userInfo] objectForKey:BMScriptNotificationTaskResults];
     
     self.results = result;
     self.status = stats;
     self.taskHasEnded = YES;
     
-    NSLog(@"Inside %s: task finished with status = %u, result = '%@'\n", __PRETTY_FUNCTION__, (unsigned)self.status, [self.results quotedString]);
+    NSLog(@"Inside %s: script finished with status = %u, result = '%@'\n", __PRETTY_FUNCTION__, (unsigned)self.status, [self.results quotedString]);
     NSLog(@"Inside %s\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
@@ -109,7 +109,7 @@
                 @" shouldSetResultCalled? %@\n"
                 @" shouldSetScriptCalled? %@", 
                 [self description],
-                [BMNSStringFromBOOL(self.taskHasEnded) UTF8String], [BMNSStringFromTerminationStatus(self.status) UTF8String], [self.results quotedString],
+                [BMNSStringFromBOOL(self.taskHasEnded) UTF8String], [BMNSStringFromExecutionStatus(self.status) UTF8String], [self.results quotedString],
                  BMNSStringFromBOOL(self.willSetResultCalled),
                  BMNSStringFromBOOL(self.willSetScriptCalled),
                  BMNSStringFromBOOL(self.shouldSetResultCalled),

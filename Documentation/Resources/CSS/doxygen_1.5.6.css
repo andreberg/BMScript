@@ -676,3 +676,4 @@ table.standard td                    { vertical-align: top; padding: 1ex; border
 .content .references .referenceColumn .entry { white-space: inherit; font-size: 0.9167em; }
 
 .entry.ohloh { margin-top: 3px; margin-bottom: -3px; }
+.version { text-align: center; }

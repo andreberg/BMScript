@@ -17,11 +17,12 @@
 - (void) taskFinished:(NSNotification *)aNotification {
     
     NSDictionary * infoDict  = [aNotification userInfo];
-    TerminationStatus status = [[infoDict objectForKey:BMScriptNotificationTaskTerminationStatus] intValue];
+    ExecutionStatus status = [[infoDict objectForKey:BMScriptNotificationExecutionStatus] integerValue];
     NSString * results       = [infoDict objectForKey:BMScriptNotificationTaskResults];
+    NSInteger retval         = [[infoDict objectForKey:BMScriptNotificationTaskReturnValue] integerValue];
     
-    NSLog(@"Inside %s: background task finished with status = %ld, result = '%@'", 
-            __PRETTY_FUNCTION__, status, [results quote]);
+    NSLog(@"Inside %s: async script finished with status = %ld, result = '%@', task return value = %ld", 
+            __PRETTY_FUNCTION__, BMNSStringFromExecutionStatus(status), [results quotedString], retval);
 }
 
 // ...

@@ -17,4 +17,16 @@
 
 #run doxygen to generate the makefile based on our DOXYFILE
 
+if [[ ! -e "${DOXYGEN_PATH}" ]]; then
+    if [[ -e "/Applications/Doxygen.app/Contents/Resources/doxygen" ]]; then
+        DOXYGEN_PATH="/Applications/Doxygen.app/Contents/Resources/doxygen"
+    else
+        echo "Error: Doxygen executable not found at path: '${DOXYGEN_PATH}' or at default path: '/Applications/Doxygen.app/Contents/Resources/doxygen'."
+        echo "Please either set the proper path with the DOXYGEN_RES_PATH variable in the Documentation.xcconfig or install Doxygen to the default path."
+        echo "Aborting..."
+        exit 1
+    fi
+fi
+
 "${DOXYGEN_PATH}" "${DOCROOT}/${DOXYFILE}"
+exit 0
