@@ -28,6 +28,7 @@
 #include <sys/param.h>
 #include <objc/objc-auto.h>
 
+
 #if (DEBUG && (!defined(NS_BLOCK_ASSERTIONS) && !defined(BM_BLOCK_ASSERTIONS)))
     #define BMAssertLog(_COND_) if (!(_COND_)) \
         NSLog(@"*** AssertionFailure: %s should be YES but is %@", #_COND_, ((_COND_) ? @"YES" : @"NO"))
@@ -63,7 +64,6 @@
 // ---------------------------------------------------------------------------------------- 
 // MARK: main
 // ---------------------------------------------------------------------------------------- 
-
 
 int main (int argc, const char * argv[]) {
 #pragma unused(argc, argv)
@@ -129,6 +129,8 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
+    NSError * error = nil;
+    ExecutionStatus status = BMScriptNotExecuted;
 
     BMScript * script1 = [[BMScript alloc] init];
     [script1 execute];
@@ -147,20 +149,25 @@ int main (int argc, const char * argv[]) {
         NSLog(@"script2 (BMRubyScript 'puts 1+2') result = %@", result2);
     };
     
-    NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
-    NSDictionary * newOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
-                                                   newArgs, BMScriptOptionsTaskArgumentsKey, nil];
-
-    NSError * error = nil;
-    NSString * newResult1 = nil;
-    
-    [script1 setSource:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
-    [script1 setOptions:newOptions];
-    success = [script1 executeAndReturnResult:&newResult1 error:&error];
-    
-    if (success) {
-        NSLog(@"script1 new result (unquoted) = %@ (%@)", [newResult1 quotedString], newResult1);
+    if ([[NSFileManager defaultManager] fileExistsAtPath:RUBY19_EXE_PATH]) {
+        NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
+        NSDictionary * newOptions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
+                                     newArgs, BMScriptOptionsTaskArgumentsKey, nil];
+        
+        NSString * newResult1 = nil;
+        
+        [script1 setSource:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
+        [script1 setOptions:newOptions];
+        status = [script1 executeAndReturnResult:&newResult1 error:&error];
+        
+        if (status == BMScriptFinishedSuccessfully) {
+            NSLog(@"script1 new result (unquoted) = %@ (%@)", [newResult1 quotedString], newResult1);
+        } else {
+            NSLog(@"script1 status = %d", status);
+        }
+    } else {
+        NSLog(@"Skipping Ruby 1.9 based test, because ruby1.9 was not found at path: '%@'", RUBY19_EXE_PATH);
     }
     
     
@@ -381,7 +388,7 @@ int main (int argc, const char * argv[]) {
     NSString * plLCScriptPath = PATHFORSCRIPT(@"Perl Low Complexity Script.pl");
     BMScript * plLCScript = [BMScript perlScriptWithContentsOfFile:plLCScriptPath];
     
-    ExecutionStatus status = [plLCScript execute];
+    status = [plLCScript execute];
     
     NSString * plLCScriptResult = [plLCScript lastResult];
     NSInteger plLCScriptRetVal = [plLCScript lastReturnValue];
