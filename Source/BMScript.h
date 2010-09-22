@@ -226,8 +226,8 @@
  *
  * All access to global data, shared variables and mutable objects has been
  * locked with <a href="x-man-page://pthread" class="external">pthread_mutex_locks</a> <small>*</small>.
- * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_SAFE is not <span class="sourcecode">1</span>.
- * #BMSCRIPT_THREAD_SAFE will also set #BM_ATOMIC to <span class="sourcecode">1</span> which will make all accessors atomic.
+ * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_AWARE is not <span class="sourcecode">1</span>.
+ * #BMSCRIPT_THREAD_AWARE will also set #BM_ATOMIC to <span class="sourcecode">1</span> which will make all accessors atomic.
  * 
  * However, to make it clear as crystal: <b>for the moment BMScript is not classified as being thread-safe!</b>
  * 
@@ -348,7 +348,7 @@
  */
 
 // Note: Doxygen 1.6.3 seems to have an issue with the order of the defines.
-// To get BMSCRIPT_THREAD_SAFE to show up at all I have to put its define block
+// To get BMSCRIPT_THREAD_AWARE to show up at all I have to put its define block
 // up front but with empty doc comment. Further down you will see that I undefine
 // it and define it again with the same define construct but this time with non-empty
 // doc comment. Apparently for this file this was the only way so that it shows up
@@ -358,26 +358,26 @@
 /*!
  * 
  */
-#ifndef BMSCRIPT_THREAD_SAFE
-    #define BMSCRIPT_THREAD_SAFE 0
+#ifndef BMSCRIPT_THREAD_AWARE
+    #define BMSCRIPT_THREAD_AWARE 0
 #else
-    #undef BMSCRIPT_THREAD_SAFE
-    #define BMSCRIPT_THREAD_SAFE 1
+    #undef BMSCRIPT_THREAD_AWARE
+    #define BMSCRIPT_THREAD_AWARE 1
 #endif
 
 /*!
  * Enables synchronization locks and toggles the atomicity attribute of property declarations. 
  * If not defined, synchronization locks will be noop and properties will be nonatomic.
  */
-#ifndef BMSCRIPT_THREAD_SAFE
-    #define BMSCRIPT_THREAD_SAFE 0
+#ifndef BMSCRIPT_THREAD_AWARE
+    #define BMSCRIPT_THREAD_AWARE 0
 #endif
 
 /*!
  * Toggles the atomicity attribute for Objective-C 2.0 properties. 
- * Will be set to <span class="sourcecode">nonatomic,</span> if ::BMSCRIPT_THREAD_SAFE is 0, otherwise noop.
+ * Will be set to <span class="sourcecode">nonatomic,</span> if ::BMSCRIPT_THREAD_AWARE is 0, otherwise noop.
  */
-#if BMSCRIPT_THREAD_SAFE
+#if BMSCRIPT_THREAD_AWARE
     #define BM_ATOMIC 
 #else
     #define BM_ATOMIC nonatomic,
@@ -397,7 +397,7 @@
  *<hr>
  <small>%*) In Xcode right-click and choose Open Link in Browser</small>
  */
-#if BMSCRIPT_THREAD_SAFE
+#if BMSCRIPT_THREAD_AWARE
     #ifndef BMSCRIPT_FAST_LOCK
         #define BMSCRIPT_FAST_LOCK 0
     #else

@@ -17,7 +17,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-//#define BMSCRIPT_THREAD_SAFE
+//#define BMSCRIPT_THREAD_AWARE
 
 #import <Foundation/Foundation.h>
 
@@ -79,7 +79,7 @@ int main (int argc, const char * argv[]) {
     
     NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED = %i", MAC_OS_X_VERSION_MIN_REQUIRED);
     NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED = %i", MAC_OS_X_VERSION_MAX_ALLOWED);
-    NSLog(@"BMSCRIPT_THREAD_SAFE = %i", BMSCRIPT_THREAD_SAFE);
+    NSLog(@"BMSCRIPT_THREAD_AWARE = %i", BMSCRIPT_THREAD_AWARE);
     NSLog(@"BMSCRIPT_FAST_LOCK = %i", BMSCRIPT_FAST_LOCK);
     NSLog(@"GarbageCollector enabled? %@", BMNSStringFromBOOL([[NSGarbageCollector defaultCollector] isEnabled]));
     

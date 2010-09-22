@@ -3,7 +3,7 @@
     <activation>
         <rule kind="extension" id="com.apple.powertrace.dtrace-instrument-plugin.main"/>
     </activation>
-    <extension id="EC360559-5042-4AB3-BBAA-6B9F49E9DC9A" category="BMScript" deletable="true" version="1.0" helpURL="" iconURL="" defaultBrushName="default" pluginIdentifier="com.apple.powertrace.dtrace-instrument-plugin.main" data_silent="" instrumentClass="PFTDTraceInstrument" end_silent="" point="com.apple.xray.dtrace-instrument-type" runClass="PFTDTraceRun" deckUnits="1" instrumentDescription="Records the amount of time takes for acquiring a pthread_mutex_lock. (Note: If BMSCRIPT_THREAD_SAFE is not 1 this has no effect." begin_silent="self->totalMicros = 0;" name="Acquire Lock Time">
+    <extension id="EC360559-5042-4AB3-BBAA-6B9F49E9DC9A" category="BMScript" deletable="true" version="1.0" helpURL="" iconURL="" defaultBrushName="default" pluginIdentifier="com.apple.powertrace.dtrace-instrument-plugin.main" data_silent="" instrumentClass="PFTDTraceInstrument" end_silent="" point="com.apple.xray.dtrace-instrument-type" runClass="PFTDTraceRun" deckUnits="1" instrumentDescription="Records the amount of time takes for acquiring a pthread_mutex_lock. (Note: If BMSCRIPT_THREAD_AWARE is not 1 this has no effect." begin_silent="self->totalMicros = 0;" name="Acquire Lock Time">
         <targetType launched="true" existing="true" all="true"/>
         <brush name="Default"/>
         <stack ustack="true" kstack="false" jstack="false"/>

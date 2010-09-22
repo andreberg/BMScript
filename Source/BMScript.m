@@ -40,7 +40,7 @@
     #define BMSCRIPT_DEBUG_HISTORY  0
 #endif
 
-#if (BMSCRIPT_THREAD_SAFE && BMSCRIPT_ENABLE_DTRACE)
+#if (BMSCRIPT_THREAD_AWARE && BMSCRIPT_ENABLE_DTRACE)
     #if BMSCRIPT_FAST_LOCK
         #define BM_LOCK(name) \
         BM_PROBE(ACQUIRE_LOCK_START, (char *) [BMStringFromBOOL(BMSCRIPT_FAST_LOCK) UTF8String]); \
@@ -63,7 +63,7 @@
         #define BM_UNLOCK(name) }\
         BM_PROBE(ACQUIRE_LOCK_END, (char *) [BMStringFromBOOL(BMSCRIPT_FAST_LOCK) UTF8String]);
     #endif
-#elif (BMSCRIPT_THREAD_SAFE && !BMSCRIPT_ENABLE_DTRACE)
+#elif (BMSCRIPT_THREAD_AWARE && !BMSCRIPT_ENABLE_DTRACE)
     #if BMSCRIPT_FAST_LOCK
         #define BM_LOCK(name) \
         static pthread_mutex_t mtx_##name = PTHREAD_MUTEX_INITIALIZER; \
