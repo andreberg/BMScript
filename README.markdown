@@ -68,6 +68,69 @@ Usage
 
 5. Details on how to fully utilize BMScript can be found in it's documentation.
 
+
+
+Changelog
+---------
+
+v0.2 (2010-09-22)
+
+(* = change, - = deletion, + = addition)
+
+* \* Accessor methods are now used consistently throughout BMScript.
+
+  This is intended as a first step towards thread-awareness.
+
+* \+ The NSString(BMScriptUtilities) category has been expanded quite a bit.
+
+  Most of the changes deal with preparing strings for use as script sources.
+  For example we expanded on -quotedString (which deals with escaping from a
+  "used as NSString" point of view) and now provide facilities to do generic
+  escapes. The generic bit targets the fact that the user of the class knows
+  best what he needs escaped so (s)he can provide what is called an escape
+  character mapping. It's all documented, so take a look if this is for you.
+
+* \* NSString category methods now match a little more closely the naming conventions
+  employed by Apple.
+
+* \* The template system has been reworked a little. The magic token has changed
+  and also there's support for changing the magic token on the fly in the case
+  of dictionary based saturation.
+
+* \* Better support for the underlying task's exit code. The return value can now
+  be queried from a readonly property or in the case of non-blocking execution
+  from a key in the notification dictionary.
+
+* \* BMScript's TerminationStatus has been renamed to ExecutionStatus since the
+  former was confused with the task's termination status far too often.
+
+  The execution status deals with the status of the script and the returnValue
+  with the task's exit code. They can be the same occasionally but generally
+  if you're interested if the script went through compare to the output from
+  BMNSStringFromExecutionStatus(status), where status is the execution status
+  returned by one of the blocking execute methods or from the execution status
+  key in the notification info dictionary  for the non-blocking execution.
+  If you're interested in the task's return value (aka exit code) compare the
+  number returned by lastReturnValue to the expected return codes for the tool
+  you are using.
+
+* \* Warning messages and logs now (properly) take subclassing into account when
+  generating the string header.
+
+* \* BMScript now uses the Doxygen version 1.6.3.
+
+  The CSS stylesheet has also been slightly revamped.
+
+* \+ The unit tests and the default test executable have been expanded.
+
+  Amongst other things, we now provide one test case for each factory method we support.
+
+* \+ BMScript now has a logo for light and dark backgrounds. 
+
+  The mixed colors in the script sign represent a share of the power that each 
+  scripting language brings to the table in BMScript.
+
+
   
 Acknowledgements
 ----------------
