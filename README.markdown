@@ -38,11 +38,11 @@ There are also some caveats:
 
 * The initial code base comes from a while back from my very first attempt to write a "real world" Objective-C class
 
-* BMScript is not threadsafe (yet). There is a define BMSCRIPT_THREAD_SAFE which if true employs locks in critical sections of the code and also sets BM_ATOMIC to true which in turn makes all the accessor methods atomic. But this is not really tested code! 
+* BMScript is not threadsafe (yet). There is a define BMSCRIPT_THREAD_AWARE which if true employs locks in critical sections of the code and also sets BM_ATOMIC to true which in turn makes all the accessor methods atomic. But this is not really tested code! 
   For example stuff that deals with the instance local execution history could cause race conditions if two threads would try to access the execution result on the same instance at the same time.
 
-* I tested what I could with the tools I have available (e.g. xcode + gdb, caveman debugging, dtrace, instruments) 
-  but to date it hasn't been used in heavyweight code.
+* I tested what I could with the tools I have available (e.g. Xcode + gdb, dTrace, Instruments, caveman debugging) 
+  but to date it hasn't been used in heavyweight code. (Though, FWIW, I have successfully used it in personal projects).
 
 * Therefore: **Use at your own risk!** I'm just throwing it out there for whomever might find it useful.
 
