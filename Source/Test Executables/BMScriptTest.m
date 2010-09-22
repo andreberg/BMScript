@@ -154,8 +154,8 @@ int main (int argc, const char * argv[]) {
     if ([[NSFileManager defaultManager] fileExistsAtPath:RUBY19_EXE_PATH]) {
         NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
         NSDictionary * newOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
-                                     newArgs, BMScriptOptionsTaskArgumentsKey, nil];
+                                            RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
+                                                    newArgs, BMScriptOptionsTaskArgumentsKey, nil];
         
         NSString * newResult1 = nil;
         
@@ -210,35 +210,39 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * result5 = nil;
-    NSString * result6 = nil;
-    
-    // alternative options (ruby 1.9)
-    NSArray * alternativeArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
-    NSDictionary * alternativeOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
-                                                    alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:RUBY19_EXE_PATH]) {
+
+        NSString * result5 = nil;
+        NSString * result6 = nil;
         
-    BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
-    [script5 executeAndReturnResult:&result5];
+        // alternative options (ruby 1.9)
+        NSArray * alternativeArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
+        NSDictionary * alternativeOptions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                        RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
+                                                        alternativeArgs, BMScriptOptionsTaskArgumentsKey, nil];
+            
+        BMRubyScript * script5 = [BMRubyScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
+        [script5 executeAndReturnResult:&result5];
+            
+        BMRubyScript * script6 = [BMRubyScript scriptWithSource:[script5 lastScriptSourceFromHistory] options:alternativeOptions];
+        [script6 execute];
+        result6 = [script6 lastResult];
         
-    BMRubyScript * script6 = [BMRubyScript scriptWithSource:[script5 lastScriptSourceFromHistory] options:alternativeOptions];
-    [script6 execute];
-    result6 = [script6 lastResult];
-    
-    BMAssertLog([result5 isEqualToString:result6]);    
-    if (![result5 isEqualToString:result6]) {
-        NSLog(@"*** AssertionFailure: result5 should be equal to result6!");
+        BMAssertLog([result5 isEqualToString:result6]);    
+        if (![result5 isEqualToString:result6]) {
+            NSLog(@"*** AssertionFailure: result5 should be equal to result6!");
+        }
+        
+        NSLog(@"script5 (alternative options) result = %@", result5);
+        NSLog(@"script6 (execute last script source from history) result = %@", result6);
+        
+        BMAssertLog([[script5 history] isEqual:[script6 history]]);
+        if (![[script5 history] isEqual:[script6 history]]) {
+            NSLog(@"*** AssertionFailure: [result5 history] should be equal to [result6 history]");
+        }
+    } else {
+        NSLog(@"Skipping Ruby 1.9 based test, because ruby1.9 was not found at path: '%@'", RUBY19_EXE_PATH);
     }
-    
-    NSLog(@"script5 (alternative options) result = %@", result5);
-    NSLog(@"script6 (execute last script source from history) result = %@", result6);
-    
-    BMAssertLog([[script5 history] isEqual:[script6 history]]);
-    if (![[script5 history] isEqual:[script6 history]]) {
-        NSLog(@"*** AssertionFailure: [result5 history] should be equal to [result6 history]");
-    }
-    
     
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
