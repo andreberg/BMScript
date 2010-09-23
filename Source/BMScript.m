@@ -103,15 +103,14 @@ NSString * const BMScriptTemplateArgumentMissingException        = @"BMScriptTem
 
 NSString * const BMScriptLanguageProtocolDoesNotConformException = @"BMScriptLanguageProtocolDoesNotConformException";
 NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLanguageProtocolMethodMissingException";
-NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLanguageProtocolIllegalAccessException";
 
 
 /* Empty braces means this is an "Extension" as opposed to a Category */
 @interface BMScript (/* Private */)
 
-@property (BM_ATOMIC copy, readwrite) NSString * result;
+@property (BM_ATOMIC copy, readwrite) NSData * result;
 @property (BM_ATOMIC assign) NSInteger returnValue;
-@property (BM_ATOMIC copy) NSString * partialResult;
+@property (BM_ATOMIC copy) NSMutableData * partialResult;
 @property (BM_ATOMIC assign) BOOL isTemplate;
 @property (BM_ATOMIC retain) NSTask * task;
 @property (BM_ATOMIC retain) NSPipe * pipe;
@@ -125,7 +124,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 - (ExecutionStatus) launchTaskAndReturnResult;
 - (void) setupAndLaunchBackgroundTask;
 - (void) taskTerminated:(NSNotification *)aNotification;
-- (void) appendData:(NSData *)d;
+- (void) appendPartialData:(NSData *)d;
 - (void) dataReceived:(NSNotification *)aNotification;
 - (const char *) gdbDataFormatter;
 
@@ -158,7 +157,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
                                       @" options: '%@'", 
                                       [super description], 
                                       [self.source quotedString], 
-                                      [self.result quotedString], 
+                                      [[self.result contentsAsString] quotedString], 
                                        self.returnValue,
                                       (self.delegate == self? (id)@"self" : self.delegate), 
                                       [self.options descriptionInStringsFileFormat]];
@@ -193,7 +192,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
                        (launchPath ? launchPath : @"nil, "),
                        (accString ? accString : @"nil, "),
                        (self.source ? [[self.source quotedString] truncatedString] : @"nil"), 
-                       (self.result ? [[self.result quotedString] truncatedString] : @"nil"),
+                       (self.result ? [[[self.result contentsAsString] quotedString] truncatedString] : @"nil"),
                        BMNSStringFromBOOL(self.isTemplate)];
     
     return [desc UTF8String];
@@ -253,7 +252,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
         ([self isKindOfClass:[BMScript class]]) && 
         !([self conformsToProtocol:@protocol(BMScriptLanguageProtocol)])) {
         @throw [NSException exceptionWithName:BMScriptLanguageProtocolDoesNotConformException 
-                                       reason:[NSString stringWithFormat:@"%@ Error: Descendants of %@ must conform to the BMScriptLanguageProtocol!", classname, classname]
+                                       reason:[NSString stringWithFormat:@"%@ Error: Descendants of BMScript must conform to the BMScriptLanguageProtocol!", classname]
                                      userInfo:nil];
     }
     
@@ -267,7 +266,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
                 !([self respondsToSelector:@selector(defaultOptionsForLanguage)])) {
                 @throw [NSException exceptionWithName:BMScriptLanguageProtocolMethodMissingException 
                                                reason:[NSString stringWithFormat:@"%@ Error: Descendants of %@ must implement "
-                                                       "-[<BMScriptLanguageProtocol> defaultOptionsForLanguage].", classname, classname]
+                                                                                 @"-[<BMScriptLanguageProtocol> defaultOptionsForLanguage].", classname, classname]
                                              userInfo:nil];
             } else if ([self respondsToSelector:@selector(defaultOptionsForLanguage)]) {
                 options = [[self performSelector:@selector(defaultOptionsForLanguage)] retain];
@@ -333,9 +332,9 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
 
 - (id) initWithContentsOfTemplateFile:(NSString *)path options:(NSDictionary *)scriptOptions {
     
-    NSError * err;
+    NSError * err = nil;
     NSString * scriptSource = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&err];
-    if (BM_EXPECTED(scriptSource != nil, 1)) {
+    if (BM_EXPECTED(scriptSource && !err, 1)) {
         return [self initWithTemplateSource:scriptSource options:scriptOptions];
     } else {
         NSLog(@"%@ Error: Reading script source from file at '%@' failed: %@", [self className], path, [err localizedFailureReason]);
@@ -401,7 +400,7 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
             // will be set to 1 in the build settings for our unit tests via OTHER_CFLAGS and -DBMSCRIPT_UNIT_TESTS=1.
             if (!BMSCRIPT_UNIT_TEST) {
                 //NSLog(@"BMScript: Info: setting [task standardError:pipe]");
-                [self.task setStandardError:(self.pipe)];
+                [self.task setStandardError:[self.task standardOutput]];
             }
             #if (BMSCRIPT_ENABLE_DTRACE)            
                 BM_PROBE(SETUP_TASK_END);
@@ -447,22 +446,19 @@ NSString * const BMScriptLanguageProtocolIllegalAccessException  = @"BMScriptLan
     
     [self.task release], self.task = nil;
     
-    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString * aResult = string;
+    NSData * aResult = data;
     
     BOOL shouldSetResult = YES;
     if ([self.delegate respondsToSelector:@selector(shouldSetResult:)]) {
-        shouldSetResult = [self.delegate shouldSetResult:string];
+        shouldSetResult = [self.delegate shouldSetResult:data];
     }
     if (shouldSetResult) {
         if ([self.delegate respondsToSelector:@selector(willSetResult:)]) {
-            aResult = [self.delegate willSetResult:string];
+            aResult = [self.delegate willSetResult:data];
         }
         self.result = aResult;
     }
-
-    [string release], string = nil;
-     
+    
     goto endnow1;
     
 endnow1:
@@ -548,8 +544,8 @@ endnow1:
 - (void) dataReceived:(NSNotification *)aNotification {
     
 	NSData * data = [[aNotification userInfo] valueForKey:NSFileHandleNotificationDataItem];
-    if (BM_EXPECTED([data length] > 0, 1)) {
-        [self appendData:data];
+    if ([data length] > 0) {
+        [self appendPartialData:data];
     } else {
         [self stopTask];
     }
@@ -558,35 +554,35 @@ endnow1:
 }
 
 
-- (void) appendData:(NSData *)data {
-    
-    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+- (void) appendPartialData:(NSData *)data {
     
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(APPEND_DATA_BEGIN, (char *) [string UTF8String]);
+        BM_PROBE(APPEND_DATA_BEGIN, (char *) [[data contentsAsString] UTF8String]);
     #endif
     
-    if (BM_EXPECTED(string != nil, 1)) {
-        NSString * aPartial = string;
+    NSData * aPartial = [[data copy] autorelease];
+    
+    if (BM_EXPECTED(data != nil, 1)) {
+        
         BOOL shouldAppendPartial = YES;
         if ([self.delegate respondsToSelector:@selector(shouldAppendPartialResult:)]) {
-            shouldAppendPartial = [self.delegate shouldAppendPartialResult:aPartial];
+            shouldAppendPartial = [self.delegate shouldAppendPartialResult:data];
         }
         if (shouldAppendPartial) {
             if ([self.delegate respondsToSelector:@selector(willAppendPartialResult:)]) {
-                aPartial = [self.delegate willAppendPartialResult:string];
+                aPartial = [self.delegate willAppendPartialResult:aPartial];
             }
-            self.partialResult = [self.partialResult stringByAppendingString:aPartial];
+            [self.partialResult appendData:aPartial];
         }
     } else {
         NSLog(@"BMScript: Warning: Attempted %s but could not append to self.partialResult. Data maybe lost!", __PRETTY_FUNCTION__);
     }
     
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(APPEND_DATA_END, (char *) [[self.partialResult quotedString] UTF8String]);
+        BM_PROBE(APPEND_DATA_END, (char *) [[self.partialResult contentsAsString] UTF8String]);
     #endif
     
-    [string release], string = nil;
+    aPartial = nil;
 }
 
 - (void) cleanupTask:(NSTask *)whichTask {
@@ -642,11 +638,11 @@ endnow1:
     // read out remaining data, as the pipes have a limited buffer size 
     // and may stall on subsequent calls if full
     NSData * dataInPipe = [[(self.bgPipe) fileHandleForReading] readDataToEndOfFile];
-    if (BM_EXPECTED(dataInPipe && [dataInPipe length], 0)) {
-        [self appendData:dataInPipe];
+    if (dataInPipe && [dataInPipe length]) {
+        [self appendPartialData:dataInPipe];
     }
 
-    if(BM_EXPECTED([self.bgTask isRunning], 0)) [self.bgTask terminate];
+    if (BM_EXPECTED([self.bgTask isRunning], 0)) [self.bgTask terminate];
     
     ExecutionStatus status = self.returnValue;
     if (status == 0) {
@@ -656,8 +652,8 @@ endnow1:
     self.returnValue = [self.bgTask terminationStatus];
     
     // task is finished, copy over the accumulated partialResults into lastResult
-    NSString * string = self.partialResult;
-    NSString * aResult = string;
+    NSData * data = self.partialResult;
+    NSData * aResult = data;
     
     BOOL shouldSetResult = YES;
     if ([self.delegate respondsToSelector:@selector(shouldSetResult:)]) {
@@ -665,7 +661,7 @@ endnow1:
     }
     if (shouldSetResult) {
         if ([self.delegate respondsToSelector:@selector(willSetResult:)]) {
-            aResult = [self.delegate willSetResult:string];
+            aResult = [self.delegate willSetResult:data];
         }
         self.result = aResult;
     }
@@ -673,15 +669,19 @@ endnow1:
     [self cleanupTask:(self.bgTask)];
 
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(BG_EXECUTE_END, (char *) [[self.result quotedString] UTF8String]);
+        BM_PROBE(BG_EXECUTE_END, (char *) [[[self.result contentsAsString] quotedString] UTF8String]);
     #endif
-
+    
     NSArray * historyItem = [NSArray arrayWithObjects:self.source, self.result, nil];
+    
+    BOOL shouldAddItemToHistory = YES;
     if ([self.delegate respondsToSelector:@selector(shouldAddItemToHistory:)]) {
-        if ([self.delegate shouldAddItemToHistory:historyItem]) {
-            [self._history addObject:historyItem];
+        shouldAddItemToHistory = [self.delegate shouldAddItemToHistory:historyItem];
+    }
+    if (shouldAddItemToHistory) {
+        if ([self.delegate respondsToSelector:@selector(willAddItemToHistory:)]) {
+            historyItem = [self.delegate willAddItemToHistory:historyItem];
         }
-    } else {
         [self._history addObject:historyItem];
     }
     
@@ -704,7 +704,7 @@ endnow1:
 }
 
 - (void) taskTerminated:(NSNotification *) aNotification { 
-#pragma unused(aNotification)
+    #pragma unused(aNotification)
     [self stopTask]; 
 }
 
@@ -828,7 +828,7 @@ endnow2:
             i++;
         }
         
-        self.source = [accumulator stringByReplacingOccurrencesOfString:@"%%" withString:@"%"];
+        self.source = [accumulator stringByUnescapingPercentSigns];
         self.isTemplate = NO;
         
         success = YES;
@@ -846,7 +846,8 @@ endnow2:
 - (ExecutionStatus) execute {
     if (self.isTemplate) {
         @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
-                                       reason:[NSString stringWithFormat:@"%@ Error: Please define all replacement values for the current template "
+                                       reason:[NSString stringWithFormat:
+                                               @"%@ Error: Please define all replacement values for the current template "
                                                @"by calling one of the -[saturateTemplate...] methods prior to execution", [self className]]
                                      userInfo:nil];
     }
@@ -854,11 +855,12 @@ endnow2:
     return success;
 }
 
-- (ExecutionStatus) executeAndReturnResult:(NSString **)results {
+- (ExecutionStatus) executeAndReturnResult:(NSData **)results {
     
     if (self.isTemplate) {
         @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
-                                       reason:[NSString stringWithFormat:@"%@ Error: please define all replacement values for the current template "
+                                       reason:[NSString stringWithFormat:
+                                               @"%@ Error: please define all replacement values for the current template "
                                                @"by calling one of the -[saturateTemplate...] methods prior to execution", [self className]]
                                      userInfo:nil];
     }
@@ -868,7 +870,7 @@ endnow2:
     return success;
 }
 
-- (ExecutionStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error {
+- (ExecutionStatus) executeAndReturnResult:(NSData **)results error:(NSError **)error {
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(EXECUTE_BEGIN, 
                  (char *) [[[self.task launchPath] stringByWrappingSingleQuotes] UTF8String],
@@ -882,14 +884,16 @@ endnow2:
     if (self.isTemplate) {
         if (error) {
             NSDictionary * errorDict = 
-                [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@ Error: Please define all replacement values for the current template "
-                                                   @"by calling one of the -saturateTemplate... methods prior to execution", [self className]]
+                [NSDictionary dictionaryWithObject:[NSString stringWithFormat:
+                                                    @"%@ Error: Please define all replacement values for the current template "
+                                                    @"by calling one of the -saturateTemplate... methods prior to execution", [self className]]
                                             forKey:NSLocalizedFailureReasonErrorKey];
             *error = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:errorDict];
         } else {
             @throw [NSException exceptionWithName:BMScriptTemplateArgumentMissingException 
-                                           reason:[NSString stringWithFormat:@"%@ Error: Please define all replacement values for the current template "
-                                                  @"by calling one of the -saturateTemplate... methods prior to execution", [self className]]
+                                           reason:[NSString stringWithFormat:
+                                                   @"%@ Error: Please define all replacement values for the current template "
+                                                   @"by calling one of the -saturateTemplate... methods prior to execution", [self className]]
                                          userInfo:nil];            
         }            
     } else {// isTemplate is NO
@@ -930,13 +934,18 @@ endnow2:
                 }
                 
                 NSArray * historyItem = [NSArray arrayWithObjects:self.source, self.result, nil];
+                
+                BOOL shouldAddItemToHistory = YES;
                 if ([self.delegate respondsToSelector:@selector(shouldAddItemToHistory:)]) {
-                    if ([self.delegate shouldAddItemToHistory:historyItem]) {
-                        [self._history addObject:historyItem];
+                    shouldAddItemToHistory = [self.delegate shouldAddItemToHistory:historyItem];
+                }
+                if (shouldAddItemToHistory) {
+                    if ([self.delegate respondsToSelector:@selector(willAddItemToHistory:)]) {
+                        historyItem = [self.delegate willAddItemToHistory:historyItem];
                     }
-                } else {
                     [self._history addObject:historyItem];
                 }
+                
                 if (BMSCRIPT_DEBUG_HISTORY) {
                     NSLog(@"%@ Debug: Script '%@' executed successfully.\n"
                           @"Added to history = %@", [self className], [[self.source quotedString] truncatedString], self._history);
@@ -944,16 +953,16 @@ endnow2:
             }
         } else {
             if (error) {
-                NSDictionary * errorDict = 
-                [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@ Error: Task setup failed! (sorry, don't have any more info than that...)", [self className]]
-                                            forKey:NSLocalizedFailureReasonErrorKey];
+                NSString * errString = [NSString stringWithFormat:@"%@ Error: Task setup failed! (sorry, got no more info than that...)", [self className]];
+                NSDictionary * errorDict = [NSDictionary dictionaryWithObject:errString 
+                                                                       forKey:NSLocalizedFailureReasonErrorKey];
                 *error = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:errorDict];
             }
         }
     }
 
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(EXECUTE_END, (char *) [[self.result quotedString] UTF8String]);
+        BM_PROBE(EXECUTE_END, (char *) [[[self.result contentsAsString] quotedString] UTF8String]);
     #endif
 
     return status;
@@ -979,25 +988,7 @@ endnow2:
     
 }
 
-// MARK: Utilities
-
-- (NSString *) lastResultWithoutTrailingNewline {
-    
-    if (!self.result) {
-        NSLog(@"%@: Warning: %s called but self.result is nil!", [self className], __PRETTY_FUNCTION__);
-        return nil;
-    }
-    NSUInteger slen = [self.result length];
-    NSString * lastChar = [self.result substringWithRange:NSMakeRange(slen-1, 1)];
-    
-    if ([lastChar isEqualToString:@"\n"] || [lastChar isEqualToString:@"\r"]) {
-        return [self.result substringWithRange:NSMakeRange(0, [self.result length] - 1)];
-    }
-    
-    return self.result;
-}
-
-// MARK: Readonly Getters
+// MARK: Virtual (Readonly) Getters
 
 - (NSArray *) history {
     return [[self._history copy] autorelease];
@@ -1013,21 +1004,21 @@ endnow2:
 
 // MARK: History
 
-- (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index {
+- (NSString *) scriptSourceFromHistoryAtIndex:(NSUInteger)index {
 
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(SCRIPT_AT_INDEX_BEGIN, index, (int) [self._history count]);
     #endif
     NSString * aScript = nil;
-    NSInteger hc = [self._history count];
-    if (hc > 0 && (index >= 0 && index <= hc)) {
-        NSString * item = [[[[self._history objectAtIndex:index] objectAtIndex:0] retain] autorelease];
+    NSUInteger hc = [self._history count];
+    if (hc > 0 && index <= hc) {
+        NSArray * item = [self._history objectAtIndex:index];
         if ([self.delegate respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([self.delegate shouldReturnItemFromHistory:item]) {
-                aScript = item;
+                aScript = [[[item objectAtIndex:0] retain] autorelease];
             }
         } else {
-            aScript = item;
+            aScript = [[[item objectAtIndex:0] retain] autorelease];
         }
     } else {
         @throw [NSException exceptionWithName:NSInvalidArgumentException 
@@ -1040,20 +1031,20 @@ endnow2:
     return aScript;
 }
 
-- (NSString *) resultFromHistoryAtIndex:(NSInteger)index {
+- (NSData *) resultFromHistoryAtIndex:(NSUInteger)index {
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(RESULT_AT_INDEX_BEGIN, index, (int) [self._history count]);
     #endif
-    NSString * aResult = nil;
-    NSInteger hc = [self._history count];
-    if (hc > 0 && (index >= 0 && index <= hc)) {
-        NSString * item = [[[[self._history objectAtIndex:index] objectAtIndex:1] retain] autorelease];
+    NSData * aResult = nil;
+    NSUInteger hc = [self._history count];
+    if (hc > 0 && index <= hc) {
+        NSArray * item = [self._history objectAtIndex:index];
         if ([self.delegate respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([self.delegate shouldReturnItemFromHistory:item]) {
-                aResult = item;
+                aResult = [[[item objectAtIndex:1] retain] autorelease];
             }
         } else {
-            aResult = item;
+            aResult = [[[item objectAtIndex:1] retain] autorelease];
         }
     } else {
         @throw [NSException exceptionWithName:NSInvalidArgumentException 
@@ -1061,7 +1052,7 @@ endnow2:
                                      userInfo:nil];                    
     }    
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(RESULT_AT_INDEX_END, (char *) [[aResult quotedString] UTF8String], (int) [self._history count]);
+        BM_PROBE(RESULT_AT_INDEX_END, (char *) [[[aResult contentsAsString] quotedString] UTF8String], (int) [self._history count]);
     #endif
     return aResult;
 }
@@ -1072,13 +1063,13 @@ endnow2:
     #endif
     NSString * aScript = nil;
     if ([self._history count] > 0) {
-        NSString * item = [[[[self._history lastObject] objectAtIndex:0] retain] autorelease];
+        NSArray * item = [self._history lastObject];
         if ([self.delegate respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([self.delegate shouldReturnItemFromHistory:item]) {
-                aScript = item;
+                aScript = [[[item objectAtIndex:0] retain] autorelease];
             }
         } else {
-            aScript = item;
+            aScript = [[[item objectAtIndex:0] retain] autorelease];
         }
     }
     #if (BMSCRIPT_ENABLE_DTRACE)
@@ -1087,23 +1078,23 @@ endnow2:
     return aScript;
 }
 
-- (NSString *) lastResultFromHistory {
+- (NSData *) lastResultFromHistory {
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(LAST_RESULT_BEGIN, (int) [self._history count]);
     #endif
-    NSString * aResult = nil;
+    NSData * aResult = nil;
     if ([self._history count] > 0) {
-        NSString * item = [[[[self._history lastObject] objectAtIndex:1] retain] autorelease];
+        NSArray * item = [self._history lastObject];
         if ([self.delegate respondsToSelector:@selector(shouldReturnItemFromHistory:)]) {
             if ([self.delegate shouldReturnItemFromHistory:item]) {
-                aResult = item;
+                aResult = [[[item objectAtIndex:1] retain] autorelease];
             }
         } else {
-            aResult = item;
+            aResult = [[[item objectAtIndex:1] retain] autorelease];
         }
     }
     #if (BMSCRIPT_ENABLE_DTRACE)
-        BM_PROBE(LAST_RESULT_END, (char *) [[aResult quotedString] UTF8String], (int) [self._history count]);
+        BM_PROBE(LAST_RESULT_END, (char *) [[[aResult contentsAsString] quotedString] UTF8String], (int) [self._history count]);
     #endif
     return aResult;
 }
@@ -1122,47 +1113,16 @@ endnow2:
     return sameScript && sameLaunchPath;
 }
 
-// MARK BMScriptDelegate
-
-// - (BOOL) shouldAddItemToHistory:(NSArray *)anItem { 
-//     #pragma unused(anItem)
-//     return YES; 
-// }
-// - (BOOL) shouldReturnItemFromHistory:(NSString *)anItem { 
-//     #pragma unused(anItem)
-//     return YES; 
-// }
-// - (BOOL) shouldAppendPartialResult:(NSString *)string { 
-//     #pragma unused(string)
-//     return YES; 
-// }
-// - (BOOL) shouldSetResult:(NSString *)aString { 
-//     #pragma unused(aString)
-//     return YES; 
-// }
-// - (BOOL) shouldSetScript:(NSString *)aScript { 
-//     #pragma unused(aScript)
-//     return YES; 
-// }
-// - (BOOL) shouldSetOptions:(NSDictionary *)opts { 
-//     #pragma unused(opts)
-//     return YES; 
-// }
-// 
-// - (NSString *) willAddItemToHistory:(NSString *)anItem { return anItem; }
-// - (NSString *) willReturnItemFromHistory:(NSString *)anItem { return anItem; }
-// - (NSString *) willAppendPartialResult:(NSString *)string { return string; }
-// - (NSString *) willSetResult:(NSString *)aString { return aString; }
-// - (NSString *) willSetScript:(NSString *)aScript { return aScript; }
-// - (NSDictionary *) willSetOptions:(NSDictionary *)opts { return opts; }
-
-
 // MARK: NSCopying
 
-- (id)copyWithZone:(NSZone *)zone {
+- (id) copyWithZone:(NSZone *)zone {
     #pragma unused(zone)
     BMScript * copy = [[[self class] allocWithZone:zone] initWithScriptSource:self.source 
                                                                       options:self.options ];
+    copy.result      = self.result;
+    copy.returnValue = self.returnValue;
+    copy._history    = [[self._history copy] autorelease];
+    
     [copy setDelegate:self.delegate];
     return copy;
 }
@@ -1469,6 +1429,17 @@ endnow2:
     return [NSString stringWithFormat:@"\"%@\"", self]; 
 }
 
+- (NSString *) chomp {
+    
+    NSUInteger slen = [self length];
+    NSString * lastChar = [self substringWithRange:NSMakeRange(slen-1, 1)];
+    
+    if ([lastChar isEqualToString:@"\n"] || [lastChar isEqualToString:@"\r"]) {
+        return [self substringWithRange:NSMakeRange(0, [self length] - 1)];
+    }
+    
+    return self;
+}
 
 - (NSString *) truncatedString {
     #ifdef BMNSSTRING_TRUNCATE_LENGTH
@@ -1650,6 +1621,18 @@ endnow2:
 
 - (BOOL) isZeroArray {
     return [NSStringFromClass([self class]) isEqualToString:@"__NSArray0"];
+}
+
+@end
+
+@implementation NSData (BMScriptUtilities)
+
+- (NSString *) contentsAsString {
+    NSString * string = [[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding];
+    if (!string) {
+        string = [[NSString alloc] initWithString:[self description]];
+    }
+    return [string autorelease];
 }
 
 @end

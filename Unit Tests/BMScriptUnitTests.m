@@ -137,49 +137,49 @@
     
     BMScript * script1 = [BMScript scriptWithContentsOfFile:rubyConvertToOctPath options:rubyDefaultOptions];
     [script1 execute];
-    result = [script1 lastResult];
+    result = [[script1 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"0377"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
     BMScript * script2 = [BMScript scriptWithContentsOfFile:rubyConvertToOctPath options:rubyDefaultOptions];
     [script2 execute];
-    result = [script2 lastResult];
+    result = [[script2 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"0377"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
     BMScript * script3 = [BMScript scriptWithSource:rubyDecScript options:rubyDefaultOptions];
     [script3 execute];
-    result = [script3 lastResultWithoutTrailingNewline];
+    result = [[[script3 lastResult] contentsAsString] chomp];
     
     STAssertTrue([result isEqualToString:@"255"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
     BMScript * script4 = [BMScript scriptWithSource:rubyHexScript options:rubyDefaultOptions];
     [script4 execute];
-    result = [script4 lastResult];
+    result = [[script4 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"0xff"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
     BMScript * script5 = [BMScript perlScriptWithSource:@"print 2**16;"];
     [script5 execute];
-    result = [script5 lastResult];
+    result = [[script5 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"65536"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
     
     BMScript * script6 = [BMScript rubyScriptWithSource:@"%w(1 2 3 4).each do |x| puts x end"];
     [script6 execute];
-    result = [script6 lastResult];
+    result = [[script6 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"1\n2\n3\n4\n"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
 
     BMScript * script7 = [BMScript pythonScriptWithSource:@"import this"];
     [script7 execute];
-    result = [script7 lastResult];
+    result = [[script7 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"The Zen of Python, by Tim Peters\n"
                                          @"\n"
@@ -207,7 +207,7 @@
     
     BMScript * script8 = [BMScript shellScriptWithSource:@"echo 'foo bar baz' | awk '{print $2}'"];
     [script8 execute];
-    result = [script8 lastResult];
+    result = [[script8 lastResult] contentsAsString];
     
     STAssertTrue([result isEqualToString:@"bar\n"], @"but instead is %@", result);
     STAssertFalse([result isEqualToString:@"(null)"], @"but instead is %@", result);
@@ -217,7 +217,7 @@
 
 - (void) testTemplates {
     
-    NSString * result;
+    NSData * result;
     NSError * error;
     NSString * path;
     
@@ -230,9 +230,9 @@
     [script1 executeAndReturnResult:&result error:&error];
     
     #if __LP64__ || NS_BUILD_32_LIKE_64
-        STAssertTrue([result isEqualToString:@"0x7fffffffffffffff"], @"but instead is %@", result);
+        STAssertTrue([[result contentsAsString] isEqualToString:@"0x7fffffffffffffff"], @"but instead is %@", [result contentsAsString]);
     #else
-        STAssertTrue([result isEqualToString:@"0x7fffffff"], @"but instead is %@", result);
+        STAssertTrue([[result contentsAsString] isEqualToString:@"0x7fffffff"], @"but instead is %@", [result contentsAsString]);
     #endif
     
     path = [[NSBundle bundleForClass:[BMScriptUnitTests class]] pathForResource:@"Multiple Tokens Template" ofType:@"rb"];
@@ -243,7 +243,7 @@
     [script2 saturateTemplateWithArguments:@"template", @"1", @"token"];
     [script2 executeAndReturnResult:&result];
     
-    STAssertTrue([result isEqualToString:@"a string template with more than 1 replacement also called token\nawesome\n"], @"but instead is '%@'", [result quotedString]);
+    STAssertTrue([[result contentsAsString] isEqualToString:@"a string template with more than 1 replacement also called token\nawesome\n"], @"but instead is '%@'", [[result contentsAsString] quotedString]);
     
     // test exception thrown when template has undefined arguments
     BMScript * script3 = [BMScript rubyScriptWithContentsOfTemplateFile:rubyConvertToHexTemplatePath];
@@ -263,8 +263,8 @@
     ExecutionStatus status = [script4 execute];
     result = [script4 lastResult];
     
-    STAssertTrue([result isEqualToString:@"This is a keyword-based template. Neat stuff."], @"but instead is '%@'", [result quotedString]);
-    STAssertTrue(status == 0, @"but instead is %d", status);
+    STAssertTrue([[result contentsAsString] isEqualToString:@"This is a keyword-based template. Neat stuff."], @"but instead is '%@'", [[result contentsAsString] quotedString]);
+    STAssertTrue(status == BMScriptFinishedSuccessfully, @"but instead is %d", status);
 }
 
 - (void) testExecution {
@@ -278,33 +278,35 @@
     success = [script1 execute];
     
     STAssertTrue(success != BMScriptFailedWithException && success != BMScriptNotExecuted, @"script1 execution should return YES, but returned %@", (success ? @"YES" : @"NO"));
-    STAssertFalse([[script1 lastResult] isEqualToString:@""], @"script1's lastResult shouldn't be equal to an empty string");
+    STAssertFalse([[[script1 lastResult] contentsAsString] isEqualToString:@""], @"script1's lastResult shouldn't be equal to an empty string");
     
     [script1 release];    
 
     // Case 2: 
     // a slightly more complicated script which uses compound return method (more likely real-world scenario)
     
-    NSString * result2;
+    NSData * result2;
     BMScript * script2 = [[BMScript alloc] initWithScriptSource:rubyHexScript options:rubyDefaultOptions];
     success = [script2 executeAndReturnResult:&result2];
     
-    STAssertTrue([result2 isEqualToString:@"0xff"], @"script2Result is \"%@\"", result2);
+    STAssertTrue([[result2 contentsAsString] isEqualToString:@"0xff"], @"script2Result is \"%@\"", [result2 contentsAsString]);
     
     NSLog(@"script2 success = %@", BMNSStringFromBOOL(success));
     
     [script2 release];
 
     // Case 3: 
-    // a slightly more complicated script and use compound return method with out error (more likely real-world scenario)
+    // a slightly more complicated script and use compound return method with out error 
     
-    NSString * result3;
-    NSError * outError;
+    NSData * result3;
+    NSError * outError = nil;
     
     BMScript * script3 = [[BMScript alloc] initWithScriptSource:rubyDecScript options:rubyDefaultOptions];
     success = [script3 executeAndReturnResult:&result3 error:&outError];
     
-    STAssertTrue([[script3 lastResultWithoutTrailingNewline] isEqualToString:@"255"], @"script3Result is \"%@\", outError is \"%@\"", result3, outError);
+    NSString * result3String = [[[script3 lastResult] contentsAsString] chomp];
+    
+    STAssertTrue([result3String isEqualToString:@"255"], @"script3Result is \"%@\", outError is \"%@\"", result3String, outError);
     
     NSLog(@"script3 success = %@", BMNSStringFromBOOL(success));
     
@@ -313,17 +315,20 @@
 }
 
 - (void) testStateChangeAfterExecution {
+    
     BMScript * script1 = [BMScript rubyScriptWithSource:rubyHexScript];
     [script1 execute];
     
-    STAssertTrue([[script1 lastResult] isEqualToString:@"0xff"], @"but is '%@'", [script1 lastResult]);
+    NSString * script1ResultString = [[script1 lastResult] contentsAsString];
     
-    NSError * error;
+    STAssertTrue([script1ResultString isEqualToString:@"0xff"], @"but is '%@'", script1ResultString);
+    
+    NSError * error = nil;
     
     [script1 setSource:rubyDecScript];
     [script1 executeAndReturnResult:nil error:&error];
     
-    STAssertTrue([[script1 lastResultWithoutTrailingNewline] isEqualToString:@"255"], @"but is '%@'", [script1 lastResult]);
+    STAssertTrue([[[[script1 lastResult] contentsAsString] chomp] isEqualToString:@"255"], @"but is '%@'", [[[script1 lastResult] contentsAsString] chomp]);
 }
 
 - (void) testHistory {
@@ -332,13 +337,13 @@
     NSString * result2;
     BMScript * script1 = [BMScript scriptWithSource:@"print RUBY_VERSION" options:alternativeOptions];
     [script1 execute];
-    result1 = [script1 lastResult];
+    result1 = [[script1 lastResult] contentsAsString];
     
     STAssertTrue([[script1 history] count] > 0, @"");
     
     BMScript * script2 = [BMScript scriptWithSource:[script1 lastScriptSourceFromHistory] options:alternativeOptions];
     [script2 execute];
-    result2 = [script2 lastResult];
+    result2 = [[script2 lastResult] contentsAsString];
     
     // Would need to chop off the "[objc $PID]:" part from the messages which SenTestKit is outputting to stderr. 
     // Since we have told BMScript's out pipes to write to stdout and stderr what will spoil the test is that 
@@ -348,7 +353,7 @@
     // Edit: Unfortunately this is not possible: It appears that these will be run twice once for GC_ON and once for GC_OFF
     // and only the GC_OFF case has this problem attached.
     STAssertTrue([result2 isEqualToString:result1], @"instead '%@' != '%@'", [[result2 quotedString] truncatedString], [[result1 quotedString] truncatedString]);
-    STAssertTrue([[script1 lastResultFromHistory] isEqualToString:[script2 lastResultFromHistory]], @"");
+    STAssertTrue([[[script1 lastResultFromHistory] contentsAsString] isEqualToString:[[script2 lastResultFromHistory] contentsAsString]], @"");
     
     STAssertEqualObjects([script1 history], [script2 history], @"");
     
@@ -470,6 +475,25 @@
                     @"but is '%@'", [opts descriptionInStringsFileFormat]);
 }
 
+- (void) testCopying {
+    
+    BMScript * script = [[BMScript alloc] init];
+    BMScript * scriptCopy = [script copy];
+    
+    STAssertTrue([scriptCopy.source isEqualToString:script.source], @" but is %@", scriptCopy.source);
+    STAssertTrue([scriptCopy.options isEqualToDictionary:script.options], @" but is %@", [scriptCopy.options descriptionInStringsFileFormat]);
+    STAssertTrue([scriptCopy lastReturnValue] == [script lastReturnValue], @" but is %d", [scriptCopy lastReturnValue]);
+    
+    scriptCopy.source = @"assign a new source";
+    
+    BOOL isNotEqual = (![scriptCopy.source isEqualToString:script.source ]);
+    STAssertTrue(isNotEqual, @" scriptCopy's source should not be equal to script's source after changing it.");
+    
+    [script release], script = nil;
+    [scriptCopy release], scriptCopy = nil;
+    
+}
+
 - (void) testPythonLowComplexityScript {
     
     NSString * pyLCScriptPath = PATHFOR(@"Python Low Complexity Script", @"py");
@@ -480,7 +504,7 @@
     
     ExecutionStatus status = [pyLCScript execute];
     
-    NSString * pyLCScriptResult = [pyLCScript lastResult];
+    NSString * pyLCScriptResult = [[pyLCScript lastResult] contentsAsString];
     NSInteger pyLCScriptRetVal = [pyLCScript lastReturnValue];
     
     STAssertTrue(status == BMScriptFinishedSuccessfully, @" but is %@", BMNSStringFromExecutionStatus(status));
@@ -498,7 +522,7 @@
     
     ExecutionStatus status = [plLCScript execute];
     
-    NSString * plLCScriptResult = [plLCScript lastResult];
+    NSString * plLCScriptResult = [[plLCScript lastResult] contentsAsString];
     NSInteger plLCScriptRetVal = [plLCScript lastReturnValue];
     
     STAssertTrue(status == BMScriptFinishedSuccessfully, @" but is %@", BMNSStringFromExecutionStatus(status));
@@ -516,7 +540,7 @@
     
     ExecutionStatus status = [rbLCScript execute];
     
-    NSString * rbLCScriptResult = [rbLCScript lastResult];
+    NSString * rbLCScriptResult = [[rbLCScript lastResult] contentsAsString];
     NSInteger rbLCScriptRetVal = [rbLCScript lastReturnValue];
     
     STAssertTrue(status == BMScriptFinishedSuccessfully, @" but is %@", BMNSStringFromExecutionStatus(status));
@@ -534,7 +558,7 @@
     
     ExecutionStatus status = [shLCScript execute];
     
-    NSString * shLCScriptResult = [shLCScript lastResult];
+    NSString * shLCScriptResult = [[shLCScript lastResult] contentsAsString];
     NSInteger shLCScriptRetVal = [shLCScript lastReturnValue];
 
     STAssertTrue(status == BMScriptFinishedSuccessfully, @" but is %@", BMNSStringFromExecutionStatus(status));

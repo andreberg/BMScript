@@ -68,10 +68,21 @@
 // ---------------------------------------------------------------------------------------- 
 
 int main (int argc, const char * argv[]) {
-#pragma unused(argc, argv)
+    #pragma unused(argc, argv)
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
+    
+    NSLog(@"----------------------------------------------------------------------------------------");
+    // ---------------------------------------------------------------------------------------- 
+
+    NSLog(@"NOTE: To get the complete output you need to look at Console.app since for BMScript instances using /bin/sh");
+    NSLog(@"redirecting their underlying task's standard out to the pipe created within seems to overwrite Xcode's debugger console output.");
+    NSLog(@"However, it should all be there in the system console. I'd be interested in a way around that.");
+     
+    NSLog(@"----------------------------------------------------------------------------------------");
+    // ---------------------------------------------------------------------------------------- 
+
     #ifdef ENABLE_MACOSX_GARBAGE_COLLECTION
         objc_startCollectorThread();
         NSLog(@"ENABLE_MACOSX_GARBAGE_COLLECTION = YES");
@@ -85,15 +96,23 @@ int main (int argc, const char * argv[]) {
     
     BOOL success = NO;
     
+    NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
 
     BMRubyScript * script2 = [[BMRubyScript alloc] initWithScriptSource:@"puts 1+2" options:nil];
 
+    NSLog(@"Test non-blocking execution through ScriptRunner");
+    
     ScriptRunner * sr1 = [[ScriptRunner alloc] init];
     ScriptRunner * sr2 = [[ScriptRunner alloc] initWithExecutionMode:SRNonBlockingExecutionMode];
     [sr1 run];
     [sr2 run];
-        
+
+    NSLog(@"----------------------------------------------------------------------------------------");
+    // ---------------------------------------------------------------------------------------- 
+
+    NSLog(@"Test Protocol conformance");
+    
     // test BMScriptLanguageProtocol conformance
     BOOL respondsToDefaultOpts                  = [script2 respondsToSelector:@selector(defaultOptionsForLanguage)];
     BOOL respondsToDefaultScript                = [script2 respondsToSelector:@selector(defaultScriptSourceForLanguage)];
@@ -131,40 +150,47 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
+    NSLog(@"Test BMScript alloc init");
+    
     NSError * error = nil;
     ExecutionStatus status = BMScriptNotExecuted;
 
     BMScript * script1 = [[BMScript alloc] init];
     [script1 execute];
 
-    NSString * result1 = [script1 lastResult];
+    NSString * result1 = [[script1 lastResult] contentsAsString];
     NSLog(@"script1 (alloc init) result = %@", result1);
     
     
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * result2;
+    NSLog(@"Test BMRubyScript subclass");
+    
+    NSData * result2;
     success = [script2 executeAndReturnResult:&result2];
    
     if (success == BMScriptFinishedSuccessfully) {
-        NSLog(@"script2 (BMRubyScript 'puts 1+2') result = %@", result2);
+        NSLog(@"script2 (BMRubyScript 'puts 1+2') result = %@", [result2 contentsAsString]);
     };
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:RUBY19_EXE_PATH]) {
+        
+        NSLog(@"Test changing the script source after execution and re-executing");
+        
         NSArray * newArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
         NSDictionary * newOptions = [NSDictionary dictionaryWithObjectsAndKeys:
                                             RUBY19_EXE_PATH, BMScriptOptionsTaskLaunchPathKey, 
                                                     newArgs, BMScriptOptionsTaskArgumentsKey, nil];
         
-        NSString * newResult1 = nil;
+        NSData * newResult1 = nil;
         
         [script1 setSource:@"puts \"newScript1 executed\\n ...again with \\\"ruby 1.9\\\"!\""];
         [script1 setOptions:newOptions];
         status = [script1 executeAndReturnResult:&newResult1 error:&error];
         
         if (status == BMScriptFinishedSuccessfully) {
-            NSLog(@"script1 new result (unquoted) = %@ (%@)", [newResult1 quotedString], newResult1);
+            NSLog(@"script1 new result (unquoted) = %@ (%@)", [[newResult1 contentsAsString] quotedString], [newResult1 contentsAsString]);
         } else {
             NSLog(@"script1 status = %d", status);
         }
@@ -176,13 +202,15 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
+    NSLog(@"Test Convert to Oct.rb and Convert To Hex Template.rb");
+    
     NSString * path = PATHFORTEMPLATE(@"Convert To Oct.rb");
     
     BMRubyScript * script3 = [BMRubyScript scriptWithContentsOfTemplateFile:path options:nil];
     [script3 saturateTemplateWithArgument:@"100"];
     [script3 execute];
     
-    NSLog(@"script3 (convert '100' to octal) result = %@", [script3 lastResult]);
+    NSLog(@"script3 (convert '100' to octal) result = %@", [[script3 lastResult] contentsAsString]);
     
     path = PATHFORTEMPLATE(@"Convert To Hex Template.rb");
     
@@ -190,7 +218,7 @@ int main (int argc, const char * argv[]) {
     [script9 saturateTemplateWithArgument:[NSString stringWithFormat:@"%li", NSIntegerMax]];
     [script9 execute];
     
-    NSLog(@"script9 (convert 'NSIntegerMax' to hex) result = %@", [script9 lastResult]);
+    NSLog(@"script9 (convert 'NSIntegerMax' to hex) result = %@", [[script9 lastResult] contentsAsString]);
     
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
@@ -203,7 +231,7 @@ int main (int argc, const char * argv[]) {
     [script4 saturateTemplateWithArguments:@"template", @"1", @"tokens"];
     [script4 execute];
     
-    result4 = [script4 lastResult];
+    result4 = [[script4 lastResult] contentsAsString];
     NSLog(@"script4 (sequential token template saturation) result = %@", result4);
     
     
@@ -211,9 +239,11 @@ int main (int argc, const char * argv[]) {
     // ---------------------------------------------------------------------------------------- 
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:RUBY19_EXE_PATH]) {
+        
+        NSLog(@"Test re-executing a new script with last script source from the history of another script");
 
-        NSString * result5 = nil;
-        NSString * result6 = nil;
+        NSData * result5 = nil;
+        NSData * result6 = nil;
         
         // alternative options (ruby 1.9)
         NSArray * alternativeArgs = [NSArray arrayWithObjects:@"-EUTF-8", @"-e", nil];
@@ -228,16 +258,17 @@ int main (int argc, const char * argv[]) {
         [script6 execute];
         result6 = [script6 lastResult];
         
-        BMAssertLog([result5 isEqualToString:result6]);    
-        if (![result5 isEqualToString:result6]) {
+        BMAssertLog([result5 isEqualToData:result6]);
+        
+        if (![result5 isEqualToData:result6]) {
             NSLog(@"*** AssertionFailure: result5 should be equal to result6!");
         }
         
-        NSLog(@"script5 (alternative options) result = %@", result5);
-        NSLog(@"script6 (execute last script source from history) result = %@", result6);
+        NSLog(@"script5 (alternative options) result = %@", [result5 contentsAsString]);
+        NSLog(@"script6 (execute last script source from history) result = %@", [result6 contentsAsString]);
         
-        BMAssertLog([[script5 history] isEqual:[script6 history]]);
-        if (![[script5 history] isEqual:[script6 history]]) {
+        BMAssertLog([[script5 history] isEqualToArray:[script6 history]]);
+        if (![[script5 history] isEqualToArray:[script6 history]]) {
             NSLog(@"*** AssertionFailure: [result5 history] should be equal to [result6 history]");
         }
     } else {
@@ -247,15 +278,19 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
+    NSLog(@"Test multiple defined and multiple define custom token templates");
+    
     BMScript * script7 = [BMScript rubyScriptWithContentsOfTemplateFile:PATHFORTEMPLATE(@"Multiple Defined Tokens Template.rb")];
+    
     NSDictionary * templateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"template", @"TEMPLATE", @"1", @"NUM", @"tokens", @"TOKENS", nil];
     [script7 saturateTemplateWithDictionary:templateDict];
     [script7 execute];
-    NSString * result7 = [script7 lastResult];
     
-    BMAssertLog([[script4 lastResult] isEqualToString:result7]);
+    NSData * result7 = [script7 lastResult];
     
-    NSLog(@"script7 (keyword args template saturation) result = %@", result7);
+    BMAssertLog([[script4 lastResult] isEqualToData:result7]);
+    
+    NSLog(@"script7 (keyword args template saturation) result = %@", [result7 contentsAsString]);
     
     BMScript * script10 = [BMScript rubyScriptWithContentsOfTemplateFile:PATHFORTEMPLATE(@"Multiple Defined Custom Tokens Template.rb")];
     templateDict = [templateDict dictionaryByAddingObject:@"<%" forKey:BMScriptTemplateTokenStartKey];
@@ -264,32 +299,38 @@ int main (int argc, const char * argv[]) {
     [script10 saturateTemplateWithDictionary:templateDict];
     [script10 execute];
     
-    NSString * result10 = [script10 lastResult];
+    NSData * result10 = [script10 lastResult];
     
-    NSLog(@"script10 (keyword args template saturation w custom tokens) result = %@", result10);
+    NSLog(@"script10 (keyword args template saturation w custom tokens) result = %@", [result10 contentsAsString]);
     
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSLog(@"ScriptRunner 1 (sr1) results = %@", [sr1.results quotedString]);
-    NSLog(@"ScriptRunner 2 (sr2) results = %@", [sr2.results quotedString]);
+    NSLog(@"Results should appear with 'CHANGED' suffix as added by delegate methods");
     
-    BMAssertLog([sr1.results isEqualToString:@"\"this is ScriptRunner\'s script calling...\" CHANGED"]);
-    BMAssertLog([sr2.results isEqualToString:@"515377520732011331036461129765621272702107522001\n CHANGED"]);    
+    NSLog(@"ScriptRunner 1 (sr1) results = %@", [[sr1.results contentsAsString] quotedString]);
+    NSLog(@"ScriptRunner 2 (sr2) results = %@", [[sr2.results contentsAsString] quotedString]);
+    
+    BMAssertLog([[sr1.results contentsAsString] isEqualToString:@"\"this is ScriptRunner\'s script calling...\" CHANGED"]);
+    BMAssertLog([[sr2.results contentsAsString] isEqualToString:@"515377520732011331036461129765621272702107522001\n CHANGED"]);    
 
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    NSString * result8 = nil;
+    NSLog(@"Test a simple Perl script (print 2**64;)");
+    
+    NSData * result8 = nil;
     
     BMScript * script8 = [BMScript perlScriptWithSource:@"print 2**64;"];
     [script8 executeAndReturnResult:&result8 error:&error];
     
-    BMAssertLog([result8 isEqualToString:@"1.84467440737096e+19"]);    
-    NSLog(@"result8 = %@", result8);
+    BMAssertLog([[result8 contentsAsString] isEqualToString:@"1.84467440737096e+19"]);    
+    NSLog(@"result8 = %@", [result8 contentsAsString]);
     
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
+    
+    NSLog(@"Test script equality");
     
     NSLog(@"The following should return NO: isEqual is only true if both scriptSource and task launchPath are equal to both instances.");
     NSLog(@"[script4 isEqual:script7]? %@", BMNSStringFromBOOL([script4 isEqual:script7]));
@@ -306,8 +347,8 @@ int main (int argc, const char * argv[]) {
     NSLog(@"The following should now return YES");
     NSLog(@"[script4 isEqualToScript:script7]? %@", BMNSStringFromBOOL([script4 isEqualToScript:script4]));
     
-    NSLog(@"[script4 lastResult] = %@", [[script4 lastResult] quotedString]);
-    NSLog(@"[script7 lastResult] = %@", [[script7 lastResult] quotedString]);
+    NSLog(@"[script4 lastResult] = %@", [[[script4 lastResult] contentsAsString] quotedString]);
+    NSLog(@"[script7 lastResult] = %@", [[[script7 lastResult] contentsAsString] quotedString]);
     
     
     NSString * pathForRubyHexScript = PATHFORTEMPLATE(@"Convert To Hex Template.rb");
@@ -316,6 +357,68 @@ int main (int argc, const char * argv[]) {
                                                           encoding:NSUTF8StringEncoding 
                                                              error:&error];
     
+    NSLog(@"----------------------------------------------------------------------------------------");
+    // ---------------------------------------------------------------------------------------- 
+    
+    NSLog(@"Try copying BMScript to test conformance to NSCopying. Changing the copy should not affect the source.");
+    
+    BMScript * script11 = [script1 copy];
+    BMAssertLog([script11.source isEqualToString:script1.source]);
+    BMAssertLog([script11.options isEqualToDictionary:script1.options]);
+    BMAssertLog([script11 lastReturnValue] == [script1 lastReturnValue]);
+    
+    script11.source = @"assign a new source";
+    
+    BOOL isNotEqual = (![script11.source isEqualToString:script1.source ]);
+    BMAssertLog(isNotEqual);
+    
+    if (!isNotEqual) {
+        NSLog(@"Error: script1.source was also changed when changing script11.source");
+    } else {
+        NSLog(@"PASS: script11's changed source is different than script1.source");
+    }
+    
+    [script11 release], script11 = nil;
+    
+    
+    NSLog(@"----------------------------------------------------------------------------------------");
+    // ---------------------------------------------------------------------------------------- 
+
+    NSLog(@"Test fully data based output (e.g. data that cannot be converted to string easily)");
+    NSLog(@"Attempting roundtrip Base64 conversion of /System/Library/CoreServices/SystemVersion.plist");
+    
+    error = nil;
+    
+    BMScript * script12 = [BMScript shellScriptWithSource:@"cat /System/Library/CoreServices/SystemVersion.plist | openssl enc -base64"];
+    status = [script12 execute];
+    
+    BMAssertLog(status == BMScriptFinishedSuccessfully);
+    
+    NSData * base64EncodedData = [script12 lastResult];
+    NSString * tmpFile = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"BMScriptBase64EncodingTest.txt"];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:tmpFile]) {
+        [[NSFileManager defaultManager] removeItemAtPath:tmpFile error:nil];
+    }
+    
+    [base64EncodedData writeToFile:tmpFile options:NSAtomicWrite error:&error];
+    
+    script12.source = [NSString stringWithFormat:@"cat \"%@\" | openssl enc -d -base64", tmpFile];
+    
+    status = [script12 execute];
+    
+    BMAssertLog(status == BMScriptFinishedSuccessfully);
+    
+    NSData * base64DecodedData = [script12 lastResult];
+    
+    NSLog(@"script12 base64DecodedData contents = %@", [base64DecodedData contentsAsString]);
+
+    
+    NSLog(@"----------------------------------------------------------------------------------------");
+    // ---------------------------------------------------------------------------------------- 
+
+    NSLog(@"Test NSString category methods");
+   
     NSLog(@"unquotedString      = '%@'", unquotedString);
     NSLog(@"quotedString        = '%@'", [unquotedString quotedString]);
     NSLog(@"escapedString first = '%@'", [unquotedString stringByEscapingStringUsingOrder:BMNSStringEscapeTraversingOrderFirst]);
@@ -387,66 +490,70 @@ int main (int argc, const char * argv[]) {
     NSLog(@"----------------------------------------------------------------------------------------");
     // ---------------------------------------------------------------------------------------- 
     
-    // Test some scripts we read from actual files
+    NSLog(@"Test some scripts we read from actual files");
 
     // Perl
+    
+    NSLog(@"Test Perl Low Complexity Script.pl");
     
     NSString * plLCScriptPath = PATHFORSCRIPT(@"Perl Low Complexity Script.pl");
     BMScript * plLCScript = [BMScript perlScriptWithContentsOfFile:plLCScriptPath];
     
     status = [plLCScript execute];
     
-    NSString * plLCScriptResult = [plLCScript lastResult];
+    NSData * plLCScriptResult = [plLCScript lastResult];
     NSInteger plLCScriptRetVal = [plLCScript lastReturnValue];
     
     NSLog(@"Perl low complexity script status = %@", BMNSStringFromExecutionStatus(status));
-    NSLog(@"Perl low complexity script result = %@", plLCScriptResult);
+    NSLog(@"Perl low complexity script result = %@", [plLCScriptResult contentsAsString]);
     NSLog(@"Perl low complexity script retval = %d", plLCScriptRetVal);
 
     // Ruby
     
+    NSLog(@"Test Ruby Low Complexity Script.rb");
+
     NSString * rbLCScriptPath = PATHFORSCRIPT(@"Ruby Low Complexity Script.rb");
     BMScript * rbLCScript = [BMScript rubyScriptWithContentsOfFile:rbLCScriptPath];
     
     status = [rbLCScript execute];
     
-    NSString * rbLCScriptResult = [rbLCScript lastResult];
+    NSData * rbLCScriptResult = [rbLCScript lastResult];
     NSInteger rbLCScriptRetVal = [rbLCScript lastReturnValue];
     
     NSLog(@"Ruby low complexity script status = %@", BMNSStringFromExecutionStatus(status));
-    NSLog(@"Ruby low complexity script result = %@", rbLCScriptResult);
+    NSLog(@"Ruby low complexity script result = %@", [rbLCScriptResult contentsAsString]);
     NSLog(@"Ruby low complexity script retval = %d", rbLCScriptRetVal);
     
     // Python
     
+    NSLog(@"Test Python Low Complexity Script.py");
+
     NSString * pyLCScriptPath = PATHFORSCRIPT(@"Python Low Complexity Script.py");
     BMScript * pyLCScript = [BMScript pythonScriptWithContentsOfFile:pyLCScriptPath];
     
     status = [pyLCScript execute];
     
-    NSString * pyLCScriptResult = [pyLCScript lastResult];
+    NSData * pyLCScriptResult = [pyLCScript lastResult];
     NSInteger pyLCScriptRetVal = [pyLCScript lastReturnValue];
     
     NSLog(@"Python low complexity script status = %@", BMNSStringFromExecutionStatus(status));
-    NSLog(@"Python low complexity script result = %@", pyLCScriptResult);
+    NSLog(@"Python low complexity script result = %@", [pyLCScriptResult contentsAsString]);
     NSLog(@"Python low complexity script retval = %d", pyLCScriptRetVal);
     
     // Shell
     
-    NSLog(@"The output after these two lines  won't show because we are overwriting the standard out file handle.");
-    NSLog(@"The shell script, the output of which should appear here, is also tested within the unit tests and "
-           "additionally one can use the debugger to step through the execution to confirm.");
-          
+    NSLog(@"Test Shell Low Complexity Script.sh");
+              
     NSString * shLCScriptPath = PATHFORSCRIPT(@"Shell Low Complexity Script.sh");
     BMScript * shLCScript = [BMScript shellScriptWithContentsOfFile:shLCScriptPath];
     
     status = [shLCScript execute];
     
-    NSString * shLCScriptResult = [shLCScript lastResult];
+    NSData * shLCScriptResult = [shLCScript lastResult];
     NSInteger shLCScriptRetVal = [shLCScript lastReturnValue];
     
     NSLog(@"Shell low complexity script status = %@", BMNSStringFromExecutionStatus(status));
-    NSLog(@"Shell low complexity script result = %@", shLCScriptResult);
+    NSLog(@"Shell low complexity script result = %@", [shLCScriptResult contentsAsString]);
     NSLog(@"Shell low complexity script retval = %d", shLCScriptRetVal);
     
         

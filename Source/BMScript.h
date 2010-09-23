@@ -72,6 +72,8 @@
  *
  * @include bmScriptSynthesizeOptions.m
  *
+ * Notice how you must supply <b>at least two parameters</b> to the macro function. Supply an empty string for the arguments if you do not need to set any.
+ *
  * If you initialize BMScript directly without specifying options and script source
  * (e.g. using <span class="sourcecode">[[BMScript alloc] init]</span>) the options
  * will default to <span class="sourcecode">BMSynthesizeOptions(\@&quot;/bin/echo&quot;, &quot;&quot;)</span> 
@@ -100,6 +102,9 @@
  * As you can see loading scripts from source files is also supported, including a small
  * and lightweight template system. Before moving on to templates, though, it is important
  * to note that BMScript always expects any external data (files) to be in <b>UTF-8</b> encoding.
+ * If you are unsure about the file's encoding, it is suggested to try to read in the file contents
+ * yourself (using NSString API for example) and then use BMScript through its designated initializer 
+ * to set the script source.
  *
  * @par Templates
  *
@@ -134,13 +139,11 @@
  *
  * @include TemplateKeywordSaturationExample.m
  *
- * Note: In BMScript v0.1 the magic token was equivalent to one form of Ruby's double qouted string literal: <span class="sourcecode">%{}</span>.
- * The concept behind this was that the concept should be somewhat familiar and easy to grasp and it should be easy 
- * to transform these constructs into a string that would be passed as the format string to some NSString creation methods.
- * I have since changed this as it introduced too many and often times confusing back and forth escapes of the percent signs
- * in order to be used as format strings. 
+ * @note In BMScript v0.1 the magic token was equivalent to one form of Ruby's double qouted string literal: <span class="sourcecode">%{}</span>.
+ * The idea behind this was that the concept should be somewhat familiar and easy to grasp. I have since changed this as it introduced too many 
+ * back and forth escapings of the percent signs in order to be used as format strings, besides being generally confusing. 
  *
- * I have since decided to use Xcode's text macro tokens instead. 
+ * Instead I have decided to use Xcode's text macro tokens. 
  * There are two benefits to this:
  *
  *      -# No escaping necessary to use as format strings.
@@ -180,8 +183,9 @@
  *
  * After you have obtained and configured a BMScript instance, you need to tell it to execute.
  * This can be done by telling it to excute synchroneously (blocking), <b>or</b> asynchroneously (non-blocking).
- * Note the "or": you should not use the same BMScript instance for blocking and non-blocking execution
- * at the same time.
+ * Note the <b>or</b>: you should not use the same BMScript instance for blocking and non-blocking execution
+ * at the same time. It is far safer to use one BMScript instance for blocking and another for non-blocking
+ * execution.
  *
  * @include bmScriptExecution.m
  *
@@ -203,7 +207,7 @@
  * <div class="box hasRows noshadow">
  *      <div class="row odd firstRow">
  *          <span class="cell left firstCell">#BMScriptNotificationTaskResults</span>
- *          <span class="cell rightCell lastCell">contains the results returned by the execution as NSString.</span>
+ *          <span class="cell rightCell lastCell">contains the results returned by the execution.</span>
  *      </div>
  *      <div class="row even">
  *          <span class="cell left firstCell">#BMScriptNotificationTaskReturnValue</span>
@@ -219,8 +223,11 @@
  *
  * @include NonBlockingExecutionExample.m
  *
- * It is important to note at this point that the blocking and non-blocking tasks are tracked by seperate instance variables.
- * This was done to minimize the risk of race conditions when BMScript would be used in a multi-threaded environment.
+ * It is important to note at this point that the underlying tasks and pipes for a blocking and non-blocking execution
+ * are tracked by seperate instance variables. This was done to make re-using a blocking BMScript instance as non-blocking
+ * safer and vice versa. While I said earlier you should use one BMScript instance for blocking and non-blocking execution
+ * this meant not using the same instance for both models <b>at the same time</b>. It should be safe to use the same instance 
+ * for the other execution model once it has finished and completed successfully.
  *
  * @par On The Topic Of Concurrency
  *
@@ -229,7 +236,7 @@
  * This is done by a macro wrapper which will avaluate to nothing if #BMSCRIPT_THREAD_AWARE is not <span class="sourcecode">1</span>.
  * #BMSCRIPT_THREAD_AWARE will also set #BM_ATOMIC to <span class="sourcecode">1</span> which will make all accessors atomic.
  * 
- * However, to make it clear as crystal: <b>for the moment BMScript is not classified as being thread-safe!</b>
+ * However, to make it clear: <b>currently BMScript is not classified as being thread-safe!</b>
  * 
  * Especially as there haven't been enough tests in a multi-threaded environment yet as to say much 
  * about BMScript's thread-safety status. 
@@ -249,8 +256,19 @@
  *
  * @par Delegate Methods
  *
- * BMScript also features a delegate protocol (BMScriptDelegateProtocol) providing descriptions for methods
- * your subclass or another class posing as delegate can implement:
+ * BMScript also features a delegate protocol (BMScriptDelegateProtocol) providing instances posing as the delegate
+ * with the opportunity to have a say in wether a script should get added or removed from the instance local history,
+ * whether or not partialData should be appended to the final result for continuously executing background tasks
+ * and also providing them with the power to change the resulting data, which is perfect for validation of end-user 
+ * enterred data, or data coming from a command line interface that's historically manifold. Employing delegates allow
+ * you to customize the behavior of BMScript instances without the need to make a domain-specific subclass. 
+ *
+ * As a general rule of thumb, methods starting with <span class="sourcecode">should...</span> will be passed some data 
+ * for the delegate to inspect and validate and expect a BOOL in return. If the return value is YES, the operation continues 
+ * (e.g. the history item is added to the instance local history). 
+ *
+ * Methods starting with <span class="sourcecode">will...</span> cannot stop the operation but they can modify the data 
+ * passed in and the returned modified data is then used for the remainder of the operation.
  *
  * @include bmScriptDelegateMethods.m
  *
@@ -540,9 +558,9 @@ NS_INLINE NSString * BMNSStringFromExecutionStatus(ExecutionStatus status) {
  * @{
  */
 
-/*! Notficiation sent when the background task has ended */
+/*! Notification sent when the background task has ended */
 OBJC_EXPORT NSString * const BMScriptTaskDidEndNotification;
-/*! Key incorporated by the notification's userInfo dictionary. Contains the result string of the finished task */
+/*! Key incorporated by the notification's userInfo dictionary. Contains the result data of the finished task */
 OBJC_EXPORT NSString * const BMScriptNotificationTaskResults;
 /*! 
  * Key incorporated by the notification's userInfo dictionary. 
@@ -551,7 +569,7 @@ OBJC_EXPORT NSString * const BMScriptNotificationTaskResults;
  * For the exit code see #BMScriptNotificationTaskReturnValue.
  */
 OBJC_EXPORT NSString * const BMScriptNotificationExecutionStatus;
-/*! Key incorporated by the notification's userInfo dictionary. Contains the execution status of the finished task */
+/*! Key incorporated by the notification's userInfo dictionary. Contains the termination status of the finished task */
 OBJC_EXPORT NSString * const BMScriptNotificationTaskReturnValue;
 
 /*! Key incorporated by the options dictionary. Contains the launch path string for the task */
@@ -576,7 +594,7 @@ OBJC_EXPORT NSString * const BMScriptTemplateTokenEndKey;
 OBJC_EXPORT NSString * const BMScriptTemplateArgumentMissingException;
 /*!
  * Thrown when a subclass promises to conform to the BMScriptLanguageProtocol 
- * but consequently fails to declare the proper header. 
+ * but consequently fails to declare the proper \@interface header (forgot to append <span class="sourcecode">&lt;BMScriptLanguage&gt;</span>). 
  */
 OBJC_EXPORT NSString * const BMScriptLanguageProtocolDoesNotConformException;
 /*!
@@ -584,11 +602,6 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolDoesNotConformException;
  * but consequently fails to implement all required methods. 
  */
 OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
-/*!
- * Thrown when a subclass accesses implemention details in an improper way. 
- * Currently unused. 
- */
-OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 
 /*! 
  * @} 
@@ -638,20 +651,20 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  *
  * @param historyItem a history item is an NSArray with two entries: the script and the result when that script was executed.
  */
-- (BOOL) shouldReturnItemFromHistory:(NSString *)historyItem;
+- (BOOL) shouldReturnItemFromHistory:(NSArray *)historyItem;
 /*!
  * If implemented, called whenever BMScript.result is about to change.
  * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
  *
- * @param aString the string that will be used as new value if this method returns YES.
+ * @param data the data that will be used as new value if this method returns YES.
  */
-- (BOOL) shouldSetResult:(NSString *)aString;
+- (BOOL) shouldSetResult:(NSData *)data;
 /*!
  * If implemented, called during execution in background (non-blocking) whenever new data is available.
  * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
- * @param string the string that will be used as new value if this method returns YES.
+ * @param data the data that will be used as new value if this method returns YES.
  */
-- (BOOL) shouldAppendPartialResult:(NSString *)string;
+- (BOOL) shouldAppendPartialResult:(NSData *)data;
 /*!
  * If implemented, called  whenever BMScript.script is set to a new value.  
  * Delegation methods beginning with <i>should</i> give the delegate the power to abort the operation by returning NO. 
@@ -670,27 +683,27 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 /*!
  * If implemented, called before right before a new item is finally added to the history. 
  * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
- * @param anItem the string that will be added
+ * @param anItem the history item that will be added
  */
-- (NSString *) willAddItemToHistory:(NSString *)anItem;
+- (NSArray *) willAddItemToHistory:(NSArray *)anItem;
 /*!
  * If implemented, called before right before an item is finally returned from the history. 
  * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
- * @param anItem the string that will be returned
+ * @param anItem the history item that will be returned
  */
-- (NSString *) willReturnItemFromHistory:(NSString *)anItem;
+- (NSArray *) willReturnItemFromHistory:(NSArray *)anItem;
 /*!
  * If implemented, called before right before a string is appended to BMScript.partialResult. 
  * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
- * @param string the string that will be appended
+ * @param data the data that will be appended
  */
-- (NSString *) willAppendPartialResult:(NSString *)string;
+- (NSData *) willAppendPartialResult:(NSData *)data;
 /*!
  * If implemented, called before right before BMScript.result is set to a new value. 
  * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
- * @param aString the string that will be used as result
+ * @param data the data that will be used as result
  */
-- (NSString *) willSetResult:(NSString *)aString;
+- (NSData *) willSetResult:(NSData *)data;
 /*!
  * If implemented, called before right before BMScript.script is set to a new value. 
  * Delegation methods beginning with <i>will</i> give the delegate the power to change the value that will be used for the set/get operation by mutating the value passed in. 
@@ -718,8 +731,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
     NSDictionary * options;
     id<BMScriptDelegateProtocol> delegate;
  @private
-    NSString * result;
-    NSString * partialResult;
+    NSData * result;
+    NSMutableData * partialResult;
     BOOL isTemplate;
     NSMutableArray * _history;
     NSTask * task;
@@ -769,10 +782,10 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
 @property (BM_ATOMIC assign) id<BMScriptDelegateProtocol> delegate;
 
 /** 
- * Gets the last execution result (getter=<b>lastResult</b>). May return nil if the script hasn't been executed yet.
- * @sa #lastResultWithoutTrailingNewline
+ * Gets the last execution result (getter=<b>lastResult</b>). 
+ * May return nil if the script hasn't been executed yet.
  */
-@property (BM_ATOMIC copy, readonly, getter=lastResult) NSString * result;
+@property (BM_ATOMIC copy, readonly, getter=lastResult) NSData * result;
 
 // MARK: Initializer Methods
 
@@ -861,25 +874,25 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (ExecutionStatus) execute;
 /*!
- * Executes the script with a synchroneous (blocking) task and stores the result in &result.
+ * Executes the script with a synchroneous (blocking) task and stores the result in &results.
  * If the BMScript instance was initialized with a template, the template must first be saturated
  * before the BMScript instance can be executed.
  *
- * @param results a pointer to an NSString where the result should be written to
+ * @param results a pointer to an NSData where the result should be written to
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @returns the script's execution status 
  * @see ExecutionStatus
  */
-- (ExecutionStatus) executeAndReturnResult:(NSString **)results;
+- (ExecutionStatus) executeAndReturnResult:(NSData **)results;
 /*!
  * Executes the script with a synchroneous (blocking) task and stores the result in the string pointed to by results.
- * @param results a pointer to an NSString where the result should be written to
+ * @param results a pointer to an NSData where the result should be written to
  * @param error a pointer to an NSError where errors should be written to
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @returns the script's execution status
  * @see ExecutionStatus
  */
-- (ExecutionStatus) executeAndReturnResult:(NSString **)results error:(NSError **)error;
+- (ExecutionStatus) executeAndReturnResult:(NSData **)results error:(NSError **)error;
 /*!
  * Executes the script with a asynchroneous (non-blocking) task. 
  * The script's execution status, results (string) and the task's return value will be posted with a notifcation.
@@ -889,17 +902,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  */
 - (void) executeInBackgroundAndNotify; 
 
-// MARK: Utilities
-
-/*! 
- * A convenience method for stripping of the trailing newline when fetching the lastResult.
- * The method checks if the last character actually is a new line character (<span class="sourcecode">\\n</span> or <span class="sourcecode">\\r</span>, 
- * but not <span class="sourcecode">\\r\\n</span>!) and either modifies it to strip the new line character or it doesn't if there is no new line character.
- * @note If <span class="sourcecode">self.result</span> is nil this method will log a warning and also return nil.
- * @returns string with last result or nil if the script hasn't been executed yet.
- */
-- (NSString *) lastResultWithoutTrailingNewline;
-
+// MARK: Virtual (Readonly) Getters
 
 /*!
  * Returns an immutable copy of the receiver's instance local execution cache (aka its history).
@@ -949,12 +952,12 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns a cached script source from the history. 
  * @param index index of the item to return. May return nil if the history does not contain any objects.
  */
-- (NSString *) scriptSourceFromHistoryAtIndex:(NSInteger)index;
+- (NSString *) scriptSourceFromHistoryAtIndex:(NSUInteger)index;
 /*!
  * Returns a cached result from the history. 
  * @param index index of the item to return. May return nil if the history does not contain any objects.
  */
-- (NSString *) resultFromHistoryAtIndex:(NSInteger)index;
+- (NSData *) resultFromHistoryAtIndex:(NSUInteger)index;
 /*!
  * Returns the last cached script source from the history. 
  * May return nil if the history does not contain any objects.
@@ -964,7 +967,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolIllegalAccessException;
  * Returns the last cached result from the history. 
  * May return nil if the history does not contain any objects.
  */
-- (NSString *) lastResultFromHistory;
+- (NSData *) lastResultFromHistory;
 
 // MARK: Equality
 
@@ -1194,6 +1197,13 @@ typedef enum {
  */
 - (NSString *) stringByNormalizingPercentSigns;
 /*! 
+ * A convenience method for stripping off a trailing newline character.
+ * The method checks if the last character actually is a new line character (<span class="sourcecode">\\n</span> or <span class="sourcecode">\\r</span>, 
+ * but not <span class="sourcecode">\\r\\n</span>!) and either modifies it to strip the new line character or it doesn't if there is no new line character.
+ * @returns string with last result or nil if the script hasn't been executed yet.
+ */
+- (NSString *) chomp;
+/*! 
  * Calls #stringByEscapingStringUsingOrder: passing #BMNSStringEscapeTraversingOrderFirst as <span class="sourcecode">order</span> argument. 
  */
 - (NSString *) escapedString;
@@ -1312,3 +1322,21 @@ typedef enum {
 /*! Returns YES if the array was created with no objects. <span class="sourcecode">[NSArray arrayWithObjects:nil]</span> for example can do this. */
 - (BOOL) isZeroArray;
 @end
+
+
+/*!
+ * @category NSData(BMScriptUtilities)
+ * A category on NSData. Provides introspection and other utility methods.
+ */
+@interface NSData (BMScriptUtilities)
+/*! 
+ * Provides a way of logging data returned by a script's underlying task in a human-readable format. 
+ * @note This method is intended strictly for logging purposes! If you need to convert the data to a 
+ * string, use the proper NSString API and provide the correct string encoding.
+ * @returns contents as string, if the data can be converted using NSUTF8StringEncoding. 
+ * Otherwise returns string from <span class="sourcecode">[self description]</span>.
+ */
+- (NSString *) contentsAsString;
+@end
+
+

@@ -89,14 +89,15 @@
 
 - (void) taskFinished:(NSNotification *)aNotification {
     
-    ExecutionStatus stats = [[[aNotification userInfo] objectForKey:BMScriptNotificationExecutionStatus] intValue];
-    NSString * result = [[aNotification userInfo] objectForKey:BMScriptNotificationTaskResults];
+    ExecutionStatus stats = [[[aNotification userInfo] objectForKey:BMScriptNotificationExecutionStatus] integerValue];
+    NSData * result = [[aNotification userInfo] objectForKey:BMScriptNotificationTaskResults];
+    NSInteger retval = [[[aNotification userInfo] objectForKey:BMScriptNotificationTaskReturnValue] integerValue];
     
     self.results = result;
     self.status = stats;
     self.taskHasEnded = YES;
     
-    NSLog(@"Inside %s: script finished with status = %u, result = '%@'\n", __PRETTY_FUNCTION__, (unsigned)self.status, [self.results quotedString]);
+    NSLog(@"Inside %s: script finished with status = %i, task result = '%@', task return value = %i\n", __PRETTY_FUNCTION__, self.status, [[self.results contentsAsString] quotedString], retval);
     NSLog(@"Inside %s\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
 }
 
@@ -109,7 +110,7 @@
                 @" shouldSetResultCalled? %@\n"
                 @" shouldSetScriptCalled? %@", 
                 [self description],
-                [BMNSStringFromBOOL(self.taskHasEnded) UTF8String], [BMNSStringFromExecutionStatus(self.status) UTF8String], [self.results quotedString],
+                [BMNSStringFromBOOL(self.taskHasEnded) UTF8String], [BMNSStringFromExecutionStatus(self.status) UTF8String], [[self.results contentsAsString] quotedString],
                  BMNSStringFromBOOL(self.willSetResultCalled),
                  BMNSStringFromBOOL(self.willSetScriptCalled),
                  BMNSStringFromBOOL(self.shouldSetResultCalled),
@@ -119,11 +120,11 @@
 
 - (void) run {
     NSError * err = nil;
-    NSString * res = nil;
+    NSData * res = nil;
     self.status = [self.script executeAndReturnResult:&res error:&err];
     self.results = res;
     if (err) {
-        NSLog(@"Inside %s: err = %@", __PRETTY_FUNCTION__, [err description]);
+        NSLog(@"Inside %s: err = %@", __PRETTY_FUNCTION__, [err localizedDescription]);
     }
     self.taskHasEnded = YES;
     NSLog(@"Inside %s\n%@", __PRETTY_FUNCTION__, [self debugDescription]);
@@ -132,10 +133,10 @@
 
 // MARK: BMScript Delegate Methods
 
-- (NSString *) willSetResult:(NSString *)aString {
-    NSLog(@"%s called! aString = %@", __PRETTY_FUNCTION__, aString);
+- (NSData *) willSetResult:(NSData *)data {
+    NSLog(@"%s called! data contents = %@", __PRETTY_FUNCTION__, [data contentsAsString]);
     self.willSetResultCalled = YES;
-    return [NSString stringWithFormat:@"%@ CHANGED", aString];
+    return [[NSString stringWithFormat:@"%@ CHANGED", [data contentsAsString]] dataUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSString *) willSetScript:(NSString *)aScript {
@@ -144,8 +145,8 @@
     return aScript;
 }
 
-- (BOOL) shouldSetResult:(NSString *)aString {
-    NSLog(@"%s called! aString = %@", __PRETTY_FUNCTION__, aString);
+- (BOOL) shouldSetResult:(NSData *)data {
+    NSLog(@"%s called! data contents = %@", __PRETTY_FUNCTION__, [data contentsAsString]);
     self.shouldSetResultCalled = YES;
     return YES;
 }

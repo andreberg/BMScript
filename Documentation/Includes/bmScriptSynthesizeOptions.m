@@ -4,6 +4,3 @@
 
 // Usage
 NSDictionary * defaultOptions = BMSynthesizeOptions(@"/bin/echo", @""); 
-
-// notice how you must supply at least two parameters to the macro function.
-// supply an empty string for the arguments if you do not need to set any.

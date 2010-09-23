@@ -2,8 +2,8 @@
 // (yielding the same effect) it is usually better to supply the 
 // options as you will make your intent clear.
 
-BMScript * script3 = [[BMScript alloc] initWithTemplateSource:@"This is a <#KEYWORD#> template. <#ADJECTIVE#> stuff." 
-                                                      options:BMSynthesizeOptions(@"/bin/echo", @"-n")];
+BMScript * script3 = [[[BMScript alloc] initWithTemplateSource:@"This is a <#KEYWORD#> template. <#ADJECTIVE#> stuff." 
+                                                       options:BMSynthesizeOptions(@"/bin/echo", @"-n")] autorelease];
 
 // Before we can execute the script we need to saturate it first, 
 // e.g. fill it with values for the keywords. Otherwise we'd get
@@ -14,13 +14,13 @@ NSDictionary * keywordDict = [NSDictionary dictionaryWithObjectsAndKeys:@"keywor
                                                                         @"Neat", @"ADJECTIVE", nil];
 [script3 saturateTemplateWithDictionary:keywordDict];
 
-
 // Now that we have saturated the template we can execute it:
+// ... assume NSData * result2 exists ...
 
 ExecutionStatus status = [script3 executeAndReturnResult:&result2];
 
 NSLog(@"script3 status = %@", BMNSStringFromExecutionStatus(status));
-NSLog(@"script3 result = %@", result2);
+NSLog(@"script3 result = %@", [result2 contentsAsString]);
 NSLog(@"script3 retVal = %d", [script3 lastReturnValue]);
 
 // script3 status = script finished successfully

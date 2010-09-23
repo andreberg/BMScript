@@ -56,12 +56,12 @@ int main (int argc, const char * argv[]) {
     BMScript * script1 = [[BMScript alloc] initWithScriptSource:@"test test" options:nil]; // options:nil == BMSynthesizeOptions(@"/bin/echo", @"")
     [script1 execute];
     
-    NSLog(@"script1 result = '%@'\n", [[script1 lastResult] quotedString]);
+    NSLog(@"script1 result = '%@'\n", [[[script1 lastResult] contentsAsString] quotedString]);
 
     [script1 release], script1 = nil;
     
-    NSLog(@"scriptRunner1 results = '%@'", [[scriptRunner1 results] quotedString]);
-    NSLog(@"scriptRunner2 results = '%@'", [[scriptRunner2 results] quotedString]);
+    NSLog(@"scriptRunner1 results = '%@'", [[[scriptRunner1 results] contentsAsString] quotedString]);
+    NSLog(@"scriptRunner2 results = '%@'", [[[scriptRunner2 results] contentsAsString] quotedString]);
     
     [scriptRunner1 release], scriptRunner1 = nil;
     [scriptRunner2 release], scriptRunner2 = nil;

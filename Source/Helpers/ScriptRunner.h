@@ -31,7 +31,7 @@ typedef NSUInteger SRExecutionMode;
 
 @interface ScriptRunner : NSObject <BMScriptDelegateProtocol> {
     BMScript * script;
-    NSString * results;
+    NSData * results;
     ExecutionStatus status;
     BOOL taskHasEnded;
     BOOL shouldSetResultCalled;
@@ -47,7 +47,7 @@ typedef NSUInteger SRExecutionMode;
 - (id) initWithExecutionMode:(SRExecutionMode)mode; /* designated initializer */
 
 @property (retain) BMScript * script;
-@property (copy) NSString * results;
+@property (copy) NSData * results;
 @property (assign) ExecutionStatus status;
 @property (assign) BOOL taskHasEnded;
 @property (assign) BOOL shouldSetResultCalled;
