@@ -36,6 +36,8 @@
 #define BMSCRIPT_DEFAULT_OPTIONS        @"BMSynthesizeOptions(@\"/bin/echo\", @\"\")"   /* default script option for display in warnings etc. */
 #define BMSCRIPT_DEFAULT_SCRIPT_SOURCE  @"'<script source placeholder>'"                /* default script source for display in warnings etc. */
 
+#define BMSCRIPT_TASK_TIME_LIMIT        10  /* time limit in seconds for how long the blocking task is allowed to execute before being interrupted */
+
 #ifndef BMSCRIPT_DEBUG_HISTORY
     #define BMSCRIPT_DEBUG_HISTORY  0
 #endif
@@ -121,7 +123,7 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
 - (void) stopTask;
 - (BOOL) setupTask;
 - (void) cleanupTask:(NSTask *)whichTask;
-- (ExecutionStatus) launchTaskAndReturnResult;
+- (ExecutionStatus) launchTask;
 - (void) setupAndLaunchBackgroundTask;
 - (void) taskTerminated:(NSNotification *)aNotification;
 - (void) appendPartialData:(NSData *)d;
@@ -412,7 +414,7 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
 }
 
 /* fires a one-off (blocking or synchroneous) task and stores the result */
-- (ExecutionStatus) launchTaskAndReturnResult {
+- (ExecutionStatus) launchTask {
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     
@@ -424,7 +426,7 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
             BM_PROBE(NET_EXECUTION_BEGIN, (char *) [[BMNSStringFromExecutionStatus(status) stringByWrappingSingleQuotes] UTF8String]);
         #endif
         [self.task launch];
-        [self.task waitUntilExit];
+        //[self.task waitUntilExit]; // see explanation below
     }
     @catch (NSException * e) {
         self.returnValue = status = BMScriptFailedWithException;
@@ -437,8 +439,44 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
     #if (BMSCRIPT_ENABLE_DTRACE)
         BM_PROBE(NET_EXECUTION_END, (char *) [[BMNSStringFromExecutionStatus(status) stringByWrappingSingleQuotes] UTF8String]);
     #endif
-
-    data = [[self.pipe fileHandleForReading] readDataToEndOfFile];
+    
+    NSMutableData * someData = [NSMutableData data];
+    NSDate * limitDate = [NSDate dateWithTimeIntervalSinceNow:BMSCRIPT_TASK_TIME_LIMIT];
+    
+    // It appears that very large output data from the underlying task 
+    // fills up the pipe instance used by the reading filehandle and then
+    // the task will block forever because it wants to deliver new data
+    // but has to wait until the pipe is approachable again.
+    // There's two ways around this: fire off the task in a thread. Not really
+    // sure why this works. Maybe because the thread comes with another runloop
+    // and the task can check if it needs to interrupt the process. 
+    // Alternatively, do not call waitUntilExit and empty the filehandle data 
+    // yourself by reading to the end. I could do this asynchroneously but since 
+    // what I offer with the blocking execution model, the caller may depend on it
+    // blocking. So I do what normally is considered bad practice: I poll for
+    // the end of the task while emptying the filehandle each 0.1 seconds.
+    // To be safer I say it has to end after BMSCRIPT_TASK_TIME_LIMIT seconds.
+    // Of course I may need to expose the time limit to the caller since (s)he 
+    // may be setting up for a somewhat lenghty execution. (hint: for this really, 
+    // the non-blocking model is much better). 
+    // I think it is somewhat reasonable to assume that a considerate programmer 
+    // would use the non-blocking execution model if the script could potentially
+    // take forever, so for the moment I am settings this to 10s. My own tests
+    // have shown that for that even for input data up to 1 MiB using this "hack"
+    // below the task will complete as fast as if it would have never blocked due
+    // to the pipe being full. However further tests are still in order if this
+    // approach is practical. For example instead of using usleep I could use sth
+    // like [NSThread sleepForTimeInterval:...], etc. 
+    // 
+    while ([self.task isRunning]) {
+        [someData appendData:[[self.pipe fileHandleForReading] readDataToEndOfFile]];
+        usleep(10000);
+        if ([limitDate compare:[NSDate date]] < 0) {
+            [self.task interrupt];
+        }
+    }
+    
+    data = [[someData copy] autorelease];
     
     [self.task terminate];
     
@@ -458,8 +496,6 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
         }
         self.result = aResult;
     }
-    
-    goto endnow1;
     
 endnow1:
     [pool drain], pool = nil;
@@ -904,7 +940,7 @@ endnow2:
         
         if (BM_EXPECTED(success, 1)) {
             
-            status = [self launchTaskAndReturnResult];
+            status = [self launchTask];
             
             if (status == BMScriptFailedWithException) {
                 if (error) {

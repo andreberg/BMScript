@@ -868,6 +868,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 
 /*!
  * Executes the script with a synchroneous (blocking) task. To get the result call BMScript.lastResult.
+ * @note the blocking task is allowed a maximum of 10 seconds to execute and finish before being interrupted.
+ * If you need longer time periods use the non-blocking execution model (e.g. #executeInBackgroundAndNotify).
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @returns the script's execution status
  * @see ExecutionStatus
@@ -877,7 +879,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
  * Executes the script with a synchroneous (blocking) task and stores the result in &results.
  * If the BMScript instance was initialized with a template, the template must first be saturated
  * before the BMScript instance can be executed.
- *
+ * @note the blocking task is allowed a maximum of 10 seconds to execute and finish before being interrupted.
+ * If you need longer time periods use the non-blocking execution model (e.g. #executeInBackgroundAndNotify).
  * @param results a pointer to an NSData where the result should be written to
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @returns the script's execution status 
@@ -886,6 +889,8 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 - (ExecutionStatus) executeAndReturnResult:(NSData **)results;
 /*!
  * Executes the script with a synchroneous (blocking) task and stores the result in the string pointed to by results.
+ * @note the blocking task is allowed a maximum of 10 seconds to execute and finish before being interrupted.
+ * If you need longer time periods use the non-blocking execution model (e.g. #executeInBackgroundAndNotify).
  * @param results a pointer to an NSData where the result should be written to
  * @param error a pointer to an NSError where errors should be written to
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
