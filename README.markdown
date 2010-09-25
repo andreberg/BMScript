@@ -73,9 +73,18 @@ Usage
 Changelog
 ---------
 
-v0.2 (2010-09-22)
-
 (* = change, - = deletion, + = addition)
+
+
+v0.2 (2010-09-25)
+
+* \* Task results are now returned verbatim, e.g. as NSData.
+
+* \* Blocking execution model is limited to 10s maximum execution time.
+     If you know you're execution is gonna take longer you are strongly
+     encouraged to use the non-blocking execution model (see docs).
+
+v0.2 (2010-09-22)
 
 * \* Accessor methods are now used consistently throughout BMScript.
 
