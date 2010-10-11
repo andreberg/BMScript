@@ -470,7 +470,7 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
     // 
     while ([self.task isRunning]) {
         [someData appendData:[[self.pipe fileHandleForReading] readDataToEndOfFile]];
-        usleep(10000);
+        usleep(100000);
         if ([limitDate compare:[NSDate date]] < 0) {
             [self.task interrupt];
         }
@@ -496,6 +496,8 @@ NSString * const BMScriptLanguageProtocolMethodMissingException  = @"BMScriptLan
         }
         self.result = aResult;
     }
+    
+    goto endnow1;
     
 endnow1:
     [pool drain], pool = nil;
@@ -1316,6 +1318,10 @@ endnow2:
 
 - (NSString *) escapedString {
     return [self stringByEscapingStringUsingOrder:BMNSStringEscapeTraversingOrderFirst];
+}
+
+- (NSString *) unescapedString {
+    return [self unescapedStringUsingOrder:BMNSStringEscapeTraversingOrderFirst];
 }
 
 - (NSString *) unescapedStringUsingOrder:(BMNSStringEscapeTraversingOrder)order {

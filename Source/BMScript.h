@@ -1205,7 +1205,7 @@ typedef enum {
  * A convenience method for stripping off a trailing newline character.
  * The method checks if the last character actually is a new line character (<span class="sourcecode">\\n</span> or <span class="sourcecode">\\r</span>, 
  * but not <span class="sourcecode">\\r\\n</span>!) and either modifies it to strip the new line character or it doesn't if there is no new line character.
- * @returns string with last result or nil if the script hasn't been executed yet.
+ * @returns string with newline character chopped of or unmodified string if string doesn't end with newline (\\n or \\r) character.
  */
 - (NSString *) chomp;
 /*! 
