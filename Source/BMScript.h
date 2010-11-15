@@ -900,7 +900,7 @@ OBJC_EXPORT NSString * const BMScriptLanguageProtocolMethodMissingException;
 - (ExecutionStatus) executeAndReturnResult:(NSData **)results error:(NSError **)error;
 /*!
  * Executes the script with a asynchroneous (non-blocking) task. 
- * The script's execution status, results (string) and the task's return value will be posted with a notifcation.
+ * The script's execution status, results and the task's return value will be posted with a notifcation.
  * @throws BMScriptTemplateArgumentMissingException thrown when the BMScript instance was initialized with a template which hasn't been saturated prior to execution
  * @see @link NonBlockingExecutionExample.m @endlink
  * @sa BMScriptNotificationExecutionStatus, BMScriptNotificationTaskReturnValue, BMScriptNotificationTaskResults
