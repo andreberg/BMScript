@@ -70,5 +70,6 @@ DOXYFILE_TEMPLATE=DoxyfileTemplate
 // css for docs
 HTML_STYLESHEET=$(DOCRES)/CSS/doxygen_1.6.3.css
 
-// path to Graphviz "dot" executable, default is "...Doxygen.app/Contents/Resources"
-DOT_PATH=/opt/local/bin
+// path to Graphviz "dot" executable, default is "$DOXYGEN_RES_PATH/Contents/Resources"
+// just comment this out below if you do not want to use a non-default dot binary
+DOT_PATH=/usr/local/bin

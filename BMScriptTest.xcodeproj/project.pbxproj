@@ -12,7 +12,9 @@
 			buildConfigurationList = 657323F21067BFA4001E9123 /* Build configuration list for PBXAggregateTarget "BMScript Documentation" */;
 			buildPhases = (
 				6503F10A1072ACD000B260F7 /* Saturate Doxygen Template */,
-				657323E71067BF6A001E9123 /* Run Doxygen and import DocSet into Xcode */,
+				657323E71067BF6A001E9123 /* Run Doxygen */,
+				653BACF112902C360088FCDC /* DocSet Info.plist Post Processing */,
+				653BACEF12902B610088FCDC /* Import DocSet into Xcode */,
 			);
 			dependencies = (
 			);
@@ -151,6 +153,7 @@
 		653A0B6B1067E9440027DF98 /* bmScriptHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bmScriptHistory.m; sourceTree = "<group>"; };
 		653A0BFA10681BA10027DF98 /* convertToDecimalTemplate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = convertToDecimalTemplate.rb; sourceTree = "<group>"; };
 		653D01761074BB4400C9F7CC /* UnitTests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UnitTests.xcconfig; sourceTree = "<group>"; };
+		653FF5E91290E00700DCBA7F /* DocSet Info Plist Post Processing.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "DocSet Info Plist Post Processing.sh"; sourceTree = "<group>"; };
 		6542958B105FE1B80037E0C8 /* Convert To Oct.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Oct.rb"; sourceTree = "<group>"; };
 		6542958D105FE1B80037E0C8 /* Convert To Hex Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Hex Template.rb"; sourceTree = "<group>"; };
 		6542958E105FE1B80037E0C8 /* Convert To Decimal Template.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = "Convert To Decimal Template.rb"; sourceTree = "<group>"; };
@@ -411,6 +414,7 @@
 				659D7A9B107F99C70032B0B1 /* Saturate Doxygen Template.rb */,
 				659D7AB1107F9AE30032B0B1 /* Run Doxygen.sh */,
 				659D7AB9107F9BB80032B0B1 /* Import DocSet into Xcode.sh */,
+				653FF5E91290E00700DCBA7F /* DocSet Info Plist Post Processing.sh */,
 			);
 			name = Scripts;
 			path = Documentation/Scripts;
@@ -627,6 +631,34 @@
 			shellPath = /bin/sh;
 			shellScript = "# returns 1 if $1 contains $2\n# and 0 if it does not\nstrcont() {\n    result=\"${1//*$2*/#}\"\n    result=\"${result//#/$2}\"\n    if [[ \"$result\" == \"$2\" ]]; then\n        echo 1\n    else\n        echo 0\n    fi\n}\n\n# source DebugEnvironment.sh if our $BUILD_STYLE contains the word \"Debug\" \n# and the $USE_DEBUG_ENVIRONMENT_SCRIPT variable is set to 1 in Debug.xcconfig:\nBUILD_STYLE_CONTAINS_DEBUG=`strcont \"$BUILD_STYLE\" \"Debug\"`\nif [[ $USE_DEBUG_ENVIRONMENT_SCRIPT == 1 && $BUILD_STYLE_CONTAINS_DEBUG == 1 ]]; then\n\tif [ -x \"DebugEnvironment.sh\" ]; then\n\t\techo \"Sourcing DebugEnvironment.sh\"\n \t\tsource \"DebugEnvironment.sh\"\n\telse\n\t\techo \"DebugEnvironment.sh can't be found\"\n\tfi\nelse\n\techo \"Will not source DebugEnvironment.sh because USE_DEBUG_ENVIRONMENT_SCRIPT is not > 0 and/or BUILD_STYLE does not contain the word \\\"Debug\\\"\"\nfi\n";
 		};
+		653BACEF12902B610088FCDC /* Import DocSet into Xcode */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Import DocSet into Xcode";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${DOCSCRIPTS}/Import DocSet into Xcode.sh\"\nif [[ $? != 0 ]]; then\n\texit 1\nfi\n";
+		};
+		653BACF112902C360088FCDC /* DocSet Info.plist Post Processing */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "DocSet Info.plist Post Processing";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${DOCSCRIPTS}/DocSet Info Plist Post Processing.sh\"\nif [[ $? != 0 ]]; then\n\texit 1\nfi\n";
+		};
 		654295A0105FE22B0037E0C8 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -654,19 +686,19 @@
 			shellPath = /bin/sh;
 			shellScript = "echo \"Generating header files for dtrace probes matching pattern ${PROJECT_DIR}/DTrace/Probes/*Probes.d\"\ndtrace -h -s \"${PROJECT_DIR}\"/DTrace/Probes/*Probes.d -o \"${PROJECT_DIR}\"/DTrace/Probes/BMScriptProbes.h";
 		};
-		657323E71067BF6A001E9123 /* Run Doxygen and import DocSet into Xcode */ = {
+		657323E71067BF6A001E9123 /* Run Doxygen */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Run Doxygen and import DocSet into Xcode";
+			name = "Run Doxygen";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "\"${DOCSCRIPTS}/Run Doxygen.sh\"\nif [[ $? != 0 ]]; then\n\texit 1\nfi\n\n\"${DOCSCRIPTS}/Import DocSet into Xcode.sh\"\n";
+			shellScript = "\"${DOCSCRIPTS}/Run Doxygen.sh\"\nif [[ $? != 0 ]]; then\n\texit 1\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
